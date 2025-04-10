@@ -154,7 +154,7 @@ struct EditCategory: View {
 
                 Spacer()
 
-                CustomButton(title: "Add")
+                CustomButton(title: "Save")
                 
             }
             .padding(.horizontal)
