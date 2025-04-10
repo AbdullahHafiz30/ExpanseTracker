@@ -6,7 +6,7 @@
 //
 
 
-enum TransactionType: String, CaseIterable{
+enum TransactionType: String, CaseIterable, Codable{
     case income = "Income"
     case expense = "Expense"
     
