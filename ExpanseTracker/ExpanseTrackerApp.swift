@@ -15,6 +15,3 @@ struct ExpanseTrackerApp: App {
         }
     }
 }
-
-
-// test test
