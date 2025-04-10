@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct ExpanseTrackerApp: App {
+    @StateObject private var themeManager = ThemeManager()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Profile()
+            .environmentObject(themeManager)
+                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         }
     }
 }
+
+
+
