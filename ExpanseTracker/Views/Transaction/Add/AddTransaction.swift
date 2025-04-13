@@ -8,6 +8,7 @@
 
 import SwiftUI
 import PhotosUI
+
 struct AddTransaction: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
@@ -46,7 +47,7 @@ struct AddTransaction: View {
             .onChange(of: selectedImage) { _, newItem in
                 loadImage(from: newItem)
             }
-        }
+        }.navigationBarBackButtonHidden(true)
         
     }
 }
