@@ -1,13 +1,5 @@
 //
 //  AddCategory.swift
-//  ExpanseTracker
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
-
-//
-//  AddCategory.swift
 //  ExpensesMonthlyProjrct
 //
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
@@ -18,6 +10,7 @@ import SwiftUI
 
 struct AddCategory: View {
     @State var iconViewModel = IconModel()
+    @StateObject var categoryViewModel = CategoryViewModel()
     @State private var color: Color = .black
     @State private var limit: Double = 1
     @State private var selectedIcon: String = "star"
@@ -63,6 +56,7 @@ struct AddCategory: View {
                         .padding(5)
                         
                         CustomTextField(placeholder: "Category Name", text: $categoryName)
+                            
                          
                     }
 
@@ -109,7 +103,7 @@ struct AddCategory: View {
                         ForEach(Array(CategoryType.allCases.chunked(into: 2)), id: \.self) { rowItems in
                             HStack(spacing: 5) {
                                 ForEach(rowItems, id: \.self) { type in
-                                    Text(type.rawValue)
+                                    Text(LocalizedStringKey(type.rawValue))
                                         .font(.callout)
                                         .padding(.vertical, 8)
                                         .frame(maxWidth: .infinity)
@@ -143,7 +137,7 @@ struct AddCategory: View {
                     HStack (spacing: 20){
                         
                             Slider(value: $limit, in: 1...100)
-                            .accentColor(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
+                                .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
                             
                             Text("\(Int(limit))%")
                         }
@@ -154,7 +148,41 @@ struct AddCategory: View {
 
                 Spacer()
 
-                CustomButton(title: "Add")
+                CustomButton(title: "Add", action: {
+                    let newCategory = Category(
+                          id: UUID().uuidString,
+                          name: categoryName,
+                          color: UIColor(color).toHexString(),
+                          icon: selectedIcon,
+                          categoryType: categoryType,
+                          budgetLimit: limit
+                      )
+
+                      categoryViewModel.saveCategoryToCoreData(category: newCategory)
+                })
+//                // Add Button
+//                Text("Add")
+//                    .frame(width: 170, height: 50)
+//                    .background(
+//                        Rectangle()
+//                            .fill(.black)
+//                            .cornerRadius(8)
+//                    )
+//                    .foregroundColor(.white)
+//                    .font(.headline)
+//                    .padding(.bottom, 20)
+//                    .onTapGesture {
+//                        let newCategory = Categoryes(
+//                              id: UUID().uuidString,
+//                              name: categoryName,
+//                              color: UIColor(color).toHexString(),
+//                              icon: selectedIcon,
+//                              categoryType: categoryType.rawValue,
+//                              budgetLimit: limit
+//                          )
+//
+//                          categoryViewModel.saveToCoreData(category: [newCategory])
+//                    }
                 
             }
             .padding(.horizontal)
