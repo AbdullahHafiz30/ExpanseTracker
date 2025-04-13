@@ -12,9 +12,12 @@ struct ExpanseTrackerApp: App {
     @StateObject private var themeManager = ThemeManager()
     var body: some Scene {
         WindowGroup {
-            WelcomePage()
-            .environmentObject(themeManager)
-                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+            //WelcomePage()
+            //.environmentObject(themeManager)
+                            //.preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+            HomeView()
+                .environmentObject(themeManager)
+                                .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         }
     }
 }

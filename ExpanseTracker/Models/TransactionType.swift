@@ -6,7 +6,9 @@
 //
 
 
-enum TransactionType: String, CaseIterable, Codable{
+enum TransactionType: String, CaseIterable, Codable, Identifiable{
+    var id: String { rawValue }
+    
     case income = "Income"
     case expense = "Expense"
     
