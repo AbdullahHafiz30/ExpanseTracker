@@ -26,7 +26,6 @@ struct EditTransaction: View {
     @State private var selectedCategory = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
-    
     var body: some View {
         ScrollView {
             ZStack {
@@ -48,13 +47,13 @@ struct EditTransaction: View {
                         )
                         .environmentObject(themeManager)
                         //amount
-                        CustomTextField(placeholder: "Amount", text: $amount)
+                        CustomTextField(placeholder: "Amount", text: $amount,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         //date picker
                         DatePickerField(date: $date, showDatePicker: $showDatePicker)
                             .environmentObject(themeManager)
                         //Description
-                        CustomTextField(placeholder: "Description", text: $description)
+                        CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         //image picker
                         ImagePickerField(imageData: $imageData)

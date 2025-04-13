@@ -130,7 +130,7 @@ private extension AddTransaction {
                         )
                         .environmentObject(themeManager)
                         //amount
-                        CustomTextField(placeholder: "Amount", text: $amount)
+                        CustomTextField(placeholder: "Amount", text: $amount,isSecure: .constant(false))
                             .environmentObject(themeManager)
                             .onChange(of: amount) { _ , newValue in
                                 validateAmount(newValue)
@@ -145,7 +145,7 @@ private extension AddTransaction {
                         DatePickerField(date: $date, showDatePicker: $showDatePicker)
                             .environmentObject(themeManager)
                         //Description
-                        CustomTextField(placeholder: "Description", text: $description)
+                        CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         //image picker
                         ImagePickerField(imageData: $imageData)

@@ -15,11 +15,11 @@ struct AuthButton: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 3.15)
+            RoundedRectangle(cornerRadius: 8)
                 .fill(isFilled ? themeManager.textColor : Color.clear)
                 .frame(width: 350, height: 50)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 3.15)
+                    RoundedRectangle(cornerRadius: 8)
                         .stroke(themeManager.textColor, lineWidth: isFilled ? 0 : 1)
                 )
             

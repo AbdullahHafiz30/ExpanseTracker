@@ -56,7 +56,7 @@ struct EditCategory: View {
                         }
                         .padding(5)
                         
-                        CustomTextField(placeholder: "Category Name", text: $categoryName)
+                        CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
                         
                         
                     }

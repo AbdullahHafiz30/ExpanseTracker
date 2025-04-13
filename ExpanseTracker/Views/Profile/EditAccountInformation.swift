@@ -23,6 +23,7 @@ struct EditAccountInformation: View {
     @State var userPassword: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var isPasswordSecure: Bool = true
     var body: some View {
         NavigationStack{
             VStack (spacing:10){
@@ -55,20 +56,35 @@ struct EditAccountInformation: View {
                 .padding(.top,25)
                 .padding()
                 
-                Group{
+                VStack{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    CustomTextField(placeholder: "Example Name", text: $userName)
+                    CustomTextField(placeholder: "Example Name", text: $userName,isSecure: .constant(false))
                     
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    CustomTextField(placeholder: "Example@gmail.com", text: $userEmail)
+                    CustomTextField(placeholder: "Example@gmail.com", text: $userEmail,isSecure: .constant(false))
                     
                     Text("Password")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     
-                    CustomTextField(placeholder: "123456789", text: $userPassword, isSecure: true)
+                    ZStack(alignment: .trailing) {
+                        CustomTextField(
+                            placeholder: "123456789",
+                            text: $userPassword,
+                            isSecure: $isPasswordSecure
+                        )
+                        
+                        Button(action: {
+                            isPasswordSecure.toggle()
+                        }) {
+                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+                                .foregroundColor(.gray)
+                                .padding(.trailing, 16)
+                        }
+                    }
 
+                    
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)

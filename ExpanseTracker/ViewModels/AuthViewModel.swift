@@ -46,7 +46,7 @@ class AuthViewModel: ObservableObject {
                     self.isAuthenticated = false
                     completion(false)
                 } else {
-                    self.showSuccess(title: "Login Successful", message: "Welcome back!")
+                   // self.showSuccess(title: "Login Successful", message: "Welcome back!")
                     self.isAuthenticated = true
                     completion(true)
                 }
@@ -87,7 +87,7 @@ class AuthViewModel: ObservableObject {
                     completion(false)
                 } else if let uid = result?.user.uid {
                     self.saveUserData(uid: uid, name: name, email: email)
-                    self.showSuccess(title: "Sign Up Successful", message: "Welcome to Spend Smartly!")
+                   // self.showSuccess(title: "Sign Up Successful", message: "Welcome to Spend Smartly!")
                     self.isAuthenticated = true
                     completion(true)
                 } else {
@@ -118,13 +118,13 @@ class AuthViewModel: ObservableObject {
         }
     }
     //show success function
-    private func showSuccess(title: String, message: String) {
-        DispatchQueue.main.async {
-            self.alertTitle = title
-            self.alertMessage = message
-            self.showAlert = true
-        }
-    }
+//    private func showSuccess(title: String, message: String) {
+//        DispatchQueue.main.async {
+//            self.alertTitle = title
+//            self.alertMessage = message
+//            self.showAlert = true
+//        }
+//    }
     //valid email format
     func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
