@@ -10,7 +10,7 @@ import SwiftUI
 //custom button to be used everywhere we need
 struct CustomButton: View {
     var title: String
-    var action: () -> Void
+    var action: () -> Void = {}
     var cornerRadius: CGFloat = 8
     @EnvironmentObject var themeManager: ThemeManager
     //to manage the colors of the background and text
