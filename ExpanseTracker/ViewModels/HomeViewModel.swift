@@ -1,10 +1,3 @@
-//
-//  HomeViewModel.swift
-//  ExpanseTracker
-//
-//  Created by Tahani Ayman on 12/10/1446 AH.
-//
-
 import Foundation
 
 class HomeViewModel: ObservableObject {

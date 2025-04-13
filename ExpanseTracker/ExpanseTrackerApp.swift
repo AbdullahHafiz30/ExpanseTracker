@@ -9,30 +9,35 @@ import FirebaseCore
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        
+        return true
+    }
 }
 
 @main
 struct YourApp: App {
-  // register app delegate for Firebase setup
-  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    // register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
-
-  var body: some Scene {
-    WindowGroup {
-      NavigationView {
-          WelcomePage()
-                      .environmentObject(themeManager)
-                                      .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
-      }
+    
+    var body: some Scene {
+        //        WindowGroup {
+        //            HomeView()
+        //            .environmentObject(themeManager)
+        //                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+        //        }
+        WindowGroup {
+            WelcomePage()
+                .environmentObject(themeManager)
+                .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+        }
+        
     }
-  }
 }
+
 
 
 
