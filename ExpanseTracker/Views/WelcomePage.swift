@@ -57,7 +57,9 @@ struct WelcomePage: View {
 //                    Toggle("Dark Mode", isOn: $themeManager.isDarkMode)
 //                                            .padding()
 //                                            .tint(.black)
-
+                    NavigationLink( destination: PieChartView()) {
+                        AuthButton(label: "PieChartView", isFilled: false)
+                    }
 
                 }
             }
