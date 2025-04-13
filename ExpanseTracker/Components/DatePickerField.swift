@@ -43,7 +43,7 @@ struct DatePickerField: View {
                 )
                 .datePickerStyle(.graphical)
                 .transition(.opacity)
-                .onChange(of: date) { _ in
+                .onChange(of: date) {
                     withAnimation {
                         showDatePicker = false
                     }

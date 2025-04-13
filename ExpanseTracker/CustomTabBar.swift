@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct CustomTabBar: View {
-    
+    @State private var goToAdd = false
     @Binding var index: Int  // Binding to track selected tab index
     
     var body: some View {
+        NavigationStack{
         HStack {
             // Home Tab
             Button(action: {
@@ -26,9 +27,9 @@ struct CustomTabBar: View {
             }
             // Highlight the selected tab, dim others
             .foregroundStyle(.black.opacity(self.index == 0 ? 1 : 0.2))
-
+            
             Spacer(minLength: 0)
-
+            
             // Categories Tab
             Button(action: {
                 self.index = 1 // Set selected index to 1
@@ -41,19 +42,19 @@ struct CustomTabBar: View {
                 }
             }
             .foregroundStyle(.black.opacity(self.index == 1 ? 1 : 0.2))
-
+            
             Spacer(minLength: 0)
-
+            
             // Add Button (Floating Center)
             ZStack {
                 // Background Circle to elevate the button (for floating effect)
                 Circle()
                     .fill(Color.white)
                     .frame(width: 60, height: 60)
-
+                
                 // Add Action Button
                 Button(action: {
-                    
+                    goToAdd = true
                 }) {
                     Image(systemName: "plus.circle.fill") // Plus icon
                         .resizable()
@@ -62,9 +63,9 @@ struct CustomTabBar: View {
                 }
             }
             .offset(x: -10, y: -25) // Lift and center the floating button
-
+            
             Spacer(minLength: 0)
-
+            
             // Graph Tab
             Button(action: {
                 self.index = 2 // Set selected index to 2
@@ -77,9 +78,9 @@ struct CustomTabBar: View {
                 }
             }
             .foregroundStyle(.black.opacity(self.index == 2 ? 1 : 0.2))
-
+            
             Spacer(minLength: 0)
-
+            
             // Profile Tab
             Button(action: {
                 self.index = 3 // Set selected index to 3
@@ -94,6 +95,11 @@ struct CustomTabBar: View {
             .foregroundStyle(.black.opacity(self.index == 3 ? 1 : 0.2))
         }
         .padding(.horizontal, 20)
-        .background(Color.white)  
+        .background(Color.white)
+            
+        NavigationLink(destination: AddTransaction(), isActive: $goToAdd) {
+                EmptyView()
+            }
     }
+}
 }

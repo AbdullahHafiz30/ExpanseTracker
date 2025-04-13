@@ -85,6 +85,7 @@ struct HomeView: View {
                 startDate = selectedTab.startDate(from: Date())
                 endDate = Date()
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

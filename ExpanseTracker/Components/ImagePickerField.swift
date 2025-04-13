@@ -89,7 +89,7 @@ struct ImagePickerField: View {
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
                                     .foregroundColor(themeManager.textColor)
-                                Text("Image")
+                                Text("Gallery")
                                     .foregroundColor(themeManager.textColor)
                             }
                         }
