@@ -57,12 +57,20 @@ struct WelcomePage: View {
                     }
                     //dark mood toggle
                     //NOTE: this should be in the profile page
+
                     //                    Toggle("Dark Mode", isOn: $themeManager.isDarkMode)
                     //                                            .padding()
                     //                                            .tint(.black)
                     
                     
                 }.padding(.bottom,20)
+
+//                    Toggle("Dark Mode", isOn: $themeManager.isDarkMode)
+//                                            .padding()
+//                                            .tint(.black)
+
+                }
+
             }
         }
     }
