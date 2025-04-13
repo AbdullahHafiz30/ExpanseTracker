@@ -15,7 +15,7 @@ struct MainTabView: View {
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                Text("home page")
+                HomeView()
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
@@ -67,9 +67,9 @@ struct MainTabView: View {
                     Spacer()
                 }
             }
-        }
+        }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            EditAccountInformation()
+            AddTransaction()
         }
     }
 }

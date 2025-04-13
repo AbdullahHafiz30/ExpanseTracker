@@ -22,7 +22,6 @@ struct HomeView: View {
     @State private var searchText: String = ""
     @State private var selectedTab: Tab = .monthly
     
-    @State var index = 0
     
     var body: some View {
         GeometryReader { geometry in
@@ -78,8 +77,7 @@ struct HomeView: View {
                     .padding(15)
                 }
                 .background(.gray.opacity(0.15))
-                
-                CustomTabBar(index: $index)
+
             }
             .onChange(of: selectedTab) {
                 startDate = selectedTab.startDate(from: Date())

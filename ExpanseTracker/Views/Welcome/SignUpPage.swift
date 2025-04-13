@@ -122,7 +122,7 @@ struct SignUpPage: View {
                     Alert(title: Text(auth.alertTitle), message: Text(auth.alertMessage), dismissButton: .default(Text("OK")))
                 }
         NavigationLink(
-                    destination: HomeView(),
+            destination: MainTabView(),
                     isActive: $goToHome,
                     label: {
                         EmptyView()
