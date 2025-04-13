@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct Category: Codable {
-    let id: UUID?
-    let name: String?
-    let icon: String?
-    let color: String?
-    let budgetLimit: Double?
-    let type: CategoryType?
+struct Category: Identifiable {
+    let id: String
+    let name: String
+    let color: String
+    let icon: String
+    let categoryType: CategoryType
+    let budgetLimit: Double
 }
