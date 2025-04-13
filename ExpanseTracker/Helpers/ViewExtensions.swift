@@ -18,15 +18,6 @@ extension View {
             .frame(maxWidth: .infinity, alignment: alignment)
     }
     
-    /// Applies vertical spacing by expanding the view's height to fill the available space,
-    /// and aligns the content based on the provided alignment.
-    /// - Parameter alignment: The alignment for the view (default is `.center`).
-    @ViewBuilder
-    func vSpacing(_ alignment: Alignment = .center) -> some View {
-        self
-            .frame(maxHeight: .infinity, alignment: alignment)
-    }
-    
     /// Formats a given `Date` into a `String` based on the specified date format.
     /// - Parameters:
     ///   - date: The date to format.

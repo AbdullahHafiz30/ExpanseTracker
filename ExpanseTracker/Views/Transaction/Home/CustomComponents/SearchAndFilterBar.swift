@@ -8,10 +8,9 @@
 import SwiftUI
 
 /// A reusable search and filter bar that combines a static search hint and a filter menu.
-struct SearchAndFilterBar: View {
+struct SearchBar: View {
     
     @Binding var searchText: String
-    @Binding var selectedTab: Tab
 
     @State private var debounceTimer: Timer?
     
@@ -27,21 +26,6 @@ struct SearchAndFilterBar: View {
                     debounceTimer?.invalidate()
                     debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in}
                 }
-            
-            Spacer() // Push filter icon to the right edge
-            
-            // Filter menu using a Picker inside a Menu
-            Menu {
-                Picker("Filter", selection: $selectedTab) {
-                    ForEach(Tab.allCases, id: \.self) { tabOption in
-                        Text(tabOption.rawValue).tag(tabOption)
-                    }
-                }
-            } label: {
-                // Filter icon as the menu trigger
-                Image(systemName: "line.3.horizontal.decrease.circle")
-                    .foregroundColor(.black)
-            }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)

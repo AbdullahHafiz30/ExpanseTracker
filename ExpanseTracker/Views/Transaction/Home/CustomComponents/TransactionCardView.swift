@@ -46,9 +46,16 @@ struct TransactionCardView: View {
             .lineLimit(1) // Prevent text from wrapping into multiple lines
             .hSpacing(.leading) // Custom modifier for horizontal fill and leading alignment
             
-            // Transaction amount formatted as currency
-            Text(currencyString(transaction.amount, allowedDigits: 1))
-                .fontWeight(.semibold)
+            VStack{
+                Button(action: {}, label: {
+                    Image(systemName: "pencil")
+                        .font(.title)
+                })
+                .padding([.bottom, .leading])
+                // Transaction amount formatted as currency
+                Text(currencyString(transaction.amount, allowedDigits: 1))
+                    .fontWeight(.semibold)
+            }
         }
         .padding(.horizontal, 15)
         .padding(.vertical, 10)
