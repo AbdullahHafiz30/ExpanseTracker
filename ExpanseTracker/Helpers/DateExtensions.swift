@@ -27,4 +27,14 @@ extension Date {
         // Add 1 month to the start of the month, then subtract 1 minute to get the very end of the current month.
         return calendar.date(byAdding: .init(month: 1, minute: -1), to: self.startOfMonth) ?? self
     }
+    
+    /// Formats a given `Date` into a `String` based on the specified date format.
+    /// - Parameters:
+    ///   - format: A date format string.
+    /// - Returns: A formatted date string.
+    func formatted(as format: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        return formatter.string(from: self)
+    }
 }
