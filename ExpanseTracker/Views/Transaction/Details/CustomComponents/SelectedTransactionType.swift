@@ -11,7 +11,7 @@ import SwiftUI
 /// - Parameters:
 ///   - themeManager: Manages color and style preferences for light/dark mode.
 ///   - selectedType: The currently selected transaction type to display.
-func TransactionTypeSelector(themeManager: ThemeManager, selectedType: TransactionType) -> some View {
+func SelectedTransactionType(themeManager: ThemeManager, selectedType: TransactionType) -> some View {
     HStack {
         // Label for the section
         Text("Transaction type:")
