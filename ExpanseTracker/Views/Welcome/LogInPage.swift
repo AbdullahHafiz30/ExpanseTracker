@@ -14,6 +14,7 @@ struct LogInPage: View {
     @State private var goToHome = false
     @EnvironmentObject var themeManager: ThemeManager
     @ObservedObject var auth: AuthViewModel
+    @State private var isPasswordSecure: Bool = true
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
@@ -59,13 +60,24 @@ struct LogInPage: View {
                         
                         CustomTextField(
                             placeholder: "Email",
-                            text: $email
+                            text: $email,
+                            isSecure:.constant(false)
                         )
-                        CustomTextField(
-                            placeholder: "Password",
-                            text: $password,
-                            isSecure: true
-                        )
+                        ZStack(alignment: .trailing) {
+                            CustomTextField(
+                                placeholder: "Password",
+                                text: $password,
+                                isSecure: $isPasswordSecure
+                            )
+                            
+                            Button(action: {
+                                isPasswordSecure.toggle()
+                            }) {
+                                Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 16)
+                            }
+                        }
                         //Cutsom button
                         CustomButton(
                             title: "Login",
@@ -113,7 +125,7 @@ struct LogInPage: View {
                     Alert(title: Text(auth.alertTitle), message: Text(auth.alertMessage), dismissButton: .default(Text("OK")))
                 }
         NavigationLink(
-            destination: MainTabView(),
+            destination: MainTabView(auth:auth),
                     isActive: $goToHome,
                     label: {
                         EmptyView()

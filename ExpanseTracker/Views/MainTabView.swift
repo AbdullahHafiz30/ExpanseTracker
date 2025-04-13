@@ -12,6 +12,7 @@ struct MainTabView: View {
     @State private var selectedTab = 0
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
+    @ObservedObject var auth: AuthViewModel
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
@@ -35,7 +36,7 @@ struct MainTabView: View {
                         Text("Stats")
                     }.tag(2)
                 
-                Profile()
+                Profile(auth:auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")
@@ -74,6 +75,3 @@ struct MainTabView: View {
     }
 }
 
-#Preview {
-    MainTabView()
-}

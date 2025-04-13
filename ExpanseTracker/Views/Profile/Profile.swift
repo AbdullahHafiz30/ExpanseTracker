@@ -21,6 +21,7 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
+    @ObservedObject var auth: AuthViewModel
     var body: some View {
         ZStack{
             NavigationStack {
@@ -167,6 +168,10 @@ struct Profile: View {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
                             Text("Logout")
+                                .onTapGesture {
+                                    auth.logOut()
+                                }
+                            
                         }
                         
                         Divider()
@@ -196,8 +201,4 @@ struct Profile: View {
             }
         }
     }
-}
-
-#Preview {
-    Profile()
 }
