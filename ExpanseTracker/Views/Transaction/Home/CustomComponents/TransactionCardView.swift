@@ -49,6 +49,10 @@ struct TransactionCardView: View {
             // Transaction amount formatted as currency
             Text(currencyString(transaction.amount, allowedDigits: 1))
                 .fontWeight(.semibold)
+            
+            Button("Edit"){
+                
+            }
         }
         .padding(.horizontal, 15)
         .padding(.vertical, 10)

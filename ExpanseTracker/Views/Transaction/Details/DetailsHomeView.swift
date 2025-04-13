@@ -49,7 +49,7 @@ struct DetailsHomeView: View {
                             .environmentObject(themeManager)
                         
                         // Display the transaction type
-                        TransactionTypeSelector(themeManager: themeManager, selectedType: transaction.type)
+                        SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type)
                         
                         // Display an attached receipt image
                         Image(transaction.receiptImage)
