@@ -67,9 +67,9 @@ struct MainTabView: View {
                     Spacer()
                 }
             }
-        }
+        }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            EditAccountInformation()
+            AddTransaction()
         }
     }
 }
