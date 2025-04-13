@@ -13,11 +13,3 @@ struct Budget: Codable {
     let start_date: Date?
     let end_date: Date?
 }
-
-// Some comments by Nouman in Pull Request branch
-
-// hello naif
-
-// this comment is from my branch
-
-// new comment

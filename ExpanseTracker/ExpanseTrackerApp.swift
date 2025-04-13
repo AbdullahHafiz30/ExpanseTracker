@@ -22,6 +22,7 @@ struct YourApp: App {
   // register app delegate for Firebase setup
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
+<<<<<<< Updated upstream
 
   var body: some Scene {
     WindowGroup {
@@ -30,6 +31,19 @@ struct YourApp: App {
                       .environmentObject(themeManager)
                                       .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
       }
+=======
+    var body: some Scene {
+//        WindowGroup {
+//            HomeView()
+//            .environmentObject(themeManager)
+//                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+//        }
+        WindowGroup {
+            WelcomePage()
+            .environmentObject(themeManager)
+                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+        }
+>>>>>>> Stashed changes
     }
   }
 }
