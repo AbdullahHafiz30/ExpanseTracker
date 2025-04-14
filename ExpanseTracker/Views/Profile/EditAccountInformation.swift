@@ -56,7 +56,7 @@ struct EditAccountInformation: View {
                 .padding(.top,25)
                 .padding()
                 
-                VStack{
+                Group{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "Example Name", text: $userName,isSecure: .constant(false))

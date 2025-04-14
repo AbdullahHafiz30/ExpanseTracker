@@ -95,7 +95,7 @@ struct LogInPage: View {
                     }
                     .padding()
                     Spacer()
-                    
+                    .padding(.bottom,100)
                     //navigation to sign up
                     HStack{
                         Text("Don't have an account?")

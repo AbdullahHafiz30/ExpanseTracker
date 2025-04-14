@@ -25,7 +25,7 @@ struct DropDownMenu: View {
             }) {
                 HStack {
                     Text(selectedOption.isEmpty ? title : selectedOption)
-                        .foregroundColor(selectedOption.isEmpty ? .gray.opacity(0.5) : .black)
+                        .foregroundColor(selectedOption.isEmpty ? .black.opacity(0.6) : .black)
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .foregroundColor(themeManager.textColor)

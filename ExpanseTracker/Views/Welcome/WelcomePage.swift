@@ -11,7 +11,7 @@ import SwiftUI
 struct WelcomePage: View {
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject var auth = AuthViewModel()
-
+    
     var body: some View {
         NavigationStack {
             // Auto-navigation to Home if already authenticated
@@ -23,8 +23,8 @@ struct WelcomePage: View {
         }
         .animation(.smooth, value: themeManager.isDarkMode)
     }
-
-    // This part keeps your pretty welcome layout separate
+    
+    // keeps welcome layout separate
     var welcomeBody: some View {
         ZStack {
             themeManager.gradient
@@ -54,11 +54,11 @@ struct WelcomePage: View {
                             .foregroundColor(themeManager.textColor.opacity(0.7))
                             .multilineTextAlignment(.center)
                             .padding(.bottom)
-
+                        //navigation to log in and sign up pages with the use of the custom AuthButton
                         NavigationLink(destination: LogInPage(auth: auth)) {
                             AuthButton(label: "Log in", isFilled: true)
                         }
-
+                        
                         NavigationLink(destination: SignUpPage(auth: auth)) {
                             AuthButton(label: "Sign up", isFilled: false)
                         }
