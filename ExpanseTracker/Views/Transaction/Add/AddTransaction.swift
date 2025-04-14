@@ -123,7 +123,7 @@ private extension AddTransaction {
                             CustomTextField(placeholder: "Description", text: $description)
                                 .environmentObject(themeManager)
                             //image picker
-                            ImagePickerField(imageData: $imageData, image: "")
+                            ImagePickerField(imageData: $imageData)
                                 .environmentObject(themeManager)
                             //type selector
                             transactionTypeSelector

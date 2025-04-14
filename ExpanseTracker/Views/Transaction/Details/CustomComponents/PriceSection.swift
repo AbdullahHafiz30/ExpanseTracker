@@ -12,14 +12,21 @@ import SwiftUI
 ///   - amount: The numerical value to display as a price.
 ///   - themeManager: An instance of ThemeManager used to control theme-based styling.
 /// - Returns: A SwiftUI view representing the price section.
-func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManager: ThemeManager) -> some View {
+func PriceSection(amount: Double, themeManager: ThemeManager) -> some View {
     
-    let formatter = NumberFormatter.decimalFormatter
-    let displayedValue = amount?.wrappedValue ?? readOnlyAmount ?? 0.0
-    let formattedAmount = formatter.string(from: NSNumber(value: displayedValue)) ?? "0.00"
+    // Computed property to format the amount as a string with two decimal places
+    var formattedAmount: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: amount)) ?? "0.00"
+    }
     
+    // Return the view structure
     return VStack(alignment: .leading, spacing: 10) {
         
+        // Section title
         Text("How much?")
             .font(.system(size: 33))
             .foregroundColor(themeManager.textColor.opacity(0.2))
@@ -27,21 +34,16 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
             .padding(.leading)
         
         HStack {
+            // Riyal currency symbol image (changes based on dark/light mode)
             Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
                 .resizable()
                 .frame(width: 50, height: 50)
             
-            if let amountBinding = amount {
-                TextField("Amount", value: amountBinding, formatter: formatter)
-                    .font(.system(size: 33))
-                    .keyboardType(.decimalPad)
-                    .foregroundColor(themeManager.textColor)
-            } else {
-                Text("\(formattedAmount)")
-                    .font(.system(size: 33))
-                    .foregroundColor(themeManager.textColor)
-            }
+            // Display the formatted amount
+            Text("\(formattedAmount)")
+                .font(.system(size: 33))
+                .foregroundColor(themeManager.textColor)
         }
     }
-    .padding()
+    .padding() 
 }

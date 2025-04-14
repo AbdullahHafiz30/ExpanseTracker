@@ -16,7 +16,6 @@ struct ImagePickerField: View {
     @State private var cameraError: String?
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showCustomPicker = false
-    var image: String
     
     var body: some View {
         VStack {
@@ -27,23 +26,15 @@ struct ImagePickerField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 7)
                         .stroke(themeManager.textColor, lineWidth: 1)
-                        .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
+                        .frame(height: imageData == nil ? 48 : 120)
                     
                     if let imageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 300, height: 300)
+                            .frame(height: 400)
                             .clipShape(RoundedRectangle(cornerRadius: 7))
-                        
-                    } else if image != "" {
-                        Image(image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300)
-                            .clipShape(RoundedRectangle(cornerRadius: 7))
-                    }
-                    else {
+                    } else {
                         HStack {
                             Text("Receipt image")
                                 .foregroundColor(themeManager.textColor.opacity(0.5))
@@ -224,4 +215,3 @@ struct CustomCameraView: UIViewControllerRepresentable {
         }
     }
 }
-
