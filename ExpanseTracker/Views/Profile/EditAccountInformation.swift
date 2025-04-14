@@ -64,7 +64,7 @@ struct EditAccountInformation: View {
                 .padding(.top,10)
                 .padding()
                 
-                VStack{
+                Group{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
 

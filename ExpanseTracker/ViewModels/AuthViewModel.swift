@@ -35,7 +35,7 @@ class AuthViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.isLoading = true
         }
-
+        
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -46,7 +46,7 @@ class AuthViewModel: ObservableObject {
                     self.isAuthenticated = false
                     completion(false)
                 } else {
-                   // self.showSuccess(title: "Login Successful", message: "Welcome back!")
+                    // self.showSuccess(title: "Login Successful", message: "Welcome back!")
                     self.isAuthenticated = true
                     completion(true)
                 }
@@ -79,15 +79,18 @@ class AuthViewModel: ObservableObject {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             DispatchQueue.main.async {
                 self.isLoading = false
-                if let error = error as NSError?{
+                
+                if let error = error as NSError? {
                     print("Error Code: \(error.code), Description: \(error.localizedDescription)")
                     let userFriendlyMessage = self.mapFirebaseError(error)
                     self.showError(title: "Sign Up Failed", message: userFriendlyMessage)
                     self.isAuthenticated = false
                     completion(false)
                 } else if let uid = result?.user.uid {
+                    // Save to Firestore
                     self.saveUserData(uid: uid, name: name, email: email)
-                   // self.showSuccess(title: "Sign Up Successful", message: "Welcome to Spend Smartly!")
+                    //Save to Core Data
+                    // self.saveUserToCoreData(uid: uid, name: name, email: email)
                     self.isAuthenticated = true
                     completion(true)
                 } else {
@@ -100,15 +103,49 @@ class AuthViewModel: ObservableObject {
     private func saveUserData(uid: String, name: String, email: String) {
         let db = Firestore.firestore()
         db.collection("users").document(uid).setData([
+            "uid": uid,
             "name": name,
             "email": email,
-            "createdAt": Timestamp()
         ]) { error in
             if let error = error {
                 print("Error saving user data: \(error.localizedDescription)")
             }
         }
     }
+    //fetch user from fire store to be able to save it in core data
+    func fetchUserFromFirestore(uid: String, completion: @escaping (String, String, String) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users").document(uid).getDocument { document, error in
+            if let document = document, document.exists {
+                let data = document.data()
+                let name = data?["name"] as? String ?? ""
+                let email = data?["email"] as? String ?? ""
+                completion(uid, name, email)
+            } else {
+                print("User document not found or error: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+
+    //save to core data - check it in the user view model
+//    func saveUserToCoreData(uid: String, name: String, email: String) {
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+//        let context = appDelegate.persistentContainer.viewContext
+//
+//        let user = User(context: context)
+//        user.uid = uid
+//        user.name = name
+//        user.email = email
+//
+//        do {
+//            try context.save()
+//            print("✅ User saved to Core Data")
+//        } catch {
+//            print("❌ Failed to save user to Core Data: \(error.localizedDescription)")
+//        }
+//    }
+
+
     //show error function
     private func showError(title: String, message: String) {
         DispatchQueue.main.async {
@@ -118,13 +155,13 @@ class AuthViewModel: ObservableObject {
         }
     }
     //show success function
-//    private func showSuccess(title: String, message: String) {
-//        DispatchQueue.main.async {
-//            self.alertTitle = title
-//            self.alertMessage = message
-//            self.showAlert = true
-//        }
-//    }
+    //    private func showSuccess(title: String, message: String) {
+    //        DispatchQueue.main.async {
+    //            self.alertTitle = title
+    //            self.alertMessage = message
+    //            self.showAlert = true
+    //        }
+    //    }
     //valid email format
     func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
@@ -159,5 +196,5 @@ class AuthViewModel: ObservableObject {
             return "Unexpected error occurred. Try again."
         }
     }
-
+    
 }
