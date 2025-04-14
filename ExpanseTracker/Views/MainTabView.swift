@@ -35,7 +35,11 @@ struct MainTabView: View {
                         Text("Stats")
                     }.tag(2)
                 
+<<<<<<< Updated upstream
                 Profile()
+=======
+                Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: auth)
+>>>>>>> Stashed changes
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")

@@ -55,7 +55,11 @@ struct AddCategory: View {
                         }
                         .padding(5)
                         
+<<<<<<< Updated upstream
                         CustomTextField(placeholder: "Category Name", text: $categoryName)
+=======
+                        CustomTextField(placeholder: "Category Name", text: $categoryName, isSecure: .constant(false))
+>>>>>>> Stashed changes
                             
                          
                     }
@@ -160,29 +164,6 @@ struct AddCategory: View {
 
                       categoryViewModel.saveCategoryToCoreData(category: newCategory)
                 })
-//                // Add Button
-//                Text("Add")
-//                    .frame(width: 170, height: 50)
-//                    .background(
-//                        Rectangle()
-//                            .fill(.black)
-//                            .cornerRadius(8)
-//                    )
-//                    .foregroundColor(.white)
-//                    .font(.headline)
-//                    .padding(.bottom, 20)
-//                    .onTapGesture {
-//                        let newCategory = Categoryes(
-//                              id: UUID().uuidString,
-//                              name: categoryName,
-//                              color: UIColor(color).toHexString(),
-//                              icon: selectedIcon,
-//                              categoryType: categoryType.rawValue,
-//                              budgetLimit: limit
-//                          )
-//
-//                          categoryViewModel.saveToCoreData(category: [newCategory])
-//                    }
                 
             }
             .padding(.horizontal)

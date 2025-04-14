@@ -1,13 +1,5 @@
 //
 //  Profile.swift
-//  ExpanseTracker
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
-
-//
-//  Profile.swift
 //  ExpensesMonthlyProjrct
 //
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
@@ -21,11 +13,19 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
+<<<<<<< Updated upstream
+=======
+    let languageCode = Locale.current.language.languageCode?.identifier
+    @StateObject var userViewModel = UserViewModel()
+    @State var userName = ""
+    @Binding var userId: String
+    @ObservedObject var auth: AuthViewModel
+>>>>>>> Stashed changes
     var body: some View {
         ZStack{
             NavigationStack {
                 VStack(alignment: .leading){
-                    Text("Hello, Rayaheen!")
+                    Text("Hello, \(userName)!")
                         .font(.headline)
                     
                     HStack {
@@ -34,18 +34,6 @@ struct Profile: View {
                         Spacer()
                         
                         VStack(spacing: 25 ){
-                            ZStack {
-                                Rectangle()
-                                    .fill(themeManager.isDarkMode ? .white.opacity(0.2): .gray.opacity(0.05))
-                                    .frame(height: 60)
-                                    .cornerRadius(10)
-                                
-                                Text("2000 USD")
-                                
-                                Text("your spend")
-                                    .bold()
-                                    .offset(x:-30 ,y: -30)
-                            }
                             
                             ZStack{
                                 Rectangle()
@@ -53,7 +41,7 @@ struct Profile: View {
                                     .frame(height: 60)
                                     .cornerRadius(10)
                                 
-                                Text("5500 USD")
+                                Text("5500 Riyals")
                                 
                                 // set budget pop up
                                 Text("Budget")
@@ -63,6 +51,19 @@ struct Profile: View {
                             .onTapGesture {
                                 isPresented.toggle()
                             }
+                            
+                            ZStack {
+                                Rectangle()
+                                    .fill(themeManager.isDarkMode ? .white.opacity(0.2): .gray.opacity(0.05))
+                                    .frame(height: 60)
+                                    .cornerRadius(10)
+                                
+                                Text("2000 Riyals")
+                                
+                                Text("Your Spend")
+                                    .bold()
+                                    .offset(x: languageCode == "en" ? -30 : -50 ,y: -30)
+                            }
                         }
                     }
                     
@@ -71,23 +72,24 @@ struct Profile: View {
                     Section {
                         HStack {
                             Image(systemName: "gearshape")
-                            Text("Account information")
+                            Text("Account Information")
                             
                             Spacer()
-                            NavigationLink(destination: AccountInformation()) {
-                                Image(systemName: "chevron.right")
+                            NavigationLink(destination: AccountInformation(userId: $userId)) {
+                                Image(systemName: languageCode == "en" ? "chevron.right" : "chevron.left")
                                     .foregroundColor(.primary)
                             }
                         }
                         Divider()
                             .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     }
-                    .padding([.horizontal, .top])
+                    .padding(.horizontal,5)
+                    .padding(.top, 10)
                     
                     Section {
                         HStack {
                             Image(systemName: themeManager.isDarkMode ? "moon.fill" : "sun.max.fill")  // Icon changes based on mode
-                            Text("Dark Mode")
+                            Text(themeManager.isDarkMode ? "Light Mode" : "Dark Mode")
                             
                             Spacer()
                             
@@ -98,8 +100,8 @@ struct Profile: View {
                         Divider()
                             .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     }
-                    .padding([.horizontal, .top])
-                    
+                    .padding(.horizontal,5)
+                    .padding(.top, 10)
                     
                     Section {
                         HStack {
@@ -116,14 +118,14 @@ struct Profile: View {
                         Divider()
                             .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     }
-                    .padding([.horizontal, .top])
-                    
+                    .padding(.horizontal,5)
+                    .padding(.top, 10)
                     
                     Section{
                         HStack {
                             Image(systemName: "globe")
                             Text("Language")
-                                .font(.headline)
+                                
                             
                             Spacer()
                             
@@ -139,11 +141,11 @@ struct Profile: View {
                                     .animation(.easeInOut(duration: 0.3), value: isArabic)
                                 
                                 HStack {
-                                    Text("EN")
+                                    Text("AR")
                                         .foregroundColor(isArabic ? themeManager.isDarkMode ? .black : .white : .gray)
                                         .frame(maxWidth: .infinity)
                                     
-                                    Text("AR")
+                                    Text("EN")
                                         .foregroundColor(isArabic ? .gray : themeManager.isDarkMode ? .black : .white)
                                         .frame(maxWidth: .infinity)
                                 }
@@ -157,39 +159,54 @@ struct Profile: View {
                             }
                             
                         }
-                        .padding()
+                        
                         
                         Divider()
                             .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     }
+                    .padding(.horizontal,5)
+                    .padding(.top, 10)
                     
                     Section {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
                             Text("Logout")
+<<<<<<< Updated upstream
+=======
+                                .onTapGesture {
+                                    auth.logOut()
+                                }
+>>>>>>> Stashed changes
                         }
                         
                         Divider()
                             .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     }
-                    .padding([.horizontal, .top])
+                    .padding(.horizontal,5)
+                    .padding(.top, 10)
                     
                     Spacer()
         
                 }
                 .padding()
             }
+            .onAppear{
+                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+                
+                userName = userInfo?.name ?? ""
+                print(userName)
+            }
             
             if isPresented {
                 ZStack {
-                    Color.black.opacity(0.65) // Black overlay
-                        .edgesIgnoringSafeArea(.all)
+                    (themeManager.isDarkMode ? Color.black.opacity(0.65) : Color.white.opacity(0.65))
+                        .ignoresSafeArea()
                         .onTapGesture {
                             isPresented.toggle()
                         }
                     
                     VStack {
-                        SetBudget()
+                        SetBudget(isPresented: $isPresented)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
@@ -199,5 +216,9 @@ struct Profile: View {
 }
 
 #Preview {
+<<<<<<< Updated upstream
     Profile()
+=======
+    Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: AuthViewModel())
+>>>>>>> Stashed changes
 }
