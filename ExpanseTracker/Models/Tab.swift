@@ -8,10 +8,12 @@
 import Foundation
 
 /// Enum representing the available time filters for data display.
-enum Tab: String, CaseIterable {
-    case daily = "Daily"
-    case weekly = "Weekly"
+enum Tab: String, CaseIterable, Identifiable {
     case monthly = "Monthly"
     case yearly = "Yearly"
+    
+    var id: String {
+        rawValue
+    }
 }
 
