@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PieChartView: View {
+struct GraphsView: View {
     
     // MARK: - Date Picker Selection
     enum DatePickerMode: String, CaseIterable {
