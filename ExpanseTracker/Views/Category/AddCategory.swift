@@ -55,11 +55,7 @@ struct AddCategory: View {
                         }
                         .padding(5)
                         
-<<<<<<< Updated upstream
-                        CustomTextField(placeholder: "Category Name", text: $categoryName)
-=======
-                        CustomTextField(placeholder: "Category Name", text: $categoryName, isSecure: .constant(false))
->>>>>>> Stashed changes
+                        CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
                             
                          
                     }

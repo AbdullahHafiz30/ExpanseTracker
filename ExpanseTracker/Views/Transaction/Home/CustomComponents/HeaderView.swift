@@ -9,13 +9,30 @@ import SwiftUI
 
 /// A header view showing a welcome message, user name, and a search/filter bar.
 @ViewBuilder
-func HeaderView(_ size: CGSize, searchText: Binding<String>, selectedTab: Binding<Tab>) -> some View {
+func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some View {
     HStack(spacing: 10) {
+        
         VStack(alignment: .leading, spacing: 5) {
             
-            // Welcome title
-            Text("Welcome!")
-                .font(.title.bold())
+            HStack{
+                // Welcome title
+                Text("Welcome!")
+                    .font(.title.bold())
+                
+                Spacer()
+                
+                Menu{
+                    Picker("Select Tab", selection: selectedTab) {
+                        ForEach(Tab.allCases, id: \.self) { tab in
+                            Text(tab.rawValue).tag(tab)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .foregroundStyle(.black)
+                        .font(.title)
+                }
+            }
             
             // User name subtitle
             Text("Tahani Ayman")
@@ -23,10 +40,10 @@ func HeaderView(_ size: CGSize, searchText: Binding<String>, selectedTab: Bindin
                 .foregroundStyle(.gray)
             
             // Custom search and filter UI
-            SearchAndFilterBar(
-                searchText: searchText,
-                selectedTab: selectedTab
+            SearchBar(
+                searchText: searchText
             )
+            
         }
     }
     .padding(.bottom, 5)

@@ -13,14 +13,13 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
-<<<<<<< Updated upstream
-=======
+
     let languageCode = Locale.current.language.languageCode?.identifier
     @StateObject var userViewModel = UserViewModel()
     @State var userName = ""
     @Binding var userId: String
     @ObservedObject var auth: AuthViewModel
->>>>>>> Stashed changes
+
     var body: some View {
         ZStack{
             NavigationStack {
@@ -171,12 +170,10 @@ struct Profile: View {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
                             Text("Logout")
-<<<<<<< Updated upstream
-=======
                                 .onTapGesture {
                                     auth.logOut()
                                 }
->>>>>>> Stashed changes
+                            
                         }
                         
                         Divider()
@@ -215,10 +212,8 @@ struct Profile: View {
     }
 }
 
+
 #Preview {
-<<<<<<< Updated upstream
-    Profile()
-=======
     Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: AuthViewModel())
->>>>>>> Stashed changes
 }
+

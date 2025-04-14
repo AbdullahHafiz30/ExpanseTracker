@@ -16,8 +16,6 @@ struct EditAccountInformation: View {
     @State var userPassword: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
-<<<<<<< Updated upstream
-=======
     
     @State private var imageData: Data? = nil
     @State private var showPhotoLibrary = false
@@ -27,8 +25,6 @@ struct EditAccountInformation: View {
     @StateObject var userViewModel = UserViewModel()
     @Binding var userId: String
     @State private var isPasswordSecure: Bool = true
-    
->>>>>>> Stashed changes
     var body: some View {
         NavigationStack{
             VStack (spacing:10){
@@ -68,31 +64,26 @@ struct EditAccountInformation: View {
                 .padding(.top,10)
                 .padding()
                 
-                Group{
+                VStack{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
-<<<<<<< Updated upstream
-                    CustomTextField(placeholder: "Example Name", text: $userName)
-                    
-                    Text("Email")
-                        .font(.system(size: 22, weight: .medium, design: .default))
-                    CustomTextField(placeholder: "Example@gmail.com", text: $userEmail)
-=======
+
                     CustomTextField(placeholder: "", text: $userName, isSecure: .constant(false))
                     
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
->>>>>>> Stashed changes
-                    
+
+
                     Text("Password")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    
-<<<<<<< Updated upstream
-                    CustomTextField(placeholder: "123456789", text: $userPassword, isSecure: true)
-=======
+
                     ZStack(alignment: .trailing) {
-                        CustomTextField(placeholder: "", text: $userPassword, isSecure: $isPasswordSecure)
+                        CustomTextField(
+                            placeholder: "123456789",
+                            text: $userPassword,
+                            isSecure: $isPasswordSecure
+                        )
                         
                         Button(action: {
                             isPasswordSecure.toggle()
@@ -102,8 +93,7 @@ struct EditAccountInformation: View {
                                 .padding(.trailing, 16)
                         }
                     }
->>>>>>> Stashed changes
-
+                    
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)

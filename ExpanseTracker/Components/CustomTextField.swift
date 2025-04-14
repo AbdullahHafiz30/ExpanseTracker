@@ -28,7 +28,7 @@ struct CustomTextField: View {
     var placeholder: String
     @Binding var text: String
     //if it is for a password then this will be true
-    var isSecure: Bool = false
+    @Binding var isSecure: Bool
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
@@ -41,7 +41,7 @@ struct CustomTextField: View {
                         Text(placeholder)
                             .foregroundColor(themeManager.textColor.opacity(0.5))
                     }
-            } else {
+            }else {
                 TextField(placeholder, text: $text)
                     .foregroundColor(themeManager.textColor)
                     .placeholder(when: text.isEmpty) {
