@@ -8,80 +8,149 @@
 import SwiftUI
 import PhotosUI
 
-struct EditTransaction: View {
+struct EditTransactionView: View {
+    @Environment(\.dismiss) var dismiss
+
+    // Transaction for editing
+    @State var transaction: Transaction
     
-    // Access the shared theme manager for dark/light mode styling
     @EnvironmentObject var themeManager: ThemeManager
     
-    // Used to dismiss the current view
-    @Environment(\.dismiss) var dismiss
-    
-    var transaction: Transaction
-    
-    @State private var price: String = ""
-    @State private var amount: String = ""
-    @State private var description: String = ""
-    @State private var date = Date()
+    // UI states
     @State private var showDatePicker = false
-    @State private var selectedCategory = ""
+    
+    // Fields to edit
+    @State private var editedTitle: String = ""
+    @State private var editedDescription: String = ""
+    @State private var editedDate = Date()
+    @State private var editedCategory = ""
+    @State private var editedType: TransactionType
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
-    
+    @State private var editedAmount: Double = 0.0
+
+    // Initialize editable values with the current transaction
+    init(transaction: Transaction) {
+        _editedAmount = State(initialValue: transaction.amount)
+        _editedType = State(initialValue: transaction.type)
+        self.transaction = transaction
+    }
+
     var body: some View {
         ScrollView {
-            ZStack {
-                // Background color for the entire view
-                Color.white
-                
-                VStack(alignment: .leading) {
-                    
-                    // Display the transaction amount using a styled price section
-                    PriceSection(amount: transaction.amount, themeManager: themeManager)
+            LazyVStack {
+                ZStack {
+                    Color.white
                     
                     VStack(alignment: .leading) {
                         
-                        // Display the transaction title
-                        DropDownMenu(
-                            title: "Category",
-                            options: ["Food", "Transport", "Shopping", "Bills"],
-                            selectedOption: $selectedCategory
-                        )
-                        .environmentObject(themeManager)
-                        //amount
-                        CustomTextField(placeholder: "Amount", text: $amount)
-                            .environmentObject(themeManager)
-                        //date picker
-                        DatePickerField(date: $date, showDatePicker: $showDatePicker)
-                            .environmentObject(themeManager)
-                        //Description
-                        CustomTextField(placeholder: "Description", text: $description)
-                            .environmentObject(themeManager)
-                        //image picker
-                        ImagePickerField(imageData: $imageData)
-                            .environmentObject(themeManager)
-                        //type selector
-                        //transactionTypeSelector
-                        //the add button
-                        //addButton
+                        // Price display + input
+                        PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)
                         
-                        Spacer() // Push content to the top
+                        VStack(alignment: .center, spacing: 15) {
+                            
+                            // Title
+                            CustomTextField(placeholder: "\(transaction.title)", text: $editedTitle)
+                            
+                            // Category dropdown
+                            DropDownMenu(
+                                title: "\(transaction.category.name)",
+                                options: ["Food", "Transport", "Shopping", "Bills"],
+                                selectedOption: $editedCategory
+                            )
+                            
+                            // Date picker
+                            DatePickerField(date: $editedDate, showDatePicker: $showDatePicker)
+                            
+                            // Description
+                            CustomTextField(placeholder: "\(transaction.description)", text: $editedDescription)
+                            
+                            // Transaction type selector
+                            TransactionTypeSelector(selectedType: $editedType, themeManager: themeManager)
+                            
+                            // Image picker
+                            ImagePickerField(imageData: $imageData, image: transaction.receiptImage)
+                            
+                            // Save button
+                            CustomButton(
+                                title: "Save",
+                                action: {
+                                    withAnimation {
+                                        // Update Core Data transaction
+                                        transaction.title = editedTitle
+                                        transaction.category = Category(
+                                            id: transaction.category.id,
+                                            name: editedCategory,
+                                            color: transaction.category.color,
+                                            icon: transaction.category.icon,
+                                            categoryType: transaction.category.categoryType,
+                                            budgetLimit: transaction.category.budgetLimit
+                                        )
+                                        transaction.date = editedDate
+                                        transaction.description = editedDescription
+                                        transaction.type = editedType
+                                        transaction.amount = editedAmount
+                                        
+                                        // Save selected image path
+                                        if let imageData {
+                                            let path = saveDataLocallyAndReturnPath(data: imageData)
+                                            transaction.receiptImage = path
+                                        }
+                                        
+                                        // Save changes to Core Data
+                                        PersistanceController.shared.saveContext()
+                                        
+                                        // Dismiss view
+                                        dismiss()
+                                    }
+                                }
+                            )
+                            .padding(.top, 10)
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        .ignoresSafeArea(edges: .bottom)
+                        .background(.gray.opacity(0.15))
+                        .cornerRadius(32)
+                        .frame(maxWidth: 400)
+                        .padding(.bottom, -35)
                     }
-                    .padding()
-                    .ignoresSafeArea(edges: .bottom)
-                    .background(.gray.opacity(0.15))
-                    .cornerRadius(32)
-                    .padding(.bottom, -35) // Adjust bottom spacing
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        HeaderSection(title: "Edit Transaction", action: {
+                            dismiss()
+                        })
+                    }
+                }
+                .navigationBarBackButtonHidden(true)
+                .onChange(of: selectedImage) { _, newItem in
+                    loadImage(from: newItem)
                 }
             }
-            // Custom toolbar with localized title and dismiss button
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    HeaderSection(title: "Transaction Details", action: {
-                        dismiss() // Dismiss the view when the header arrow is tapped
-                    })
-                }
-            }
-            .navigationBarBackButtonHidden(true) // Hide the default navigation back button
         }
+    }
+
+    // Load image data when selected
+    func loadImage(from item: PhotosPickerItem?) {
+        Task {
+            guard let item = item else { return }
+            do {
+                if let data = try await item.loadTransferable(type: Data.self) {
+                    imageData = data
+                }
+            } catch {
+                print("Failed to load image data: \(error)")
+            }
+        }
+    }
+
+    // Save image to local storage and return the file path
+    func saveDataLocallyAndReturnPath(data: Data) -> String {
+        let fileName = UUID().uuidString + ".jpg"
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        try? data.write(to: url)
+        return url.path
     }
 }

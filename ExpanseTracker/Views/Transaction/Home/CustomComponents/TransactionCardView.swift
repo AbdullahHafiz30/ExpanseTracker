@@ -47,14 +47,21 @@ struct TransactionCardView: View {
             .hSpacing(.leading) // Custom modifier for horizontal fill and leading alignment
             
             VStack{
-                Button(action: {}, label: {
-                    Image(systemName: "pencil")
-                        .font(.title)
-                })
-                .padding([.bottom, .leading])
+                
+                NavigationLink(destination: EditTransactionView(transaction: transaction)) {
+                    Image(systemName: "pencil.circle")
+                        .resizable()
+                        .foregroundStyle(.blue)
+                        .frame(width: 15, height: 15)
+                        .padding(.leading, 100)
+                }
+
+                
                 // Transaction amount formatted as currency
                 Text(currencyString(transaction.amount, allowedDigits: 1))
                     .fontWeight(.semibold)
+                
+                Spacer()
             }
         }
         .padding(.horizontal, 15)

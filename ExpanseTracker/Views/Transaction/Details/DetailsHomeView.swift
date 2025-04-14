@@ -28,7 +28,7 @@ struct DetailsHomeView: View {
                 VStack(alignment: .leading) {
                     
                     // Display the transaction amount using a styled price section
-                    PriceSection(amount: transaction.amount, themeManager: themeManager)
+                    PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
                     
                     VStack(alignment: .leading) {
                         
