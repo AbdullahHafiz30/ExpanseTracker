@@ -35,8 +35,8 @@ struct MainTabView: View {
                         Image(systemName: "chart.bar.xaxis.ascending")
                         Text("Stats")
                     }.tag(2)
-                
-                Profile(auth:auth)
+
+                Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")

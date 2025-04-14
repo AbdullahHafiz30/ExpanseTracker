@@ -23,8 +23,10 @@ struct WelcomePage: View {
         }
         .animation(.smooth, value: themeManager.isDarkMode)
     }
+
     
     // keeps welcome layout separate
+
     var welcomeBody: some View {
         ZStack {
             themeManager.gradient
