@@ -19,6 +19,7 @@ struct DateModePicker: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
+    @Binding var selectedType: CategoryType?
 
     private let yearRange = 2000...2030
     private let monthSymbols: [String] = {
@@ -53,9 +54,9 @@ struct DateModePicker: View {
             } label: {
                 LabelView(text: "\(selectedYear)")
             }
-
+            
             Spacer()
-
+            
             // Tab switcher (monthly/yearly)
             Menu {
                 Picker("Select Mode", selection: $selectedTab) {
@@ -65,6 +66,25 @@ struct DateModePicker: View {
                 }
             } label: {
                 Image(systemName: "line.3.horizontal.decrease.circle")
+                    .foregroundStyle(.primary)
+                    .font(.title2)
+            }
+            
+            // Category select
+            Menu {
+                Picker("Category Type", selection: Binding(
+                    get: { selectedType?.rawValue ?? "All" },
+                    set: { newValue in
+                        selectedType = CategoryType(rawValue: newValue)
+                    })
+                ) {
+                    Text("All").tag("All")
+                    ForEach(CategoryType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type.rawValue)
+                    }
+                }
+            } label: {
+                Image(systemName: "slider.horizontal.3.circle")
                     .foregroundStyle(.primary)
                     .font(.title2)
             }

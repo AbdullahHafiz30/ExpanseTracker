@@ -11,14 +11,22 @@ struct GraphsView: View {
     @State private var selectedTab: DateTab = .monthly
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
+    @State private var selectedCategory: Category? = nil
+    @State private var selectedCategoryType: CategoryType? = nil
+
+
+
 
     var body: some View {
         VStack(spacing: 16) {
-            DateModePicker(
+            GraphHeaderView(
                 selectedTab: $selectedTab,
                 selectedMonth: $selectedMonth,
-                selectedYear: $selectedYear
+                selectedYear: $selectedYear,
+                selectedCategoryType: $selectedCategoryType
             )
+
+
 
             Text("Selected: \(selectedTab == .monthly ? "\(Calendar.current.monthSymbols[selectedMonth]) \(selectedYear)" : "\(selectedYear)")")
                 .font(.subheadline)
