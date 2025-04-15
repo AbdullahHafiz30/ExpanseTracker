@@ -1,11 +1,3 @@
-//
-//  EditCategory.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
-
 import SwiftUI
 
 struct EditCategory: View {
@@ -21,33 +13,32 @@ struct EditCategory: View {
     @Binding var id: String
     @EnvironmentObject var themeManager: ThemeManager
     @Namespace var animation
-    
+
     var body: some View {
         NavigationStack {
             VStack {
                 // Title
                 ZStack {
-                    // Background Layer
                     Rectangle()
                         .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
                         .frame(width: 220, height: 10)
                         .cornerRadius(5)
                         .offset(y: 10)
-                    
-                    // Foreground Layer
+
                     Text("Edit Category")
                         .foregroundColor(themeManager.isDarkMode ? .white : .black)
                         .font(.largeTitle)
                 }
+
                 VStack(alignment: .leading, spacing: 30) {
-                    // Category Name and Icon
+                    // Name + Icon
                     HStack {
                         ZStack {
                             Rectangle()
                                 .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
                                 .frame(width: 75, height: 75)
                                 .cornerRadius(10)
-                            
+
                             Image(systemName: selectedIcon)
                                 .resizable()
                                 .scaledToFit()
@@ -55,13 +46,11 @@ struct EditCategory: View {
                                 .foregroundColor(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
                         }
                         .padding(5)
-                        
-                        CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
-                        
-                        
+
+                        CustomTextField(placeholder: "Category Name", text: $categoryName, isSecure: .constant(false))
                     }
-                    
-                    // Category Icon Selection
+
+                    // Icon Picker
                     HStack {
                         Text("Category Icon")
                         Spacer()
@@ -74,95 +63,68 @@ struct EditCategory: View {
                     .onTapGesture {
                         showIcons.toggle()
                     }
-                    
+
                     // Color Picker
-                    HStack{
+                    HStack {
                         Text("Category Color")
                         Spacer()
-                        
-                        ZStack{
+                        ZStack {
                             Circle()
-                                .stroke(LinearGradient(colors: [.red,.yellow ,.green ,.cyan, .blue,.purple, .pink], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 3)
+                                .stroke(LinearGradient(colors: [.red, .yellow, .green, .cyan, .blue, .purple, .pink], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 3)
                                 .frame(width: 27, height: 27)
                             Circle()
                                 .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
                                 .frame(width: 20, height: 20)
-                            
                         }
                     }
                     .padding(.horizontal)
                     .onTapGesture {
                         showColorPicker.toggle()
                     }
-                    
-                    
+
+                    // Type Picker
                     Text("Category Type")
                         .padding(.horizontal)
-                    
+
                     VStack(spacing: 10) {
-                        // Split into chunks of 2 types per row
                         ForEach(Array(CategoryType.allCases.chunked(into: 2)), id: \.self) { rowItems in
                             HStack(spacing: 5) {
                                 ForEach(rowItems, id: \.self) { type in
-                                    Text(LocalizedStringKey(type.rawValue))
-                                        .font(.callout)
-                                        .padding(.vertical, 8)
-                                        .frame(maxWidth: .infinity)
-                                        .foregroundColor(categoryType.rawValue == type.rawValue ? (themeManager.isDarkMode ? .black : .white) : (themeManager.isDarkMode ? .white : .black))
-                                        .background {
-                                            if categoryType.rawValue == type.rawValue {
-                                                Capsule()
-                                                    .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3)  : color)
-                                                    .matchedGeometryEffect(id: "Type", in: animation)
-                                            } else {
-                                                Capsule()
-                                                    .stroke(.gray)
-                                            }
-                                        }
-                                        .contentShape(Capsule())
-                                        .onTapGesture {
-                                            withAnimation {
-                                                categoryType = type
-                                            }
-                                        }
+                                    categoryTypeView(for: type)
                                 }
                             }
                         }
                     }
                     .padding(.horizontal)
-                    
-                    
+
+                    // Budget
                     Text("Budget Limit")
                         .padding(.horizontal)
-                    // Category Limit Slider
-                    HStack (spacing: 20){
-                        
+
+                    HStack(spacing: 20) {
                         Slider(value: $limit, in: 1...100)
                             .tint(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
-                        
+
                         Text("\(Int(limit))%")
                     }
                     .padding(.horizontal)
-                    
                 }
                 .padding(.top)
-                
-                Spacer()
-                
-                CustomButton(title: "Save", action: {
 
-                        let category = Category(
-                            id: id,
-                            name: categoryName,
-                            color: UIColor(color).toHexString(),
-                            icon: selectedIcon,
-                            categoryType: categoryType,
-                            budgetLimit: limit
-                        )
-                        
-                        categoryViewModel.saveEditedCategory(category: category)
+                Spacer()
+
+                CustomButton(title: "Save", action: {
+                    let category = Category(
+                        id: id,
+                        name: categoryName,
+                        color: UIColor(color).toHexString(),
+                        icon: selectedIcon,
+                        categoryType: categoryType,
+                        budgetLimit: limit
+                    )
+
+                    categoryViewModel.saveEditedCategory(category: category)
                 })
-                
             }
             .padding(.horizontal)
             .sheet(isPresented: $showIcons) {
@@ -170,44 +132,74 @@ struct EditCategory: View {
             }
             .sheet(isPresented: $showColorPicker) {
                 ColorsPicker(selectedColor: $color)
-                
             }
         }
         .onAppear {
-                if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(id: id) {
-                    categoryName = category.name
-                    selectedIcon = category.icon
-                    color = colorFromHexString(category.color)
-                    categoryType = category.categoryType
-                    limit = category.budgetLimit
-                } else {
-                    print("Category not found.")
-                }
+            if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(id: id) {
+                categoryName = category.name
+                selectedIcon = category.icon
+                color = colorFromHexString(category.color) // Now this function is in scope
+                categoryType = category.categoryType
+                limit = category.budgetLimit
+            } else {
+                print("Category not found.")
+            }
         }
     }
+
+    // MARK: - Helper View to Simplify Main Body
+    @ViewBuilder
+    private func categoryTypeView(for type: CategoryType) -> some View {
+        let isSelected = categoryType.rawValue == type.rawValue
+
+        Text(LocalizedStringKey(type.rawValue))
+            .font(.callout)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .foregroundColor(isSelected ? (themeManager.isDarkMode ? .black : .white) : (themeManager.isDarkMode ? .white : .black))
+            .background {
+                if isSelected {
+                    Capsule()
+                        .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
+                        .matchedGeometryEffect(id: "Type", in: animation)
+                } else {
+                    Capsule()
+                        .stroke(.gray)
+                }
+            }
+            .contentShape(Capsule())
+            .onTapGesture {
+                withAnimation {
+                    categoryType = type
+                }
+            }
+    }
+
+    // MARK: - Hex to Color Converter
+    func colorFromHexString(_ hex: String) -> Color {
+        var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if hexFormatted.hasPrefix("#") {
+            hexFormatted.remove(at: hexFormatted.startIndex)
+        }
+
+        if hexFormatted.count != 6 {
+            return Color.gray
+        }
+
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
+
+        let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
+        let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
+        let blue = Double(rgbValue & 0x0000FF) / 255.0
+
+        return Color(red: red, green: green, blue: blue)
+    }
 }
 
-func colorFromHexString(_ hex: String) -> Color {
-    var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-    
-    if hexFormatted.hasPrefix("#") {
-        hexFormatted.remove(at: hexFormatted.startIndex)
-    }
-    
-    if hexFormatted.count != 6 {
-        return Color.gray // default fallback
-    }
-    
-    var rgbValue: UInt64 = 0
-    Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
-    
-    let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
-    let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
-    let blue = Double(rgbValue & 0x0000FF) / 255.0
-    
-    return Color(red: red, green: green, blue: blue)
-}
-
+// MARK: - Preview
 #Preview {
     EditCategory(id: .constant("845BA4DE-1952-42A0-875F-7DDD40794631"))
+        .environmentObject(ThemeManager()) // Ensure ThemeManager is passed in preview
 }
