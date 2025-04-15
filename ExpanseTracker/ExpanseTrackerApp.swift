@@ -25,9 +25,9 @@ struct YourApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-            .environmentObject(themeManager)
-                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+            WelcomePage()
+                .environmentObject(themeManager)
+                .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         }
     }
 }
