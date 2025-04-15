@@ -14,7 +14,7 @@ class CategoryViewModel: ObservableObject {
     
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
-
+    
     func saveCategoryToCoreData(category: Category, userId: String) {
         print("save category to core data")
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
@@ -30,7 +30,7 @@ class CategoryViewModel: ObservableObject {
                 newCategory.budgetLimit = category.budgetLimit ?? 0.0
                 
                 existingUserEntity.addToCategory(newCategory)
-                print("Added new category for the user.")
+                print("✅ Added new category for the user.")
                 
                 PersistanceController.shared.saveContext()
             }
@@ -38,9 +38,9 @@ class CategoryViewModel: ObservableObject {
                 print("No user found with id: \(userId)")
             }
         }catch {
-        print("❌ Failed to save context: \(error)")
+            print("❌ Failed to save context: \(error)")
+        }
     }
-}
     
     
     func fetchAllCategoriesFromCoreData() -> [Category] {
@@ -70,11 +70,10 @@ class CategoryViewModel: ObservableObject {
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
         userRequest.fetchLimit = 1
-
+        
         do {
             if let user = try context.fetch(userRequest).first {
-                let categories = user.category?.allObjects as? [CategoryEntity] ?? []
-
+              
                 if let matchedCategory = category.first(where: { $0.id == categoryId }) {
                     let category = Category(
                         id: matchedCategory.id ?? "",
@@ -84,7 +83,7 @@ class CategoryViewModel: ObservableObject {
                         categoryType: CategoryType(rawValue: matchedCategory.categoryType?.rawValue ?? "") ?? .other,
                         budgetLimit: matchedCategory.budgetLimit
                     )
-
+                    
                     print("✅ Found category: \(category.name ?? "")")
                     return category
                 } else {
@@ -100,12 +99,12 @@ class CategoryViewModel: ObservableObject {
             return nil
         }
     }
-
+    
     func saveEditedCategory(category: Category, userId: String) {
         // Fetch the Core Data object directly
         let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         categoryRequest.predicate = NSPredicate(format: "id == %@", category.id ?? "")
-
+        
         do {
             if let existingCategoryEntity = try context.fetch(categoryRequest).first {
                 // Update the Core Data object
@@ -114,10 +113,10 @@ class CategoryViewModel: ObservableObject {
                 existingCategoryEntity.color = category.color
                 existingCategoryEntity.categoryType = category.categoryType?.rawValue
                 existingCategoryEntity.budgetLimit = category.budgetLimit ?? 0.0
-
+                
                 // Save the context
                 PersistanceController.shared.saveContext()
-                print("Category updated successfully.")
+                print("✅ Category updated successfully.")
             } else {
                 print("No category found with id: \(category.id ?? "")")
             }
@@ -141,7 +140,7 @@ class CategoryViewModel: ObservableObject {
             print("Delete Error \(error)")
         }
     }
-
     
-
+    
+    
 }

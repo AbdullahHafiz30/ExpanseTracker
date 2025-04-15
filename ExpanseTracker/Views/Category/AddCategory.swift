@@ -1,8 +1,14 @@
-
+//
+//  AddCategory.swift
+//  ExpensesMonthlyProjrct
+//
+//  Created by Rayaheen Mseri on 12/10/1446 AH.
+//
 
 import SwiftUI
 
 struct AddCategory: View {
+    // MARK: - Variables
     @State var iconViewModel = IconModel()
     @StateObject var categoryViewModel = CategoryViewModel()
     @State private var color: Color = .black
@@ -16,6 +22,7 @@ struct AddCategory: View {
     @Namespace var animation
     @State private var showNameAlert: Bool = false
     @Binding var userId: String
+    // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack {
@@ -27,7 +34,7 @@ struct AddCategory: View {
                         .frame(width: 220, height: 10)
                         .cornerRadius(5)
                         .offset(y: 10)
-
+                    
                     // Foreground Layer
                     Text("Add Category")
                         .foregroundColor(themeManager.isDarkMode ? .white : .black)
@@ -41,7 +48,7 @@ struct AddCategory: View {
                                 .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
                                 .frame(width: 75, height: 75)
                                 .cornerRadius(10)
-
+                            
                             Image(systemName: selectedIcon)
                                 .resizable()
                                 .scaledToFit()
@@ -51,10 +58,10 @@ struct AddCategory: View {
                         .padding(5)
                         
                         CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
-                            
-                         
+                        
+                        
                     }
-
+                    
                     // Category Icon Selection
                     HStack {
                         Text("Category Icon")
@@ -68,7 +75,7 @@ struct AddCategory: View {
                     .onTapGesture {
                         showIcons.toggle()
                     }
-
+                    
                     // Color Picker
                     HStack{
                         Text("Category Color")
@@ -89,8 +96,8 @@ struct AddCategory: View {
                         showColorPicker.toggle()
                     }
                     
-
-                        Text("Category Type")
+                    
+                    Text("Category Type")
                         .padding(.horizontal)
                     
                     VStack(spacing: 10) {
@@ -124,40 +131,40 @@ struct AddCategory: View {
                         }
                     }
                     .padding(.horizontal)
-
-
+                    
+                    
                     Text("Budget Limit")
                         .padding(.horizontal)
                     // Category Limit Slider
                     HStack (spacing: 20){
                         
-                            Slider(value: $limit, in: 1...100)
-                                .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
-                            
-                            Text("\(Int(limit))%")
-                        }
-                        .padding(.horizontal)
- 
+                        Slider(value: $limit, in: 1...100)
+                            .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
+                        
+                        Text("\(Int(limit))%")
+                    }
+                    .padding(.horizontal)
+                    
                 }
                 .padding(.top)
-
+                
                 Spacer()
-
+                // MARK: - Add category button
                 CustomButton(title: "Add", action: {
                     guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                         showNameAlert = true
                         return
                     }
                     
-                        let newCategory = Category(
-                            id: UUID().uuidString,
-                            name: categoryName,
-                            color: UIColor(color).toHexString(),
-                            icon: selectedIcon,
-                            categoryType: categoryType,
-                            budgetLimit: limit
-                        )
-
+                    let newCategory = Category(
+                        id: UUID().uuidString,
+                        name: categoryName,
+                        color: UIColor(color).toHexString(),
+                        icon: selectedIcon,
+                        categoryType: categoryType,
+                        budgetLimit: limit
+                    )
+                    
                     categoryViewModel.saveCategoryToCoreData(category: newCategory, userId: userId)
                     
                 })

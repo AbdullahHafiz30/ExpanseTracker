@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Profile: View {
+    // MARK: - Variables
     @State private var isArabic: Bool = false
     @State var showNotification: Bool = false
     @State var showAccountInformation: Bool = false
@@ -21,6 +22,7 @@ struct Profile: View {
     @State var userSpend: Double = 500
     @StateObject var budgetViewModel = BudgetViewModel()
     @ObservedObject var auth: AuthViewModel
+    // MARK: - UI Design
     var body: some View {
         ZStack{
             NavigationStack {
@@ -125,7 +127,7 @@ struct Profile: View {
                         HStack {
                             Image(systemName: "globe")
                             Text("Language")
-                                
+                            
                             
                             Spacer()
                             
@@ -183,22 +185,30 @@ struct Profile: View {
                     .padding(.top, 10)
                     
                     Spacer()
-        
+                    
                 }
                 .padding()
             }
             .onAppear{
+                // MARK: - Get user information from core 
                 let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
                 userName = user?.name ?? "Guest"
-                var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
-
+                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+                
                 userBudget = budget?.amount ?? 0.0
-                print("User loaded .\(user)")
+                print("User loaded .\(String(describing: user))")
             }
             .sheet(isPresented: $isPresented) {
                 SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
             }
-
+            .onChange(of: isPresented) { oldValue, newValue in
+                if !newValue {
+                    if let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId) {
+                        userBudget = budget.amount
+                    }
+                }
+            }
+            
         } //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
