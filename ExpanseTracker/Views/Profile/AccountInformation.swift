@@ -125,7 +125,7 @@ struct AccountInformation: View {
                         self.imageURL = fileURL
                         print("Image data loaded from documents")
                     } else {
-                        print("File not found in documents")
+                        print("❌ File not found in documents")
                     }
                 }
             }

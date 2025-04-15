@@ -13,13 +13,14 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
-
     let languageCode = Locale.current.language.languageCode?.identifier
     @StateObject var userViewModel = UserViewModel()
     @State var userName = ""
     @Binding var userId: String
+    @State var userBudget: Double = 100
+    @State var userSpend: Double = 500
+    @StateObject var budgetViewModel = BudgetViewModel()
     @ObservedObject var auth: AuthViewModel
-
     var body: some View {
         ZStack{
             NavigationStack {
@@ -28,7 +29,7 @@ struct Profile: View {
                         .font(.headline)
                     
                     HStack {
-                        ShapeView()
+                        ShapeView(usedWaterAmount: CGFloat(userSpend), maxWaterAmount: CGFloat(userBudget))
                         
                         Spacer()
                         
@@ -40,7 +41,7 @@ struct Profile: View {
                                     .frame(height: 60)
                                     .cornerRadius(10)
                                 
-                                Text("5500 Riyals")
+                                Text("\(String(format: "%.1f", userBudget)) Riyals")
                                 
                                 // set budget pop up
                                 Text("Budget")
@@ -57,7 +58,7 @@ struct Profile: View {
                                     .frame(height: 60)
                                     .cornerRadius(10)
                                 
-                                Text("2000 Riyals")
+                                Text("\(String(format: "%.1f", userSpend)) Riyals")
                                 
                                 Text("Your Spend")
                                     .bold()
@@ -171,9 +172,8 @@ struct Profile: View {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
                             Text("Logout")
                                 .onTapGesture {
-                                    auth.logOut()
+                                  //  auth.logOut()
                                 }
-                            
                         }
                         
                         Divider()
@@ -191,29 +191,14 @@ struct Profile: View {
                 let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
                 
                 userName = userInfo?.name ?? ""
+                var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+                userBudget = budget?.amount ?? 0.0
                 print(userName)
             }
-            
-            if isPresented {
-                ZStack {
-                    (themeManager.isDarkMode ? Color.black.opacity(0.65) : Color.white.opacity(0.65))
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            isPresented.toggle()
-                        }
-                    
-                    VStack {
-                        SetBudget(isPresented: $isPresented)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+            .sheet(isPresented: $isPresented) {
+                SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
             }
+            
         }
     }
 }
-
-
-#Preview {
-    Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: AuthViewModel())
-}
-
