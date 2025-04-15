@@ -13,7 +13,7 @@ final class PersistanceController {
     let container: NSPersistentContainer
     
     private init() {
-        container = NSPersistentContainer(name: "ExpensessAppModel")
+        container = NSPersistentContainer(name: "ExpensesAppModel")
         container.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Unresolved error \(error), \(error.localizedDescription)")

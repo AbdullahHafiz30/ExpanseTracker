@@ -5,14 +5,6 @@
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
 //
 
-
-//
-//  CustomBackward.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
 import SwiftUI
 
 @ViewBuilder

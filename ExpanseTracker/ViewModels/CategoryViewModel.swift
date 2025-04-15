@@ -1,12 +1,25 @@
+<<<<<<< Updated upstream
+=======
+//
+//  CategoryViewModel.swift
+//  ExpanseTracker
+//
+//  Created by Rayaheen Mseri on 15/10/1446 AH.
+//
+
+
+>>>>>>> Stashed changes
 import SwiftUI
 import CoreData
 import Combine
 
 class CategoryViewModel: ObservableObject {
+    
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
 
     
+<<<<<<< Updated upstream
     func saveCategoryToCoreData(category: Category) {
         print("save")
 
@@ -19,7 +32,34 @@ class CategoryViewModel: ObservableObject {
         newCategory.budgetLimit = category.budgetLimit ?? 0.0
         
         PersistanceController.shared.saveContext()
+=======
+    func saveCategoryToCoreData(category: Category, userId: String) {
+        print("save category to core data")
+        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+        userRequest.predicate = NSPredicate(format: "id == %@", userId)
+        do{
+            if let existingUserEntity = try context.fetch(userRequest).first {
+                let newCategory = CategoryEntity(context: context)
+                newCategory.id = category.id
+                newCategory.name = category.name
+                newCategory.color = category.color
+                newCategory.icon = category.icon
+                newCategory.categoryType = category.categoryType?.rawValue
+                newCategory.budgetLimit = category.budgetLimit ?? 0.0
+                
+                existingUserEntity.addToCategory(newCategory)
+                print("Added new category for the user.")
+                
+                PersistanceController.shared.saveContext()
+            }
+            else {
+                print("No user found with id: \(userId)")
+            }
+        }catch {
+        print("❌ Failed to save context: \(error)")
+>>>>>>> Stashed changes
     }
+}
     
     
     func fetchAllCategoriesFromCoreData() -> [Category] {
@@ -43,36 +83,44 @@ class CategoryViewModel: ObservableObject {
         return categoryMapping
     }
     
-    func fetchCategoryFromCoreDataWithId(id: String) -> Category? {
-        print("Fetching category with id: \(id)")
+    func fetchCategoryFromCoreDataWithId(categoryId: String, userId: String) -> Category? {
+        print("Fetching category with id: \(categoryId)")
         
-        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        categoryRequest.predicate = NSPredicate(format: "id == %@", id)
-        categoryRequest.fetchLimit = 1
+        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+        userRequest.predicate = NSPredicate(format: "id == %@", userId)
+        userRequest.fetchLimit = 1
 
         do {
-            if let result = try context.fetch(categoryRequest).first {
-                let category = Category(
-                    id: result.id ?? "",
-                    name: result.name ?? "",
-                    color: result.color ?? "",
-                    icon: result.icon ?? "",
-                    categoryType: CategoryType(rawValue: result.categoryType ?? "") ?? .other,
-                    budgetLimit: result.budgetLimit
-                )
-                print("Fetched: \(category)")
-                return category
+            if let user = try context.fetch(userRequest).first {
+                let categories = user.category?.allObjects as? [CategoryEntity] ?? []
+
+                if let matchedCategory = category.first(where: { $0.id == categoryId }) {
+                    let category = Category(
+                        id: matchedCategory.id ?? "",
+                        name: matchedCategory.name ?? "",
+                        color: matchedCategory.color ?? "",
+                        icon: matchedCategory.icon ?? "",
+                        categoryType: CategoryType(rawValue: matchedCategory.categoryType?.rawValue ?? "") ?? .other,
+                        budgetLimit: matchedCategory.budgetLimit
+                    )
+
+                    print("✅ Found category: \(category.name ?? "")")
+                    return category
+                } else {
+                    print("❌ Category with id \(categoryId) not found in user's categories")
+                    return nil
+                }
             } else {
-                print("No category found with id: \(id)")
+                print("❌ User with id \(userId) not found")
                 return nil
             }
         } catch {
-            print("Error fetching category: \(error)")
+            print("❌ Error fetching user or category: \(error)")
             return nil
         }
     }
 
-    func saveEditedCategory(category: Category) {
+    func saveEditedCategory(category: Category, userId: String) {
         // Fetch the Core Data object directly
         let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         categoryRequest.predicate = NSPredicate(format: "id == %@", category.id ?? "")
@@ -93,7 +141,7 @@ class CategoryViewModel: ObservableObject {
                 print("No category found with id: \(category.id ?? "")")
             }
         } catch {
-            print("Failed to save context: \(error)")
+            print("❌ Failed to save context: \(error)")
         }
     }
     

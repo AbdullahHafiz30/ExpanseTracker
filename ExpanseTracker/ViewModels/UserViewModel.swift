@@ -5,26 +5,18 @@
 //  Created by Rayaheen Mseri on 16/10/1446 AH.
 //
 
-
-//
-//  createUser.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 15/10/1446 AH.
-//
-
-
 import SwiftUI
 import CoreData
 import Combine
 
 class   UserViewModel: ObservableObject {
+    
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
 
     
     func saveUserToCoreData(user: User) {
-        print("save")
+        print("save user to core data")
 
         let newUser = UserEntity(context: context)
         newUser.id = UUID().uuidString
@@ -63,11 +55,11 @@ class   UserViewModel: ObservableObject {
                 print("Fetched: \(user)")
                 return user
             } else {
-                print("No category found with id: \(id)")
+                print("No user found with id: \(id)")
                 return nil
             }
         } catch {
-            print("Error fetching category: \(error)")
+            print("❌ Error fetching user: \(error)")
             return nil
         }
     }
@@ -92,13 +84,13 @@ class   UserViewModel: ObservableObject {
                 print("No User found with id: \(user.id ?? "")")
             }
         } catch {
-            print("Failed to save context: \(error)")
+            print("❌ Failed to save context: \(error)")
         }
     }
     
     
     func deleteAll() {
-        let newsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CategoryEntity")
+        let newsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UserEntity")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: newsRequest)
         
         do {
@@ -106,7 +98,7 @@ class   UserViewModel: ObservableObject {
             try context.execute(deleteRequest)
             // Save the context after deletion
             PersistanceController.shared.saveContext()
-            print("All categories deleted successfully.")
+            print("All users deleted successfully.")
         } catch {
             print("Delete Error \(error)")
         }
@@ -120,7 +112,7 @@ class   UserViewModel: ObservableObject {
         if let imageData = image.jpegData(compressionQuality: 0.9) {
             do {
                 try imageData.write(to: fileURL)
-                return filename // ✅ فقط اسم الملف
+                return filename 
             } catch {
                 print("❌ Error saving image:", error)
             }
