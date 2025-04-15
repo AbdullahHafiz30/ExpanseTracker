@@ -7,13 +7,14 @@
 
 import Foundation
 
-struct Transactions: Identifiable {
+struct Transactions: Identifiable,Hashable {
     let id: UUID?
     let titleq: String?
     let description: String?
     let amount: Double?
     let date: Date?
     let transactionType: TransactionType?
-    let category: Category?
-    let receiptImage: String? // tahani added
+    let category: String
+    let receiptImage: String?
 }
+

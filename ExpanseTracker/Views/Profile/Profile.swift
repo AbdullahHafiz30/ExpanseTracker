@@ -13,8 +13,8 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var backHome = false
     let languageCode = Locale.current.language.languageCode?.identifier
-    @StateObject var userViewModel = UserViewModel()
     @State var userName = ""
     @Binding var userId: String
     @State var userBudget: Double = 100
@@ -170,10 +170,10 @@ struct Profile: View {
                     Section {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
-                            Text("Logout")
-                                .onTapGesture {
-                                  //  auth.logOut()
-                                }
+                            Text("Logout")  
+                        }.onTapGesture {
+                            auth.logOut()
+                            backHome = true
                         }
                         
                         Divider()
@@ -188,17 +188,19 @@ struct Profile: View {
                 .padding()
             }
             .onAppear{
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
-                
-                userName = userInfo?.name ?? ""
+                let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                userName = user?.name ?? "Guest"
                 var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
                 userBudget = budget?.amount ?? 0.0
-                print(userName)
+                print("User loaded .\(user)")
             }
             .sheet(isPresented: $isPresented) {
                 SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
             }
-            
+
+        } //cover the whole page with the welcome page
+        .fullScreenCover(isPresented: $backHome) {
+            WelcomePage(auth:auth)
         }
     }
 }

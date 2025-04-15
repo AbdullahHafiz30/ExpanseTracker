@@ -10,10 +10,9 @@ import CoreData
 import Combine
 
 class   UserViewModel: ObservableObject {
-    
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
-
+    //@Published var uid: String?
     
     func saveUserToCoreData(user: User) {
         print("save user to core data")
@@ -29,12 +28,29 @@ class   UserViewModel: ObservableObject {
         
         print(newUser.id ?? "")
         var myuser = fetchUserFromCoreDataWithId(id: newUser.id ?? "")
-        print("my user is \(String(describing: myuser))")
+        //print("my user is \(String(describing: myuser))")
     }
     
-    
+//    func syncUserFromFirestore(_ uid: String, completion: @escaping () -> Void) {
+//        let db = Firestore.firestore()
+//        db.collection("users").document(uid).getDocument { document, error in
+//            if let document = document, document.exists {
+//                let data = document.data()
+//                let name = data?["name"] as? String ?? ""
+//                let email = data?["email"] as? String ?? ""
+//                let user = User(name: name, email: email, password: nil, image: nil, transactions: [nil], budgets: [nil], categories: [nil])
+//
+//                // Now save the user to Core Data
+//                self.saveUserToCoreData(user: user, uid: uid)
+//                print("🔥 User synced from Firestore and saved to CoreData: \(name)")
+//                completion()
+//            } else {
+//                print("⚠️ User document not found in Firestore: \(error?.localizedDescription ?? "Unknown error")")
+//            }
+//        }
+//    }
     func fetchUserFromCoreDataWithId(id: String) -> User? {
-        print("Fetching user with id: \(id)")
+       // print("Fetching user with id: \(id)")
         
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", id)
@@ -60,6 +76,7 @@ class   UserViewModel: ObservableObject {
             }
         } catch {
             print("❌ Error fetching user: \(error)")
+
             return nil
         }
     }

@@ -11,23 +11,26 @@ import SwiftUI
 struct WelcomePage: View {
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject var auth = AuthViewModel()
-    
+    // Get UID from user default
+       private var uid: String? {
+           UIDManager.loadUID()
+       }
     var body: some View {
-        NavigationStack {
-            // Auto-navigation to Home if already authenticated
-            if auth.isAuthenticated {
-                MainTabView(auth:auth)
-            } else {
-                welcomeBody
-            }
-        }
-        .animation(.smooth, value: themeManager.isDarkMode)
-    }
+           NavigationStack {
+               // Auto-navigation to Home if already authenticated
+               if auth.isAuthenticated {
+                   MainTabView(auth:auth)
+               } else {
+                   welcomeBody
+               }
+           }
+           .animation(.smooth, value: themeManager.isDarkMode)
+       }
 
-    
-    // keeps welcome layout separate
+       
+       // keeps welcome layout separate
 
-    var welcomeBody: some View {
+       var welcomeBody: some View {
         ZStack {
             themeManager.gradient
                 .ignoresSafeArea()
@@ -57,11 +60,11 @@ struct WelcomePage: View {
                             .multilineTextAlignment(.center)
                             .padding(.bottom)
                         //navigation to log in and sign up pages with the use of the custom AuthButton
-                        NavigationLink(destination: LogInPage(auth: auth)) {
+                        NavigationLink(destination: LogInPage(auth:auth)) {
                             AuthButton(label: "Log in", isFilled: true)
                         }
                         
-                        NavigationLink(destination: SignUpPage(auth: auth)) {
+                        NavigationLink(destination: SignUpPage(auth:auth)) {
                             AuthButton(label: "Sign up", isFilled: false)
                         }
                     }
