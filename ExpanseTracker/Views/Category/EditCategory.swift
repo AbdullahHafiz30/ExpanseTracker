@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import SwiftUI
 
 struct EditCategory: View {
@@ -205,6 +206,8 @@ struct EditCategory: View {
         .environmentObject(ThemeManager()) // Ensure ThemeManager is passed in preview
 }
 =======
+=======
+>>>>>>> Stashed changes
 ////
 ////  EditCategory.swift
 ////  ExpensesMonthlyProjrct
@@ -418,4 +421,7 @@ struct EditCategory: View {
 //#Preview {
 //    EditCategory(id: .constant("845BA4DE-1952-42A0-875F-7DDD40794631"))
 //}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

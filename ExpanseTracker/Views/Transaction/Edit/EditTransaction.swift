@@ -28,7 +28,10 @@ struct EditTransactionView: View {
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     @State private var editedAmount: Double = 0.0
 
     // Initialize editable values with the current transaction
@@ -38,6 +41,9 @@ struct EditTransactionView: View {
         self.transaction = transaction
     }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     var body: some View {
         ScrollView {
@@ -45,6 +51,7 @@ struct EditTransactionView: View {
                 ZStack {
                     VStack(alignment: .leading) {
                         
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                         // Display the transaction title
                         DropDownMenu(
@@ -69,6 +76,10 @@ struct EditTransactionView: View {
                         //transactionTypeSelector
                         //the add button
                         //addButton
+=======
+                        // Price display + input
+                        PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)
+>>>>>>> Stashed changes
 =======
                         // Price display + input
                         PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)

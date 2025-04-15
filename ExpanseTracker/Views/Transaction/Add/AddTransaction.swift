@@ -20,7 +20,10 @@ struct AddTransaction: View {
     @State private var imageData: Data?
     @State private var amountError: String?
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     //@EnvironmentObject var userVM: UserViewModel
     //@StateObject private var transactionVM: TransactionViewModel
 //    @EnvironmentObject var auth: AuthViewModel
@@ -28,6 +31,9 @@ struct AddTransaction: View {
 //            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
 //        }
     
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     //enum of the types of the transactions
     enum transactionType: String, CaseIterable, Identifiable {
@@ -130,7 +136,11 @@ private extension AddTransaction {
                     VStack(spacing: 25){
                         //title
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         CustomTextField(placeholder: "Title", text: $title,isSecure: .constant(false))
+=======
+                        CustomTextField(placeholder: "Title", text: $title,isSecure: false)
+>>>>>>> Stashed changes
 =======
                         CustomTextField(placeholder: "Title", text: $title,isSecure: false)
 >>>>>>> Stashed changes
@@ -147,15 +157,21 @@ private extension AddTransaction {
                             .environmentObject(themeManager)
                         //Description
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         //image picker
                         ImagePickerField(imageData: $imageData)
 =======
+=======
+>>>>>>> Stashed changes
                         CustomTextField(placeholder: "Description", text: $description,isSecure: false)
                             .environmentObject(themeManager)
                         //image picker
                         ImagePickerField(imageData: $imageData, image: "")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                             .environmentObject(themeManager)
                         //type selector
@@ -214,7 +230,10 @@ private extension AddTransaction {
                 //validate amount
                 validateAmount(amount)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
                 if amountError == nil {
                     // Add transaction
 //                    transactionVM.addTransaction(
@@ -228,6 +247,9 @@ private extension AddTransaction {
 //                    )
                     dismiss()
                 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             }
         )

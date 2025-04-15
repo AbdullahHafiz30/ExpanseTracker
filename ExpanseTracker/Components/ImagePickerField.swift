@@ -28,7 +28,11 @@ struct ImagePickerField: View {
                     RoundedRectangle(cornerRadius: 7)
                         .stroke(themeManager.textColor, lineWidth: 1)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         .frame(height: imageData == nil ? 48 : 350)
+=======
+                        .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
+>>>>>>> Stashed changes
 =======
                         .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
 >>>>>>> Stashed changes
@@ -38,7 +42,11 @@ struct ImagePickerField: View {
                             .resizable()
                             .scaledToFill()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             .frame(width: 300,height: 300)
+=======
+                            .frame(width: 300, height: 300)
+>>>>>>> Stashed changes
 =======
                             .frame(width: 300, height: 300)
 >>>>>>> Stashed changes
