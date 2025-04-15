@@ -1,6 +1,14 @@
+//
+//  EditCategory.swift
+//  ExpensesMonthlyProjrct
+//
+//  Created by Rayaheen Mseri on 12/10/1446 AH.
+//
+
 import SwiftUI
 
 struct EditCategory: View {
+    // MARK: - Variables
     @State var viewModel = IconModel()
     @StateObject var categoryViewModel = CategoryViewModel()
     @State private var color: Color = .black
@@ -15,6 +23,7 @@ struct EditCategory: View {
     @Namespace var animation
     @State private var showNameAlert: Bool = false
     @Binding var userId: String
+    // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack {
@@ -141,7 +150,7 @@ struct EditCategory: View {
                 .padding(.top)
                 
                 Spacer()
-                
+                // MARK: - Save edited catrgory information button
                 CustomButton(title: "Save", action: {
                     guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                         showNameAlert = true
@@ -171,6 +180,7 @@ struct EditCategory: View {
             }
         }
         .onAppear {
+            // MARK: - Get user information from core
             if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
                 categoryName = category.name ?? ""
                 selectedIcon = category.icon ?? ""
@@ -187,7 +197,7 @@ struct EditCategory: View {
         }
     }
 }
-
+// MARK: - Functions
 func colorFromHexString(_ hex: String) -> Color {
     var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     

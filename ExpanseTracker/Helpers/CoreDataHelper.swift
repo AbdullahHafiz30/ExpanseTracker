@@ -26,27 +26,43 @@ struct CoreDataHelper {
     }
     
     func fetchUserFromCoreData(uid: String) -> User? {
-        let request: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", uid)
+        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+        userRequest.predicate = NSPredicate(format: "id == %@", uid)
+        userRequest.fetchLimit = 1
+        userRequest.relationshipKeyPathsForPrefetching = ["budget", "transaction", "category"]
         
         do {
-            if let result = try context.fetch(request).first {
-                return User(
-                    id: result.id,
-                    name: result.name,
-                    email: result.email,
-                    password: result.password,
-                    image: result.imageURL,
-                    transactions: [],
-                    budgets: [],
-                    categories: []
+            if let result = try context.fetch(userRequest).first {
+                let user = User(
+                    id: result.id ?? "",
+                    name: result.name ?? "",
+                    email: result.email ?? "",
+                    password: result.password ?? "",
+                    image: result.imageURL ?? "",
+                    transactions: Array(result.transaction as? Set<Transactions> ?? []),
+                    budgets: Array((result.budget as? Set<BudgetEntity>)?.map { Budget(from: $0) } ?? []),
+                    categories: Array(result.category as? Set<Category> ?? [])
                 )
+                print("=========\(String(describing: result.budget))")
+                if let budgetsSet = result.budget as? Set<Budget> {
+                    for budget in budgetsSet {
+                        print("Budget: \(budget.id ?? "no id") - Amount: \(String(describing: budget.amount))")
+                    }
+                } else {
+                    print("budget is nil or not a Set")
+                }
+                print("Fetched: \(user)")
+                return user
+            } else {
+                print("No user found with id: \(uid)")
+                return nil
             }
         } catch {
             print("Error fetching user: \(error)")
+            return nil
         }
-        return nil
     }
+    
     func saveEditedUser(user: User) {
         // Fetch the Core Data object directly
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()

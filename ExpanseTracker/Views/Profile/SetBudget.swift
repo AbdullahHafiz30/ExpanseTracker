@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SetBudget: View {
+    // MARK: - Variables
     @State var budget: String = ""
     @Binding var isPresented: Bool
     @EnvironmentObject var themeManager: ThemeManager
@@ -16,6 +17,7 @@ struct SetBudget: View {
     @Binding var budgetAmount: Double
     @State private var showRepeatAlert = false
     @State private var budgetError: String?
+    // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack{
@@ -45,10 +47,10 @@ struct SetBudget: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 10)
                 }
-                
+                // MARK: - Save budget amount button
                 CustomButton(title: "Save", action: {
                     validateAmount(budget)
-              
+                    
                     if budgetError != nil {
                         return
                     }
@@ -69,7 +71,6 @@ struct SetBudget: View {
                     } else {
                         budgetError = "Invalid number format."
                     }
-                    //budgetViewModel.deleteAll(userId: userId)
                 })
                 .padding(.bottom, 20)
             }
@@ -108,12 +109,14 @@ struct SetBudget: View {
             .padding()
         }
     }
-        func convertDateToString(date: Date) -> String {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            
-            return formatter.string(from: date)
-
+    
+    // MARK: - functions
+    func convertDateToString(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return formatter.string(from: date)
+        
     }
     
     //validate error mesg for amount
@@ -131,6 +134,3 @@ struct SetBudget: View {
     }
 }
 
-#Preview {
-    SetBudget(isPresented: .constant(true), userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), budgetAmount: .constant(0.0))
-}

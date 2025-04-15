@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Transactions: Identifiable {
+struct Transactions: Identifiable, Hashable {
     let id: String?
     let title: String?
     let description: String?

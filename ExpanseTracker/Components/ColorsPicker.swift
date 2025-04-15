@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-
+/// A custom color picker that allows users to select a color using a conic gradient color wheel
 struct ColorsPicker: View {
     @State var currentColor: Color = .gray.opacity(0.4)
     @State var dragPosition: CGPoint = CGPoint(x: 150, y: 150)
     @Binding var selectedColor: Color
     @Environment(\.dismiss) var dismiss
     var circleSize: CGFloat = 300
-
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -30,7 +30,7 @@ struct ColorsPicker: View {
                         )
                     }
                     .frame(width: circleSize, height: circleSize)
-
+                    
                     Circle()
                         .stroke(.white, lineWidth: 2)
                         .background(Circle().fill(currentColor))
@@ -44,7 +44,7 @@ struct ColorsPicker: View {
                                     let offsetX = value.location.x - center.x
                                     let offsetY = value.location.y - center.y
                                     let distance = sqrt(offsetX * offsetX + offsetY * offsetY)
-
+                                    
                                     if distance > adjustedRadius {
                                         let scale = adjustedRadius / distance
                                         let constrainedOffsetX = center.x + offsetX * scale
@@ -53,7 +53,7 @@ struct ColorsPicker: View {
                                     } else {
                                         dragPosition = value.location
                                     }
-
+                                    
                                     currentColor = getColor(at: dragPosition, center: center, radius: adjustedRadius)
                                     selectedColor = currentColor
                                 }
@@ -61,7 +61,7 @@ struct ColorsPicker: View {
                 }
                 .frame(width: circleSize, height: circleSize)
                 .padding()
-
+                
                 HStack(spacing: 5) {
                     ForEach(0..<11) { index in
                         let brightness = Double(index) / 9.0
@@ -74,13 +74,13 @@ struct ColorsPicker: View {
                     }
                 }
                 .padding([.trailing, .top], 30)
-
+                
                 Rectangle()
                     .foregroundStyle(selectedColor)
                     .frame(height: 100)
                     .cornerRadius(10)
                     .padding()
-
+                
                 Spacer()
             }
             .navigationTitle("Pick a Color")
@@ -96,40 +96,40 @@ struct ColorsPicker: View {
             .padding(.horizontal)
             .onAppear {
                 currentColor = selectedColor
-
+                
                 var hue: CGFloat = 0
                 var saturation: CGFloat = 0
                 var brightness: CGFloat = 0
                 var alpha: CGFloat = 0
-
+                
                 UIColor(selectedColor).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
-
+                
                 let angle = hue * 2 * .pi
                 let r = saturation * ((circleSize / 2) - 20)
                 let center = CGPoint(x: circleSize / 2, y: circleSize / 2)
-
+                
                 let x = center.x + cos(angle) * r
                 let y = center.y + sin(angle) * r
-
+                
                 dragPosition = CGPoint(x: x, y: y)
             }
         }
         .environment(\.layoutDirection, .leftToRight)
     }
-
+    
     private func getColor(at position: CGPoint, center: CGPoint, radius: CGFloat) -> Color {
         let dx = position.x - center.x
         let dy = position.y - center.y
-
+        
         var angle = atan2(dy, dx)
         if angle < 0 {
             angle += 2 * .pi
         }
-
+        
         let hue = angle / (2 * .pi)
         let distance = sqrt(dx * dx + dy * dy)
         let saturation = min(distance / radius, 1.0)
-
+        
         return Color(hue: hue, saturation: saturation, brightness: 1)
     }
 }

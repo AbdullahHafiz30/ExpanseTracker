@@ -5,7 +5,7 @@
 //    @StateObject private var viewModel = CategoryViewModel()
 //    @State private var showingAddCategory = false
 //    @State private var selectedType: String = "All"
-//
+//    @Binding var userId: String
 //    var body: some View {
 //        NavigationStack {
 //            VStack(spacing: 16) {
@@ -76,7 +76,7 @@
 //                }
 //            }
 //            .sheet(isPresented: $showingAddCategory) {
-//                AddCategory()
+//                AddCategory(userId: $userId)
 //                    .environmentObject(viewModel)
 //            }
 //            .background(Color.white)

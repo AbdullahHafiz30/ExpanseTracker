@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-
+/// A view that displays a circular water usage  indicator with a wave animation to show how much the user spend from the budget.
+/// The circle fills with color based on water usage percentage and displays the usage as a percentage text.
 struct ShapeView: View {
     var usedWaterAmount: CGFloat
     var maxWaterAmount: CGFloat
@@ -25,12 +26,12 @@ struct ShapeView: View {
                         .fill(Color.white)
                         .frame(width: width, height: height)
                         .shadow(color: Color.gray.opacity(0.4), radius: 10, x: 0, y: 4)
-
+                    
                     // Outer Stroke
                     Circle()
                         .stroke(Color.gray.opacity(0.2), lineWidth: 2)
                         .frame(width: width, height: height)
-
+                    
                     // Water Fill (WaveShape)
                     Circle()
                         .clipShape(
@@ -44,12 +45,12 @@ struct ShapeView: View {
                         )
                         .foregroundColor(
                             usagePercentage > 0.8 ? .red.opacity(0.4) :
-                            usagePercentage > 0.5 ? .yellow.opacity(0.4) :
-                            .green.opacity(0.4)
+                                usagePercentage > 0.5 ? .yellow.opacity(0.4) :
+                                    .green.opacity(0.4)
                         )
                         .frame(width: width, height: height)
                         .animation(.easeInOut(duration: 0.5), value: usagePercentage)
-
+                    
                     // Percentage Text
                     Text("\(maxWaterAmount == 0 ? 0 : Int(usagePercentage * 100))%")
                         .font(.title)
@@ -95,10 +96,10 @@ struct WaveShape: Shape {
                 control2: CGPoint(x: x2, y: y2)
             )
         }
-            
-            path.addLine(to: CGPoint(x: width, y: height))
-            path.addLine(to: CGPoint(x: 0, y: height))
-            path.closeSubpath()
+        
+        path.addLine(to: CGPoint(x: width, y: height))
+        path.addLine(to: CGPoint(x: 0, y: height))
+        path.closeSubpath()
         
         return path
     }
