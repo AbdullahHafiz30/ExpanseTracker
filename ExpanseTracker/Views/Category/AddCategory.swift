@@ -1,11 +1,3 @@
-//
-//  AddCategory.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
-
 import SwiftUI
 
 struct AddCategory: View {
@@ -56,8 +48,6 @@ struct AddCategory: View {
                         .padding(5)
                         
                         CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
-                            
-                         
                     }
 
                     // Category Icon Selection
@@ -86,16 +76,14 @@ struct AddCategory: View {
                             Circle()
                                 .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
                                 .frame(width: 20, height: 20)
-                            
                         }
                     }
                     .padding(.horizontal)
                     .onTapGesture {
                         showColorPicker.toggle()
                     }
-                    
 
-                        Text("Category Type")
+                    Text("Category Type")
                         .padding(.horizontal)
                     
                     VStack(spacing: 10) {
@@ -130,19 +118,16 @@ struct AddCategory: View {
                     }
                     .padding(.horizontal)
 
-
                     Text("Budget Limit")
                         .padding(.horizontal)
                     // Category Limit Slider
                     HStack (spacing: 20){
+                        Slider(value: $limit, in: 1...100)
+                            .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
                         
-                            Slider(value: $limit, in: 1...100)
-                                .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
-                            
-                            Text("\(Int(limit))%")
-                        }
-                        .padding(.horizontal)
- 
+                        Text("\(Int(limit))%")
+                    }
+                    .padding(.horizontal)
                 }
                 .padding(.top)
 
@@ -150,17 +135,16 @@ struct AddCategory: View {
 
                 CustomButton(title: "Add", action: {
                     let newCategory = Category(
-                          id: UUID().uuidString,
-                          name: categoryName,
-                          color: UIColor(color).toHexString(),
-                          icon: selectedIcon,
-                          categoryType: categoryType,
-                          budgetLimit: limit
-                      )
+                        id: UUID().uuidString,
+                        name: categoryName,
+                        color: UIColor(color).toHexString(),
+                        icon: selectedIcon,
+                        categoryType: categoryType,
+                        budgetLimit: limit
+                    )
 
-                      categoryViewModel.saveCategoryToCoreData(category: newCategory)
+                    categoryViewModel.addCategory(newCategory)
                 })
-                
             }
             .padding(.horizontal)
             .sheet(isPresented: $showIcons) {
@@ -168,7 +152,6 @@ struct AddCategory: View {
             }
             .sheet(isPresented: $showColorPicker) {
                 ColorsPicker(selectedColor: $color)
-                
             }
         }
     }
