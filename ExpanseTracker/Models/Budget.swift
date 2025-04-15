@@ -10,10 +10,6 @@ import Foundation
 struct Budget: Identifiable, Hashable {
     let id: String?
     let amount: Double?
-<<<<<<< Updated upstream
-    let startDate: Date?
-    let endDate: Date?
-=======
     let startDate: String?
     let endDate: String?
     
@@ -34,5 +30,4 @@ struct Budget: Identifiable, Hashable {
         self.startDate = startDate
         self.endDate = endDate
     }
->>>>>>> Stashed changes
 }

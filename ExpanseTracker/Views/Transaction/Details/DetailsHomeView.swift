@@ -32,13 +32,9 @@ struct DetailsHomeView: View {
                         
                         // Display the transaction title
                         CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
-                        
-                        // Display the transaction's category name
-<<<<<<< Updated upstream
+
                         CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
-=======
-                        CustomText(text: transaction.category.name ?? "" , placeholder: "Category:")
->>>>>>> Stashed changes
+
                         
                         // Display the formatted transaction date
                         CustomText(

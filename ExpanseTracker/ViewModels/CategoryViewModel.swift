@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 //
 //  CategoryViewModel.swift
 //  ExpanseTracker
@@ -7,8 +6,6 @@
 //  Created by Rayaheen Mseri on 15/10/1446 AH.
 //
 
-
->>>>>>> Stashed changes
 import SwiftUI
 import CoreData
 import Combine
@@ -18,21 +15,6 @@ class CategoryViewModel: ObservableObject {
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
 
-    
-<<<<<<< Updated upstream
-    func saveCategoryToCoreData(category: Category) {
-        print("save")
-
-            let newCategory = CategoryEntity(context: context)
-            newCategory.id = category.id
-            newCategory.name = category.name
-            newCategory.color = category.color
-            newCategory.icon = category.icon
-        newCategory.categoryType = category.categoryType?.rawValue
-        newCategory.budgetLimit = category.budgetLimit ?? 0.0
-        
-        PersistanceController.shared.saveContext()
-=======
     func saveCategoryToCoreData(category: Category, userId: String) {
         print("save category to core data")
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
@@ -57,7 +39,6 @@ class CategoryViewModel: ObservableObject {
             }
         }catch {
         print("❌ Failed to save context: \(error)")
->>>>>>> Stashed changes
     }
 }
     
