@@ -37,6 +37,5 @@ struct CustomText: View {
                 }
                 .padding(.horizontal, 8)
             )
-            .padding(.vertical)
     }
 }
