@@ -16,7 +16,7 @@ struct Transactions: Identifiable {
     let date: Date?
     let transactionType: TransactionType?
     let category: Category?
-    let receiptImage: String? // tahani added
+    let receiptImage: String? 
     
     init(id: String?, title: String?, description: String?, amount: Double?, date: Date?, transactionType: TransactionType?, category: Category?, receiptImage: String?) {
         self.id = id

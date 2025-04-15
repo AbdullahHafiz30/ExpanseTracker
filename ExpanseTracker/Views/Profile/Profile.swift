@@ -191,6 +191,7 @@ struct Profile: View {
                 let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
                 userName = user?.name ?? "Guest"
                 var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+
                 userBudget = budget?.amount ?? 0.0
                 print("User loaded .\(user)")
             }
