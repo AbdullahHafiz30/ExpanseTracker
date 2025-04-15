@@ -9,13 +9,12 @@ import SwiftUI
 
 /// A reusable transaction type selector component.
 func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManager: ThemeManager) -> some View {
-    VStack(alignment: .leading) {
+    VStack(alignment: .center) {
         // Section title
         Text("Transaction type:")
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
-            .padding(.leading, -40) // Adjusts alignment to match design
-        
+                    
         HStack(spacing: 12) {
             // Loop over all available cases from the TransactionType enum
             ForEach(TransactionType.allCases) { type in
@@ -48,6 +47,5 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
                     }
             }
         }
-        .padding(.leading) 
     }
 }

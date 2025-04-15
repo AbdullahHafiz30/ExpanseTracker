@@ -30,7 +30,7 @@ struct MainTabView: View {
                 
                 Spacer()
                 
-                GraphsView()
+                HomeView()
                     .tabItem {
                         Image(systemName: "chart.bar.xaxis.ascending")
                         Text("Stats")
