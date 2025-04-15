@@ -51,7 +51,7 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some 
         VStack(spacing: 0) {
             // Translucent background material
             Rectangle()
-                .fill(.ultraThinMaterial)
+                .fill(.background)
         }
         // Extend the background to cover the horizontal and top safe areas
         .padding(.horizontal, -15)

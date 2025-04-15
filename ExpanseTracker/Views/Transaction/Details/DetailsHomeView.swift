@@ -18,44 +18,40 @@ struct DetailsHomeView: View {
     
     // The transaction to display details for
     var transaction: Transaction
+    @State private var imageData: Data?
     
     var body: some View {
         ScrollView {
             ZStack {
-                // Background color for the entire view
-                Color.white
-                
                 VStack(alignment: .leading) {
                     
                     // Display the transaction amount using a styled price section
-                    PriceSection(amount: transaction.amount, themeManager: themeManager)
+                    PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
                     
                     VStack(alignment: .leading) {
                         
                         // Display the transaction title
-                        CustomText(text: transaction.title, placeholder: "Title:")
+                        CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
                         
                         // Display the transaction's category name
-                        CustomText(text: transaction.category.name, placeholder: "Category:")
+                        CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
                         
                         // Display the formatted transaction date
                         CustomText(
-                            text: transaction.date.formatted(date: .abbreviated, time: .omitted),
+                            text: transaction.date?.formatted(date: .abbreviated, time: .omitted) ?? Date().formatted(date: .abbreviated, time: .omitted),
                             placeholder: "Date:"
                         )
                         
                         // Display the transaction description
-                        CustomText(text: transaction.description, placeholder: "Description:")
+                        CustomText(text: transaction.description ?? "No Description", placeholder: "Description:")
                             .environmentObject(themeManager)
                         
+                        
                         // Display the transaction type
-                        SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type)
+                        SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type ?? .income)
                         
                         // Display an attached receipt image
-                        Image(transaction.receiptImage)
-                            .resizable()
-                            .frame(height: 300)
-                            .cornerRadius(10)
+                        ImagePickerField(imageData: $imageData, image: transaction.receiptImage ?? "No Image Provided")
                         
                         Spacer() // Push content to the top
                     }

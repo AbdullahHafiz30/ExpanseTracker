@@ -16,7 +16,7 @@ struct CardView: View {
         ZStack {
             // Background card with rounded corners
             RoundedRectangle(cornerRadius: 15)
-                .fill(.background)
+                .fill(.gray.opacity(0.15))
             
             VStack(spacing: 0) {
                 

@@ -13,7 +13,7 @@ struct HomeView: View {
     @State private var startDate: Date = Tab.monthly.startDate(from: Date())
     @State private var endDate: Date = Date()
     
-    @State private var selectedType: TransactionType = .expense // Currently selected transaction type (income/expense)
+    @State private var selectedType: TransactionType = .income  // Currently selected transaction type (income/expense)
     
     @Namespace private var animation // Namespace for matchedGeometryEffect animations
     
@@ -41,19 +41,17 @@ struct HomeView: View {
                             expense: viewModel.total(for: .expense, from: startDate, to: endDate)
                         )
                         
-                        // Custom segmented control to switch between Income/Expense
-                        CustomSegmentedControl(selectedType: $selectedType, animation: animation)
-                            .padding(.bottom, 10)
-                        
+                        //Segmented control to switch between Income/Expense
+                        Picker("Type", selection: $selectedType) {
+                            ForEach(TransactionType.allCases, id: \.self) { type in
+                                Text(type.rawValue).tag(type)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .padding(.bottom, 10)
+
                         // List of filtered transactions
-                        ForEach(viewModel.sampleTransactions.filter {
-                            (searchText.isEmpty ||
-                             $0.title.localizedCaseInsensitiveContains(searchText) ||
-                             $0.description.localizedCaseInsensitiveContains(searchText)) &&
-                            $0.type.rawValue == selectedType.rawValue &&
-                            $0.date >= startDate &&
-                            $0.date <= endDate
-                        }) { transaction in
+                        ForEach(filteredTransactions) { transaction in
                             NavigationLink {
                                 DetailsHomeView(transaction: transaction)
                             } label: {
@@ -72,7 +70,6 @@ struct HomeView: View {
                 }
                 .padding(15)
             }
-            .background(.gray.opacity(0.15))
             
         }
         .onChange(of: selectedTab) {
@@ -80,4 +77,18 @@ struct HomeView: View {
             endDate = Date()
         }
     }
+    
+    private var filteredTransactions: [Transaction] {
+        viewModel.sampleTransactions.filter { transaction in
+            let matchesSearch = searchText.isEmpty ||
+            ((transaction.title?.localizedCaseInsensitiveContains(searchText)) != nil) ||
+            ((transaction.description?.localizedCaseInsensitiveContains(searchText)) != nil)
+
+            let matchesType = transaction.type == selectedType
+            let matchesDate = transaction.date ?? Date() >= startDate && transaction.date ?? Date() <= endDate
+
+            return matchesSearch && matchesType && matchesDate
+        }
+    }
+
 }

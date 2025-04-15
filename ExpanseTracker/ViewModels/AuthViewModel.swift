@@ -9,6 +9,7 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
+
 class AuthViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var alertTitle: String = ""
