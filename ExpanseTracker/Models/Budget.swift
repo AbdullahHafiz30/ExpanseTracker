@@ -10,6 +10,6 @@ import Foundation
 struct Budget: Codable {
     let id: UUID?
     let amount: Double?
-    let start_date: Date?
-    let end_date: Date?
+    let startDate: Date?
+    let endDate: Date?
 }
