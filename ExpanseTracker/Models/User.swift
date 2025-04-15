@@ -12,9 +12,9 @@ struct User: Identifiable {
     let name: String?
     let email: String?
     let password: String?
-    let image: String? // added
+    let image: String?
     let transactions: [Transactions]?
     let budgets: [Budget?]
-    let categories: [Category?] // added
+    let categories: [Category?]
 }
 

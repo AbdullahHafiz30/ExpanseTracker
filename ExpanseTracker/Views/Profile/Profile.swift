@@ -188,16 +188,10 @@ struct Profile: View {
                 .padding()
             }
             .onAppear{
-<<<<<<< Updated upstream
                 let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
                 userName = user?.name ?? "Guest"
                 var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
-=======
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
-                
-                userName = userInfo?.name ?? ""
-                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
->>>>>>> Stashed changes
+
                 userBudget = budget?.amount ?? 0.0
                 print("User loaded .\(user)")
             }
