@@ -1,5 +1,5 @@
 //
-//  LabelView.swift
+//  DateLabelView.swift
 //  ExpanseTracker
 //
 //  Created by Abdullah Hafiz on 14/04/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LabelView: View {
+struct DateLabelView: View {
     let text: String
 
     var body: some View {
