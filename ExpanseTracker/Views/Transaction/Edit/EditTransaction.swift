@@ -40,20 +40,8 @@ struct EditTransactionView: View {
 
     var body: some View {
         ScrollView {
-<<<<<<< Updated upstream
             LazyVStack {
                 ZStack {
-=======
-            ZStack {
-                // Background color for the entire view
-                Color.white
-                
-                VStack(alignment: .leading) {
-                    
-                    // Display the transaction amount using a styled price section
-                    //PriceSection(amount: transaction.amount, themeManager: themeManager)
-                    
->>>>>>> Stashed changes
                     VStack(alignment: .leading) {
                         
                         // Price display + input

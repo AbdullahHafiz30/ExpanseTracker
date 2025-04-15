@@ -9,12 +9,7 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
-<<<<<<< Updated upstream
-
-class AuthViewModel: ObservableObject {
-=======
 class AuthViewModel:ObservableObject {
->>>>>>> Stashed changes
     @Published var isAuthenticated: Bool = false
     @Published var alertTitle: String = ""
     @Published var alertMessage: String = ""
@@ -137,7 +132,7 @@ class AuthViewModel:ObservableObject {
                             return
                         }
                         
-                        self.saveUserData(uid: uid, name: name, email: email)
+                        self.saveUserData(uid: uid, name: name, email: email,password: password)
                         UIDManager.saveUID(uid)
                         self.isAuthenticated = true
                         completion(true, nil)
@@ -197,12 +192,13 @@ class AuthViewModel:ObservableObject {
     }
     
     //save data to firestore
-    private func saveUserData(uid: String, name: String, email: String) {
+    private func saveUserData(uid: String, name: String, email: String, password:String) {
         let db = Firestore.firestore()
         db.collection("users").document(uid).setData([
             "uid": uid,
             "name": name,
             "email": email,
+            "password": password
         ])  { error in
             if let error = error {
                 print("Error saving user data: \(error.localizedDescription)")
@@ -228,14 +224,14 @@ class AuthViewModel:ObservableObject {
                        completion(false)
                        return
                    }
-                   
-                   let name = data["name"] as? String ?? ""
-                   let email = data["email"] as? String ?? ""
-                   
-                   let user = User(
+            
+            let name = data["name"] as? String ?? ""
+            let email = data["email"] as? String ?? ""
+            let password = data["password"] as? String ?? ""
+            let user = User(
                        name: name,
                        email: email,
-                       password: nil,
+                       password: password,
                        image: nil,
                        transactions: [],
                        budgets: [],

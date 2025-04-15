@@ -115,7 +115,7 @@ struct SignUpPage: View {
                                         if success {
                                             goToHome = true
                                         } else if let message = message {
-                                            alertManager.showAlert(title: "Login Failed", message: message)
+                                            alertManager.showAlert(title: "Sign up Failed", message: message)
                                         }
                                     }
                                 }

@@ -75,7 +75,7 @@ struct SetBudget: View {
             }
             .padding()
         }
-        .alert("Do you want to set this budget as repeated؟", isPresented: $showRepeatAlert) {
+        .alert("Do you want to set this budget as repeated?", isPresented: $showRepeatAlert) {
             Button("yes") {
                 let newBudget = Budget(
                     id: UUID().uuidString,

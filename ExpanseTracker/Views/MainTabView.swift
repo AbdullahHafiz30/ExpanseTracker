@@ -13,8 +13,8 @@ struct MainTabView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
     @ObservedObject var auth: AuthViewModel
-    // Get UID from plist
-       private var uid: String? {
+    // Get UID from user default
+        var uid: String? {
            UIDManager.loadUID()
        }
     var body: some View {
@@ -40,7 +40,7 @@ struct MainTabView: View {
                         Text("Stats")
                     }.tag(2)
 
-                Profile(userId: .constant(uid ?? ""),auth:auth)
+                Profile(userId: .constant(uid ?? "") ,auth:auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")

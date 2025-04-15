@@ -13,10 +13,7 @@ struct Profile: View {
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
-<<<<<<< Updated upstream
-=======
     @State private var backHome = false
->>>>>>> Stashed changes
     let languageCode = Locale.current.language.languageCode?.identifier
     @State var userName = ""
     @Binding var userId: String
@@ -173,17 +170,10 @@ struct Profile: View {
                     Section {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
-<<<<<<< Updated upstream
-                            Text("Logout")
-                                .onTapGesture {
-                                  //  auth.logOut()
-                                }
-=======
                             Text("Logout")  
                         }.onTapGesture {
                             auth.logOut()
                             backHome = true
->>>>>>> Stashed changes
                         }
                         
                         Divider()
@@ -198,47 +188,19 @@ struct Profile: View {
                 .padding()
             }
             .onAppear{
-<<<<<<< Updated upstream
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
-                
-                userName = userInfo?.name ?? ""
+                let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                userName = user?.name ?? "Guest"
                 var budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
                 userBudget = budget?.amount ?? 0.0
-                print(userName)
-=======
-                loadUserData()
->>>>>>> Stashed changes
+                print("User loaded .\(user)")
             }
             .sheet(isPresented: $isPresented) {
                 SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
             }
-<<<<<<< Updated upstream
-            
-=======
+
         } //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
->>>>>>> Stashed changes
         }
-    }
-    private func loadUserData() {
-        guard let userId = UIDManager.loadUID()
-        else {
-            print("User ID not found")
-            return
-        }
-        
-        let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
-        userName = user?.name ?? "Guest"
-        print("User loaded .\(user)")
     }
 }
-<<<<<<< Updated upstream
-=======
-
-
-//#Preview {
-//    Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"))
-//}
-
->>>>>>> Stashed changes

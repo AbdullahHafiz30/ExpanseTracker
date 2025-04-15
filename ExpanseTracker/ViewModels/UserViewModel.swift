@@ -8,67 +8,17 @@
 import SwiftUI
 import CoreData
 import Combine
-<<<<<<< Updated upstream
 
 class   UserViewModel: ObservableObject {
-    
-=======
-import FirebaseAuth
-import FirebaseFirestore
-class UserViewModel {
->>>>>>> Stashed changes
     @Published var category: [Category] = []
     private let context = PersistanceController.shared.context
     //@Published var uid: String?
     
-<<<<<<< Updated upstream
     func saveUserToCoreData(user: User) {
         print("save user to core data")
-=======
-//    init() {
-//          print("UserViewModel initialized.")
-//      }
-//
-//      // fetch the UID first thing
-//      func initializeUser() {
-//          if let firebaseUID = Auth.auth().currentUser?.uid {
-//              fetchUID(uidFromFirestore: firebaseUID) { success in
-//                  if success {
-//                      print("✅ Successfully fetched UID: \(self.uid ?? "nil")")
-//                  } else {
-//                      print("⚠️ Failed to fetch UID from CoreData or Firestore.")
-//                  }
-//              }
-//          } else {
-//              print("⚠️ No current Firebase user found.")
-//          }
-//      }
-//    
-//    func fetchUID(uidFromFirestore: String, completion: @escaping (Bool) -> Void) {
-//        let request = NSFetchRequest<UserEntity>(entityName: "UserEntity")
-//        request.predicate = NSPredicate(format: "id == %@", uidFromFirestore)
-//        request.fetchLimit = 1
-//        do {
-//            if let user = try context.fetch(request).first {
-//                self.uid = user.id
-//                print("✅ CoreData UID matched: \(user.id ?? "nil")")
-//                completion(true)
-//            } else {
-//                print("⚠️ No matching UID found in CoreData, syncing from Firestore.")
-//                auth.fetchUserFromFirestore(uid: uidFromFirestore)
-//                completion(true)
-//            }
-//        } catch {
-//            print("❌ Error fetching user by UID: \(error.localizedDescription)")
-//            completion(false)
-//        }
-//    }
-    func saveUserToCoreData(user: User, uid: String) {
-        print("save")
->>>>>>> Stashed changes
 
         let newUser = UserEntity(context: context)
-        newUser.id = uid
+        newUser.id = UUID().uuidString
         newUser.name = user.name
         newUser.email = user.email
         newUser.password = user.password
@@ -125,11 +75,8 @@ class UserViewModel {
                 return nil
             }
         } catch {
-<<<<<<< Updated upstream
             print("❌ Error fetching user: \(error)")
-=======
-            print("Error fetching user: \(error)")
->>>>>>> Stashed changes
+
             return nil
         }
     }

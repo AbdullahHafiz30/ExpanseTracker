@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Transactions: Identifiable {
+struct Transactions: Identifiable,Hashable {
     let id: UUID?
     let titleq: String?
     let description: String?
@@ -16,16 +16,5 @@ struct Transactions: Identifiable {
     let transactionType: TransactionType?
     let category: String
     let receiptImage: String?
-    
-//    init(id: UUID, titleq: String, description: String, amount: Double, date: Date, transactionType: String, category: Category, receiptImage: Data?) {
-//        self.id = id
-//        self.titleq = titleq
-//        self.description = description
-//        self.amount = amount
-//        self.date = date
-//        self.transactionType = TransactionType(rawValue: transactionType)
-//        self.category = Category()
-//        self.receiptImage =
-//    }
 }
 

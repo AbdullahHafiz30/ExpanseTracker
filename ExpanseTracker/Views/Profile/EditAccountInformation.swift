@@ -307,54 +307,8 @@ struct EditAccountInformation: View {
                 selection: $selectedPhoto,
                 matching: .images
             )
-<<<<<<< Updated upstream
-            .onChange(of: selectedPhoto) { oldValue, newValue in
-                Task {
-                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        self.imageData = data
-
-                        if let uiImage = UIImage(data: data),
-                           let filename = userViewModel.saveImageToDocuments(uiImage) {
-                            
-                            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                            let savedURL = documentsDirectory.appendingPathComponent(filename)
-
-                            self.imageURL = savedURL
-                            print("✅ Image saved to documents at: \(savedURL)")
-                        }
-                    }
-                }
-            }
-            .onAppear {
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
-
-                userName = userInfo?.name ?? ""
-                userEmail = userInfo?.email ?? ""
-                userPassword = userInfo?.password ?? ""
-                
-                if let imageFilename = userInfo?.image {
-                    print("Saved image filename: \(imageFilename)")
-
-                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
-
-                    print("Full file path: \(fileURL.path)")
-
-                    if FileManager.default.fileExists(atPath: fileURL.path),
-                       let data = try? Data(contentsOf: fileURL) {
-                        self.imageData = data
-                        self.imageURL = fileURL
-                        print("Image data loaded from documents")
-                    } else {
-                        print("❌ File not found in documents")
-                    }
-                }
-                
-            }
-=======
             .onChange(of: selectedPhoto, handlePhotoSelection)
             .onAppear(perform: loadUserData)
->>>>>>> Stashed changes
             .navigationBarBackButtonHidden(true)
         }
     }
@@ -420,3 +374,48 @@ struct EditAccountInformation: View {
         }
     }
 }
+
+//{
+//    let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+//
+//    userName = userInfo?.name ?? ""
+//    userEmail = userInfo?.email ?? ""
+//    userPassword = userInfo?.password ?? ""
+//    
+//    if let imageFilename = userInfo?.image {
+//        print("Saved image filename: \(imageFilename)")
+//
+//        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//        let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+//
+//        print("Full file path: \(fileURL.path)")
+//
+//        if FileManager.default.fileExists(atPath: fileURL.path),
+//           let data = try? Data(contentsOf: fileURL) {
+//            self.imageData = data
+//            self.imageURL = fileURL
+//            print("Image data loaded from documents")
+//        } else {
+//            print("❌ File not found in documents")
+//        }
+//    }
+//    
+//}
+//
+//    .onChange(of: selectedPhoto) { oldValue, newValue in
+//        Task {
+//            if let data = try? await newValue?.loadTransferable(type: Data.self) {
+//                self.imageData = data
+//
+//                if let uiImage = UIImage(data: data),
+//                   let filename = userViewModel.saveImageToDocuments(uiImage) {
+//                    
+//                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//                    let savedURL = documentsDirectory.appendingPathComponent(filename)
+//
+//                    self.imageURL = savedURL
+//                    print("✅ Image saved to documents at: \(savedURL)")
+//                }
+//            }
+//        }
+//    }
