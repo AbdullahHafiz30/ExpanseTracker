@@ -30,7 +30,7 @@ struct YourApp: App {
         //                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         //        }
         WindowGroup {
-            WelcomePage()
+            CategoryView()
                 .environmentObject(themeManager)
                 .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         }
