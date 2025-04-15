@@ -25,9 +25,15 @@ struct YourApp: App {
     
     var body: some Scene {
         WindowGroup {
+<<<<<<< Updated upstream
             WelcomePage()
                 .environmentObject(themeManager)
                 .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+=======
+            MainTabView()
+            .environmentObject(themeManager)
+                            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+>>>>>>> Stashed changes
         }
     }
 }

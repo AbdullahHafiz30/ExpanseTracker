@@ -97,11 +97,11 @@ class HomeViewModel: ObservableObject {
     func total(for type: TransactionType, from startDate: Date, to endDate: Date) -> Double {
         sampleTransactions
             .filter {
-                $0.type.rawValue == type.rawValue &&
-                $0.date >= startDate &&
-                $0.date <= endDate
+                $0.type?.rawValue == type.rawValue &&
+                $0.date ?? Date() >= startDate &&
+                $0.date ?? Date() <= endDate
             }
-            .map { $0.amount }
+            .map { $0.amount ?? 0.0 }
             .reduce(0, +)
     }
 }

@@ -14,9 +14,51 @@ class CategoryViewModel: ObservableObject {
         loadCategories()
     }
 
+<<<<<<< Updated upstream
     // MARK: - Load All Categories
     func loadCategories() {
         let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+=======
+            let newCategory = CategoryEntity(context: context)
+            newCategory.id = category.id
+            newCategory.name = category.name
+            newCategory.color = category.color
+            newCategory.icon = category.icon
+        newCategory.categoryType = category.categoryType?.rawValue
+        newCategory.budgetLimit = category.budgetLimit ?? 0.0
+        
+        PersistanceController.shared.saveContext()
+    }
+    
+    
+    func fetchAllCategoriesFromCoreData() -> [Category] {
+        print ("fetching list of Categories from core data")
+        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        let categoryData = (try! context.fetch(categoryRequest))
+        
+        let categoryMapping = categoryData.map {
+            Category(
+                id: $0.id ?? "",
+                name: $0.name ?? "",
+                color: $0.color ?? "",
+                icon: $0.icon ?? "",
+                categoryType: CategoryType(rawValue:$0.categoryType  ?? "") ?? .other,
+                budgetLimit: $0.budgetLimit
+            )
+        }
+        
+        print(categoryMapping)
+        
+        return categoryMapping
+    }
+    
+    func fetchCategoryFromCoreDataWithId(id: String) -> Category? {
+        print("Fetching category with id: \(id)")
+        
+        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        categoryRequest.predicate = NSPredicate(format: "id == %@", id)
+        categoryRequest.fetchLimit = 1
+>>>>>>> Stashed changes
 
         do {
             let entities = try context.fetch(request)
@@ -126,9 +168,42 @@ class CategoryViewModel: ObservableObject {
         }
         return nil
     }
+<<<<<<< Updated upstream
     func fetchCategoryFromCoreDataWithId(id: String) -> Category? {
         // Create a fetch request for CategoryEntity from Core Data
         let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+=======
+
+    func saveEditedCategory(category: Category) {
+        // Fetch the Core Data object directly
+        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        categoryRequest.predicate = NSPredicate(format: "id == %@", category.id ?? "")
+
+        do {
+            if let existingCategoryEntity = try context.fetch(categoryRequest).first {
+                // Update the Core Data object
+                existingCategoryEntity.name = category.name
+                existingCategoryEntity.icon = category.icon
+                existingCategoryEntity.color = category.color
+                existingCategoryEntity.categoryType = category.categoryType?.rawValue
+                existingCategoryEntity.budgetLimit = category.budgetLimit ?? 0.0
+
+                // Save the context
+                PersistanceController.shared.saveContext()
+                print("Category updated successfully.")
+            } else {
+                print("No category found with id: \(String(describing: category.id))")
+            }
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+    }
+    
+    
+    func deleteAll() {
+        let newsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CategoryEntity")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: newsRequest)
+>>>>>>> Stashed changes
         
         // Add a filter to search by the category's ID
         request.predicate = NSPredicate(format: "id == %@", id)
