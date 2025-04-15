@@ -7,6 +7,7 @@
 
 import Foundation
 
+<<<<<<< Updated upstream
 struct Category: Identifiable {
     let id: String?
     let name: String?
@@ -14,4 +15,13 @@ struct Category: Identifiable {
     let icon: String?
     let categoryType: CategoryType?
     let budgetLimit: Double?
+=======
+struct Category: Identifiable,Hashable {
+    let id: String
+    let name: String
+    let color: String
+    let icon: String
+    let categoryType: CategoryType
+    let budgetLimit: Double
+>>>>>>> Stashed changes
 }

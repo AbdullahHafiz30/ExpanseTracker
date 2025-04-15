@@ -16,9 +16,12 @@ struct SignUpPage: View {
     @State private var backHome = false
     @State private var goToHome = false
     @EnvironmentObject var themeManager: ThemeManager
-    @ObservedObject var auth: AuthViewModel
     @State private var isPasswordSecure: Bool = true
     @State private var isConPasswordSecure: Bool = true
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @ObservedObject var auth: AuthViewModel
+    @EnvironmentObject var alertManager: AlertManager
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
@@ -106,14 +109,18 @@ struct SignUpPage: View {
                                 title: "Sign up",
                                 action: {
                                     // Create User with Firebase
-                                    auth.signUp(name: username, email: email, password: password, confirmPassword: confirmPassword){ success in
+                                    isLoading = true
+                                    auth.signUp(name: username, email: email, password: password,confirmPassword: confirmPassword) { success, message in
+                                        isLoading = false
                                         if success {
                                             goToHome = true
+                                        } else if let message = message {
+                                            alertManager.showAlert(title: "Login Failed", message: message)
                                         }
                                     }
-                                    
                                 }
-                            ).disabled(auth.isLoading)
+                            )
+                            .disabled(isLoading)
                             
                             //navigation to sign up
                             HStack{
@@ -141,12 +148,10 @@ struct SignUpPage: View {
         }
         //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
-            WelcomePage()
+            WelcomePage(auth:auth)
         }
         .navigationBarBackButtonHidden(true)
-        .alert(isPresented: $auth.showAlert) {
-                    Alert(title: Text(auth.alertTitle), message: Text(auth.alertMessage), dismissButton: .default(Text("OK")))
-                }
+        
         NavigationLink(
             destination: MainTabView(auth:auth),
                     isActive: $goToHome,

@@ -15,7 +15,6 @@ struct AccountInformation: View {
     @State var email: String = ""
     @State var password: String = ""
     @EnvironmentObject var themeManager: ThemeManager
-    @StateObject var userViewModel = UserViewModel()
     @Binding var userId: String
     @State private var imageURL: URL? = nil
     @State private var imageData: Data? = nil
@@ -105,7 +104,7 @@ struct AccountInformation: View {
                 Spacer()
         
             }.onAppear{
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+                let userInfo =  CoreDataHelper().fetchUserFromCoreData(uid: userId)
                 
                 name = userInfo?.name ?? ""
                 email = userInfo?.email ?? ""
@@ -141,7 +140,7 @@ struct AccountInformation: View {
         
     }
 }
-
-#Preview {
-    AccountInformation(userId: .constant(""))
-}
+//
+//#Preview {
+//    AccountInformation(userId: .constant(""))
+//}

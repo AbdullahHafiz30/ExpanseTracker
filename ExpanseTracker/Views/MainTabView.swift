@@ -13,6 +13,10 @@ struct MainTabView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
     @ObservedObject var auth: AuthViewModel
+    // Get UID from plist
+       private var uid: String? {
+           UIDManager.loadUID()
+       }
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
@@ -36,7 +40,7 @@ struct MainTabView: View {
                         Text("Stats")
                     }.tag(2)
 
-                Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: auth)
+                Profile(userId: .constant(uid ?? ""),auth:auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")
@@ -69,9 +73,8 @@ struct MainTabView: View {
                 }
             }
         }.navigationBarBackButtonHidden(true)
-        .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction()
-        }
+//        .fullScreenCover(isPresented: $showAddTransactionView) {
+//            AddTransaction()
+//        }
     }
 }
-

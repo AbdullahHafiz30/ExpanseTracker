@@ -13,6 +13,7 @@ struct AddTransaction: View {
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
     @State private var amountError: String?
+<<<<<<< Updated upstream
     @EnvironmentObject var userVM: UserViewModel
 //    @StateObject private var transactionVM: TransactionViewModel
 //    @EnvironmentObject var auth: AuthViewModel
@@ -20,6 +21,13 @@ struct AddTransaction: View {
 //            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
 //        }
 //    
+=======
+    @StateObject private var transactionVM: TransactionViewModel
+//        init(userVM: UserViewModel) {
+//            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
+//        }
+    
+>>>>>>> Stashed changes
     //enum of the types of the transactions
     enum transactionType: String, CaseIterable, Identifiable {
         case income
@@ -195,6 +203,7 @@ private extension AddTransaction {
                 validateAmount(amount)
                 if amountError == nil {
                     // Add transaction
+<<<<<<< Updated upstream
 //                    transactionVM.addTransaction(
 //                        title: title,
 //                        description: description,
@@ -204,6 +213,17 @@ private extension AddTransaction {
 //                        selectedCategoryName: selectedCategory,
 //                        imageData: imageData
 //                    )
+=======
+                    transactionVM.addTransaction(
+                        title: title,
+                        description: description,
+                        amount: amount,
+                        date: date,
+                        type: selectedType,
+                        selectedCategoryName: selectedCategory,
+                        imageData: imageData
+                    )
+>>>>>>> Stashed changes
                     dismiss()
                 }
             }

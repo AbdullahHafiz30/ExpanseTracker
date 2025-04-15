@@ -14,6 +14,18 @@ struct Transactions: Identifiable {
     let amount: Double?
     let date: Date?
     let transactionType: TransactionType?
-    let category: Category?
-    let receiptImage: String? // tahani added
+    let category: String
+    let receiptImage: String?
+    
+//    init(id: UUID, titleq: String, description: String, amount: Double, date: Date, transactionType: String, category: Category, receiptImage: Data?) {
+//        self.id = id
+//        self.titleq = titleq
+//        self.description = description
+//        self.amount = amount
+//        self.date = date
+//        self.transactionType = TransactionType(rawValue: transactionType)
+//        self.category = Category()
+//        self.receiptImage =
+//    }
 }
+

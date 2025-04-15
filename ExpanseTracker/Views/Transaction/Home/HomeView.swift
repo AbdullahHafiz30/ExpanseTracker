@@ -17,17 +17,17 @@ struct HomeView: View {
     
     @Namespace private var animation // Namespace for matchedGeometryEffect animations
     
-    @StateObject private var viewModel = HomeViewModel() // ViewModel containing transaction data
+   // @StateObject private var viewModel = HomeViewModel() // ViewModel containing transaction data
     
     @State private var searchText: String = ""
     @State private var selectedTab: Tab = .monthly
-    
     
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
                     
+<<<<<<< Updated upstream
                     Section {
                         
                         Text("\(format(date: startDate, format: "dd - MMM yy")) **to** \(format(date: endDate, format: "dd - MMM yy"))")
@@ -61,6 +61,43 @@ struct HomeView: View {
                         }
 
                     } header: {
+=======
+//                    Section {
+//                        
+//                        Text("\(format(date: startDate, format: "dd - MMM yy")) **to** \(format(date: endDate, format: "dd - MMM yy"))")
+//                            .font(.caption)
+//                            .foregroundStyle(.gray)
+//                            .hSpacing(.leading)
+//                        
+//                        // Income/Expense summary card
+//                        CardView(
+//                            income: viewModel.total(for: .income, from: startDate, to: endDate),
+//                            expense: viewModel.total(for: .expense, from: startDate, to: endDate)
+//                        )
+//                        
+//                        // Custom segmented control to switch between Income/Expense
+//                        CustomSegmentedControl(selectedType: $selectedType, animation: animation)
+//                            .padding(.bottom, 10)
+//                        
+//                        // List of filtered transactions
+//                        ForEach(viewModel.sampleTransactions.filter {
+//                            (searchText.isEmpty ||
+//                             $0.title.localizedCaseInsensitiveContains(searchText) ||
+//                             $0.description.localizedCaseInsensitiveContains(searchText)) &&
+//                            $0.type.rawValue == selectedType.rawValue &&
+//                            $0.date >= startDate &&
+//                            $0.date <= endDate
+//                        }) { transaction in
+//                            NavigationLink {
+//                                DetailsHomeView(transaction: transaction)
+//                            } label: {
+//                                TransactionCardView(transaction: transaction)
+//                            }
+//                            .buttonStyle(.plain)
+//                        }
+//
+//                    } header: {
+>>>>>>> Stashed changes
                         // Sticky header with greeting and search/filter bar
                         HeaderView(
                             searchText: $searchText,
@@ -72,11 +109,12 @@ struct HomeView: View {
             }
             
         }
-        .onChange(of: selectedTab) {
-            startDate = selectedTab.startDate(from: Date())
-            endDate = Date()
-        }
+//        .onChange(of: selectedTab) {
+//            startDate = selectedTab.startDate(from: Date())
+//            endDate = Date()
+//        }
     }
+<<<<<<< Updated upstream
     
     private var filteredTransactions: [Transaction] {
         viewModel.sampleTransactions.filter { transaction in
@@ -92,3 +130,6 @@ struct HomeView: View {
     }
 
 }
+=======
+//}
+>>>>>>> Stashed changes

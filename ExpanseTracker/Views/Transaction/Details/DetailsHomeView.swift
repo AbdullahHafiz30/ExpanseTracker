@@ -26,11 +26,16 @@ struct DetailsHomeView: View {
                 VStack(alignment: .leading) {
                     
                     // Display the transaction amount using a styled price section
+<<<<<<< Updated upstream
                     PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
+=======
+                  //  PriceSection(amount: transaction.amount, themeManager: themeManager)
+>>>>>>> Stashed changes
                     
                     VStack(alignment: .leading, spacing: 15) {
                         
                         // Display the transaction title
+<<<<<<< Updated upstream
                         CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
 
                         CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
@@ -45,13 +50,39 @@ struct DetailsHomeView: View {
                         // Display the transaction description
                         CustomText(text: transaction.description ?? "No Description", placeholder: "Description:")
                             .environmentObject(themeManager)
+=======
+//                        CustomText(text: transaction.title, placeholder: "Title:")
+//                        
+//                        // Display the transaction's category name
+//                        CustomText(text: transaction.category.name, placeholder: "Category:")
+//                        
+//                        // Display the formatted transaction date
+//                        CustomText(
+//                            text: transaction.date.formatted(date: .abbreviated, time: .omitted),
+//                            placeholder: "Date:"
+//                        )
+//                        
+//                        // Display the transaction description
+//                        CustomText(text: transaction.description, placeholder: "Description:")
+//                            .environmentObject(themeManager)
+>>>>>>> Stashed changes
                         
                         
                         // Display the transaction type
+<<<<<<< Updated upstream
                         SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type ?? .income)
                         
                         // Display an attached receipt image
                         ImagePickerField(imageData: $imageData, image: transaction.receiptImage ?? "No Image Provided")
+=======
+                       // SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type)
+                        
+                        // Display an attached receipt image
+//                        Image(transaction.receiptImage)
+//                            .resizable()
+//                            .frame(height: 300)
+//                            .cornerRadius(10)
+>>>>>>> Stashed changes
                         
                         Spacer() // Push content to the top
                     }
