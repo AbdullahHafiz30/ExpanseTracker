@@ -29,6 +29,8 @@ struct SearchBar: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
+        .background(.gray.opacity(0.15))
+        .cornerRadius(50)
         
         // Decorative border and subtle shadow
         .overlay {

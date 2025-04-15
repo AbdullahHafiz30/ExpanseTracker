@@ -16,7 +16,7 @@ struct TransactionCardView: View {
         HStack(spacing: 12) {
             
             // Circle avatar showing the first letter of the transaction title
-            Text("\(String(transaction.title.prefix(1)))")
+            Text("\(String(transaction.title?.prefix(1) ?? ""))")
                 .font(.title)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
@@ -30,16 +30,16 @@ struct TransactionCardView: View {
             VStack(alignment: .leading, spacing: 4) {
                 
                 // Transaction title
-                Text(transaction.title)
+                Text(transaction.title ?? "No Title")
                     .foregroundStyle(.primary)
                 
                 // Transaction description
-                Text(transaction.description)
+                Text(transaction.description ?? "No Description")
                     .font(.caption)
                     .foregroundStyle(.primary.secondary)
                 
                 // Formatted transaction date
-                Text(format(date: transaction.date, format: "dd MMM yyyy"))
+                Text(format(date: transaction.date ?? Date(), format: "dd MMM yyyy"))
                     .font(.caption2)
                     .foregroundStyle(.gray)
             }
@@ -47,18 +47,26 @@ struct TransactionCardView: View {
             .hSpacing(.leading) // Custom modifier for horizontal fill and leading alignment
             
             VStack{
-                Button(action: {}, label: {
-                    Image(systemName: "pencil")
-                        .font(.title)
-                })
-                .padding([.bottom, .leading])
+                
+                NavigationLink(destination: EditTransactionView(transaction: transaction)) {
+                    Image(systemName: "pencil.circle")
+                        .resizable()
+                        .foregroundStyle(.blue)
+                        .frame(width: 15, height: 15)
+                        .padding(.leading, 100)
+                }
+
+                
                 // Transaction amount formatted as currency
-                Text(currencyString(transaction.amount, allowedDigits: 1))
+                Text(currencyString(transaction.amount ?? 0.0, allowedDigits: 1))
                     .fontWeight(.semibold)
+                
+                Spacer()
             }
         }
         .padding(.horizontal, 15)
         .padding(.vertical, 10)
+        .background(.gray.opacity(0.15))
         .background(.background, in: .rect(cornerRadius: 10))
     }
 }

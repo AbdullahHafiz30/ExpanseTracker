@@ -9,13 +9,13 @@ import SwiftUI
 
 struct Transaction: Identifiable{
     let id = UUID()
-    var title: String
-    var description: String
-    var amount: Double
-    var date: Date
-    var type: TransactionType
-    var category: Category
-    var receiptImage: String
+    var title: String?
+    var description: String?
+    var amount: Double?
+    var date: Date?
+    var type: TransactionType?
+    var category: Category?
+    var receiptImage: String?
     
     init(title: String, description: String, amount: Double, date: Date, type: TransactionType, category: Category, receiptImage: String) {
         self.title = title
