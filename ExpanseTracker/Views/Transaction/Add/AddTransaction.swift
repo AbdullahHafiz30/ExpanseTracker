@@ -1,9 +1,3 @@
-//
-//  Add.swift
-//  ExpanseTracker
-//
-//  Created by Rawan on 12/10/1446 AH.
-//
 import SwiftUI
 import PhotosUI
 import CoreData
@@ -19,22 +13,13 @@ struct AddTransaction: View {
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
     @State private var amountError: String?
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-    //@EnvironmentObject var userVM: UserViewModel
-    //@StateObject private var transactionVM: TransactionViewModel
+    @EnvironmentObject var userVM: UserViewModel
+//    @StateObject private var transactionVM: TransactionViewModel
 //    @EnvironmentObject var auth: AuthViewModel
 //        init(userVM: UserViewModel) {
 //            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
 //        }
-    
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+//    
     //enum of the types of the transactions
     enum transactionType: String, CaseIterable, Identifiable {
         case income
@@ -135,15 +120,7 @@ private extension AddTransaction {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 20)]) {
                     VStack(spacing: 25){
                         //title
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
                         CustomTextField(placeholder: "Title", text: $title,isSecure: .constant(false))
-=======
-                        CustomTextField(placeholder: "Title", text: $title,isSecure: false)
->>>>>>> Stashed changes
-=======
-                        CustomTextField(placeholder: "Title", text: $title,isSecure: false)
->>>>>>> Stashed changes
                             .environmentObject(themeManager)
                         //categories
                         DropDownMenu(
@@ -156,23 +133,10 @@ private extension AddTransaction {
                         DatePickerField(date: $date, showDatePicker: $showDatePicker)
                             .environmentObject(themeManager)
                         //Description
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
                         CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         //image picker
-                        ImagePickerField(imageData: $imageData)
-=======
-=======
->>>>>>> Stashed changes
-                        CustomTextField(placeholder: "Description", text: $description,isSecure: false)
-                            .environmentObject(themeManager)
-                        //image picker
                         ImagePickerField(imageData: $imageData, image: "")
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                             .environmentObject(themeManager)
                         //type selector
                         transactionTypeSelector
@@ -229,11 +193,6 @@ private extension AddTransaction {
             action: {
                 //validate amount
                 validateAmount(amount)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
                 if amountError == nil {
                     // Add transaction
 //                    transactionVM.addTransaction(
@@ -247,10 +206,6 @@ private extension AddTransaction {
 //                    )
                     dismiss()
                 }
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
             }
         )
         .padding(.top, 10)

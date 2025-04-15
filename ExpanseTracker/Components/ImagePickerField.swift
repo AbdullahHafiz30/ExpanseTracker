@@ -27,29 +27,13 @@ struct ImagePickerField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 7)
                         .stroke(themeManager.textColor, lineWidth: 1)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                        .frame(height: imageData == nil ? 48 : 350)
-=======
                         .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
->>>>>>> Stashed changes
-=======
-                        .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
->>>>>>> Stashed changes
                     
                     if let imageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                            .frame(width: 300,height: 300)
-=======
                             .frame(width: 300, height: 300)
->>>>>>> Stashed changes
-=======
-                            .frame(width: 300, height: 300)
->>>>>>> Stashed changes
                             .clipShape(RoundedRectangle(cornerRadius: 7))
                         
                     } else if image != "" {

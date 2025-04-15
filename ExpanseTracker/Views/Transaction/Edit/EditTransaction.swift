@@ -27,12 +27,9 @@ struct EditTransactionView: View {
     @State private var editedType: TransactionType
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
     @State private var editedAmount: Double = 0.0
+    
+    @State private var isSecure: Bool = false
 
     // Initialize editable values with the current transaction
     init(transaction: Transaction) {
@@ -41,54 +38,19 @@ struct EditTransactionView: View {
         self.transaction = transaction
     }
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     var body: some View {
         ScrollView {
             LazyVStack {
                 ZStack {
                     VStack(alignment: .leading) {
                         
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                        // Display the transaction title
-                        DropDownMenu(
-                            title: "Category",
-                            options: ["Food", "Transport", "Shopping", "Bills"],
-                            selectedOption: $selectedCategory
-                        )
-                        .environmentObject(themeManager)
-                        //amount
-                        CustomTextField(placeholder: "Amount", text: $amount,isSecure: .constant(false))
-                            .environmentObject(themeManager)
-                        //date picker
-                        DatePickerField(date: $date, showDatePicker: $showDatePicker)
-                            .environmentObject(themeManager)
-                        //Description
-                        CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
-                            .environmentObject(themeManager)
-                        //image picker
-                        ImagePickerField(imageData: $imageData)
-                            .environmentObject(themeManager)
-                        //type selector
-                        //transactionTypeSelector
-                        //the add button
-                        //addButton
-=======
                         // Price display + input
                         PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)
->>>>>>> Stashed changes
-=======
-                        // Price display + input
-                        PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)
->>>>>>> Stashed changes
                         
                         VStack(alignment: .center, spacing: 15) {
                             
                             // Title
-                            CustomTextField(placeholder: "\(transaction.title ?? "No Title")", text: $editedTitle)
+                            CustomTextField(placeholder: "\(transaction.title ?? "No Title")", text: $editedTitle, isSecure: $isSecure)
                             
                             // Category dropdown
                             DropDownMenu(
@@ -101,7 +63,7 @@ struct EditTransactionView: View {
                             DatePickerField(date: $editedDate, showDatePicker: $showDatePicker)
                             
                             // Description
-                            CustomTextField(placeholder: "\(transaction.description ?? "No Description")", text: $editedDescription)
+                            CustomTextField(placeholder: "\(transaction.description ?? "No Description")", text: $editedDescription, isSecure: $isSecure)
                             
                             // Transaction type selector
                             TransactionTypeSelector(selectedType: $editedType, themeManager: themeManager)
