@@ -61,7 +61,7 @@ class BudgetViewModel: ObservableObject {
                         PersistanceController.shared.saveContext()
                         if repeated {
                             let allBudgets = existingUserEntity.budget?.allObjects as? [BudgetEntity] ?? []
-                               updateFutureBudgets(from: existingBudget, in: allBudgets, with: budget)
+                               updateFutureBudgets(baseBudget: existingBudget, allBudgets: allBudgets, newBudgetData: budget)
                         }
                     } else {
                         // No existing budget, create a new one
@@ -76,7 +76,7 @@ class BudgetViewModel: ObservableObject {
 
                         // Save context
                         PersistanceController.shared.saveContext()
-                            repeatBudgetForUpcomingMonths(currentBudget: newBudget, forUser: existingUserEntity, context: context)
+                            repeatBudgetForUpcomingMonths(currentBudget: newBudget, forUser: existingUserEntity)
                         
                     }
                 }
@@ -89,7 +89,7 @@ class BudgetViewModel: ObservableObject {
     }
 
     
-    func repeatBudgetForUpcomingMonths(currentBudget: BudgetEntity, forUser user: UserEntity, context: NSManagedObjectContext) {
+    func repeatBudgetForUpcomingMonths(currentBudget: BudgetEntity, forUser user: UserEntity) {
         let calendar = Calendar.current
         var currentStartDate = currentBudget.startDate
         var currentEndDate = currentBudget.endDate
@@ -115,37 +115,33 @@ class BudgetViewModel: ObservableObject {
         }
     }
     
-    func updateFutureBudgets(from baseBudget: BudgetEntity, in allBudgets: [BudgetEntity], with newBudgetData: Budget) {
+    func updateFutureBudgets(baseBudget: BudgetEntity, allBudgets: [BudgetEntity], newBudgetData: Budget) {
         let calendar = Calendar.current
         guard let baseStartDateString = baseBudget.startDate else { return }
         
-        // Create a DateFormatter to convert the string to Date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        // Convert baseStartDateString to a Date object
-        guard let baseStartDate = dateFormatter.date(from: baseStartDateString) else {
+        guard let startDate = dateFormatter.date(from: baseStartDateString) else {
             print("Failed to convert baseStartDate to Date.")
             return
         }
         
-        // Normalize baseStartDate by setting the time to midnight
-        let baseStartDateMidnight = calendar.startOfDay(for: baseStartDate)
+        let baseStartDate = calendar.startOfDay(for: startDate)
         
         for budget in allBudgets {
             if let startDateString = budget.startDate {
-                // Convert startDateString to a Date object
+                
                 guard let startDate = dateFormatter.date(from: startDateString) else {
                     print("Failed to convert startDate to Date.")
                     continue
                 }
                 
-                // Normalize startDate of each budget by setting the time to midnight
-                let budgetStartDateMidnight = calendar.startOfDay(for: startDate)
                 
-                // Compare the dates, ignoring time
-                if budgetStartDateMidnight > baseStartDateMidnight {
-                    // Update the amount of future budgets
+                let budgetStartDate = calendar.startOfDay(for: startDate)
+                
+            
+                if budgetStartDate > baseStartDate {
                     budget.amount = newBudgetData.amount ?? 0
                 }
             }
@@ -155,16 +151,24 @@ class BudgetViewModel: ObservableObject {
         PersistanceController.shared.saveContext()
         print("Future repeated budgets updated.")
     }
-
+    
     func fetchCurrentMonthBudget(userId: String) -> BudgetEntity? {
-        print("fetching current month budget")
+        print("Fetching current month budget")
+
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
+        var hasNextMonthBudget = false
         let now = Date()
         let currentMonth = calendar.component(.month, from: now)
         let currentYear = calendar.component(.year, from: now)
+
+        var nextMonth = currentMonth + 1
+        var nextYear = currentYear
+        if nextMonth > 12 {
+            nextMonth = 1
+            nextYear += 1
+        }
 
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
@@ -173,19 +177,37 @@ class BudgetViewModel: ObservableObject {
             if let user = try context.fetch(userRequest).first,
                let budgets = user.budget?.allObjects as? [BudgetEntity] {
 
+                var currentMonthBudget: BudgetEntity?
+                
                 for budget in budgets {
                     guard let startDateStr = budget.startDate,
                           let startDate = dateFormatter.date(from: startDateStr) else {
                         continue
                     }
-
+                    
                     let budgetMonth = calendar.component(.month, from: startDate)
                     let budgetYear = calendar.component(.year, from: startDate)
-
+                    
                     if budgetMonth == currentMonth && budgetYear == currentYear {
-                        return budget
+                        currentMonthBudget = budget
+                    }
+                    
+                    if budgetMonth == nextMonth && budgetYear == nextYear {
+                        hasNextMonthBudget = true
                     }
                 }
+                
+                if currentMonthBudget == nil {
+                    print("No budget found for current month. Creating one.")
+                    
+                }
+               
+                if currentMonthBudget != nil && !hasNextMonthBudget {
+                    print("Next month's budget not found. Repeate")
+                    repeatBudgetForUpcomingMonths(currentBudget: currentMonthBudget!, forUser: user)
+                }
+
+                return currentMonthBudget
             }
         } catch {
             print("Error fetching budget: \(error)")
@@ -193,6 +215,48 @@ class BudgetViewModel: ObservableObject {
 
         return nil
     }
+
+
+
+//    func fetchCurrentMonthBudget(userId: String) -> BudgetEntity? {
+//        print("fetching current month budget")
+//        let calendar = Calendar.current
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//
+//        let now = Date()
+//        let currentMonth = calendar.component(.month, from: now)
+//        let nextMonth = calendar.component(.month, from: now) + 1
+//        let currentYear = calendar.component(.year, from: now)
+//
+//        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+//        userRequest.predicate = NSPredicate(format: "id == %@", userId)
+//
+//        do {
+//            if let user = try context.fetch(userRequest).first,
+//               let budgets = user.budget?.allObjects as? [BudgetEntity] {
+//
+//                for budget in budgets {
+//                    guard let startDateStr = budget.startDate,
+//                          let startDate = dateFormatter.date(from: startDateStr) else {
+//                        continue
+//                    }
+//
+//                    let budgetMonth = calendar.component(.month, from: startDate)
+//                    let budgetYear = calendar.component(.year, from: startDate)
+//
+//                    if budgetMonth == currentMonth && budgetYear == currentYear {
+//                        return budget
+//                    }
+//                }
+//            }
+//        } catch {
+//            print("Error fetching budget: \(error)")
+//        }
+//
+//        return nil
+//    }
+
 
     func deleteAll(userId: String) {
         let context = PersistanceController.shared.container.viewContext

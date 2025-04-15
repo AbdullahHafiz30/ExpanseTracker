@@ -143,20 +143,20 @@ struct EditCategory: View {
                 Spacer()
                 
                 CustomButton(title: "Save", action: {
-                guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                         showNameAlert = true
                         return
                     }
                     
-                        let category = Category(
-                            id: id,
-                            name: categoryName,
-                            color: UIColor(color).toHexString(),
-                            icon: selectedIcon,
-                            categoryType: categoryType,
-                            budgetLimit: limit
-                        )
-                        
+                    let category = Category(
+                        id: id,
+                        name: categoryName,
+                        color: UIColor(color).toHexString(),
+                        icon: selectedIcon,
+                        categoryType: categoryType,
+                        budgetLimit: limit
+                    )
+                    
                     categoryViewModel.saveEditedCategory(category: category, userId: userId)
                 })
                 
@@ -171,15 +171,16 @@ struct EditCategory: View {
             }
         }
         .onAppear {
-//                if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(id: id) {
-//                    categoryName = category.name!
-//                    selectedIcon = category.icon!
-//                    color = colorFromHexString(category.color)!
-//                    categoryType = category.categoryType!
-//                    limit = category.budgetLimit!
-//                } else {
-//                    print("Category not found.")
-//                }
+            if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
+                categoryName = category.name ?? ""
+                selectedIcon = category.icon ?? ""
+                color = colorFromHexString(category.color ?? "")
+                categoryType = category.categoryType ?? .other
+                limit = category.budgetLimit ?? 0.0
+            } else {
+                print("Category not found.")
+            }
+            
         }
         .alert("Category name is required", isPresented: $showNameAlert) {
             Button("OK", role: .cancel) { }
