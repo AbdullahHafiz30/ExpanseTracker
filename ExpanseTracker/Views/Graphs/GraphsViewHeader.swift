@@ -1,5 +1,5 @@
 //
-//  DateTab.swift
+//  GraphsViewHeader.swift
 //  ExpanseTracker
 //
 //  Created by Abdullah Hafiz on 14/04/2025.
@@ -15,13 +15,13 @@ enum DateTab: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-struct DateModePicker: View {
+struct GraphsViewHeader: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
     @Binding var selectedType: CategoryType?
 
-    private let yearRange = 2000...2030
+    private let yearRange = 2020...2060
     private let monthSymbols: [String] = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
@@ -40,7 +40,7 @@ struct DateModePicker: View {
                         }
                     }
                 } label: {
-                    LabelView(text: monthSymbols[selectedMonth])
+                    DateLabelView(text: monthSymbols[selectedMonth])
                 }
             }
 
@@ -52,7 +52,7 @@ struct DateModePicker: View {
                     }
                 }
             } label: {
-                LabelView(text: "\(selectedYear)")
+                DateLabelView(text: "\(selectedYear)")
             }
             
             Spacer()
@@ -84,7 +84,7 @@ struct DateModePicker: View {
                     }
                 }
             } label: {
-                Image(systemName: "slider.horizontal.3.circle")
+                Image(systemName: "slider.horizontal.3")
                     .foregroundStyle(.primary)
                     .font(.title2)
             }
