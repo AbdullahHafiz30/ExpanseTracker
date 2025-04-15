@@ -4,18 +4,21 @@
 //
 //  Created by Rawan on 12/10/1446 AH.
 //
-
-
 import SwiftUI
 
 struct LogInPage: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn = false
-    @State private var goHome = false
+    @State private var backHome = false
+    @State private var goToHome = false
     @EnvironmentObject var themeManager: ThemeManager
+    @ObservedObject var auth: AuthViewModel
+    @State private var isPasswordSecure: Bool = true
     var body: some View {
         NavigationStack{
+            ScrollView(.vertical) {
+                LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
             ZStack{
                 themeManager.backgroundColor
                     .ignoresSafeArea()
@@ -24,7 +27,7 @@ struct LogInPage: View {
                     //logo
                     HStack() {
                         Button(action: {
-                            goHome.toggle()
+                            backHome.toggle()
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(themeManager.textColor)
@@ -57,26 +60,45 @@ struct LogInPage: View {
                         
                         CustomTextField(
                             placeholder: "Email",
-                            text: $email
+                            text: $email,
+                            isSecure:.constant(false)
                         )
-                        CustomTextField(
-                            placeholder: "Password",
-                            text: $password,
-                            isSecure: true
-                        )
+                        ZStack(alignment: .trailing) {
+                            CustomTextField(
+                                placeholder: "Password",
+                                text: $password,
+                                isSecure: $isPasswordSecure
+                            )
+                            
+                            Button(action: {
+                                isPasswordSecure.toggle()
+                            }) {
+                                Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 16)
+                            }
+                        }
                         //Cutsom button
                         CustomButton(
                             title: "Login",
-                            action: {}
-                        )
+                            action: {
+                                //Firebase login
+                                auth.logIn(email: email, password: password){ success in
+                                    if success {
+                                        goToHome = true
+                                    }
+                                }
+                                
+                            }
+                        ).disabled(auth.isLoading)
                         
                     }
                     .padding()
                     Spacer()
-                    
+                    .padding(.bottom,100)
                     //navigation to sign up
                     HStack{
-                        Text("You don't have an account?")
+                        Text("Don't have an account?")
                             .foregroundColor(themeManager.textColor)
                         Text("Sign Up")
                             .foregroundColor(.blue)
@@ -84,19 +106,31 @@ struct LogInPage: View {
                                 isLoggedIn.toggle()
                             }
                     }
-                }
+                }.padding(.bottom,20)
                 
             }
         }
+    }
+        }
         //cover the whole page with the sign up page
         .fullScreenCover(isPresented: $isLoggedIn) {
-            SignUpPage()
+            SignUpPage(auth: auth)
         }
         //cover the whole page with the welcome page
-        .fullScreenCover(isPresented: $goHome) {
+        .fullScreenCover(isPresented: $backHome) {
             WelcomePage()
         }
         .navigationBarBackButtonHidden(true)
+        .alert(isPresented: $auth.showAlert) {
+                    Alert(title: Text(auth.alertTitle), message: Text(auth.alertMessage), dismissButton: .default(Text("OK")))
+                }
+        NavigationLink(
+            destination: MainTabView(auth:auth),
+                    isActive: $goToHome,
+                    label: {
+                        EmptyView()
+                    }
+                )
         
     }
 }

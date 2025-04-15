@@ -1,13 +1,5 @@
 //
 //  SetBudget.swift
-//  ExpanseTracker
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
-
-//
-//  SetBudget.swift
 //  ExpensesMonthlyProjrct
 //
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
@@ -17,7 +9,7 @@ import SwiftUI
 
 struct SetBudget: View {
     @State var budget: String = ""
-    @Environment(\.dismiss) var dismiss
+    @Binding var isPresented: Bool
     @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         NavigationStack {
@@ -28,7 +20,7 @@ struct SetBudget: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical)
                 
-                TextField("5000", text: $budget)
+                TextField("5000 Riyals", text: $budget)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .frame(height: 60, alignment: .leading)
@@ -38,7 +30,9 @@ struct SetBudget: View {
                     }
                     .padding(.bottom, 20)
                 
-                CustomButton(title: "Save")
+                CustomButton(title: "Save", action: {
+                    isPresented = false
+                })
                     .padding(.bottom, 20)
             }
             .padding()
@@ -55,5 +49,5 @@ struct SetBudget: View {
 }
 
 #Preview {
-    SetBudget()
+    SetBudget(isPresented: .constant(true))
 }

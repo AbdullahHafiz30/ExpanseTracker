@@ -11,7 +11,16 @@ struct AccountInformation: View {
     @State var showPassword: Bool = false
     @State var showEditPage: Bool = false
     @Environment(\.dismiss) var dismiss
+    @State var name: String = ""
+    @State var email: String = ""
+    @State var password: String = ""
     @EnvironmentObject var themeManager: ThemeManager
+    @StateObject var userViewModel = UserViewModel()
+    @Binding var userId: String
+    @State private var imageURL: URL? = nil
+    @State private var imageData: Data? = nil
+    @State private var isPasswordSecure: Bool = true
+    
     var body: some View {
         NavigationStack{
             VStack (spacing:10){
@@ -20,10 +29,18 @@ struct AccountInformation: View {
                         .stroke(lineWidth: 2)
                         .frame(width: 180, height: 180)
                     
-                    Image(systemName: "person")
-                        .resizable()
-                        .frame(width: 100,height: 100)
-                        .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
+                    if let imageData, let uiImage = UIImage(data: imageData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 170, height: 170)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
+                    }
                 }
                 .padding(.top,25)
                 .padding()
@@ -32,7 +49,7 @@ struct AccountInformation: View {
                 Group{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    Text("Example Name")
+                    Text(name)
                         .foregroundColor(.secondary)
                     
                     Divider()
@@ -40,7 +57,7 @@ struct AccountInformation: View {
                     
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    Text(verbatim: "Example@gmail.com")
+                    Text(verbatim: email)
                         .foregroundColor(.secondary)
                     
                     Divider()
@@ -48,9 +65,21 @@ struct AccountInformation: View {
                     
                     Text("Password")
                         .font(.system(size: 22, weight: .medium, design: .default))
-                    Text("***********")
-                        .foregroundColor(.secondary)
                     
+                    HStack{
+                        Text(isPasswordSecure ? "**********" : password)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            isPasswordSecure.toggle()
+                        }) {
+                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+                                .foregroundColor(.gray)
+                                .padding(.trailing, 16)
+                        }
+                    }
                     Divider()
                         .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                 }
@@ -61,7 +90,7 @@ struct AccountInformation: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: EditAccountInformation()){
+                NavigationLink(destination: EditAccountInformation(userId: $userId)){
                     Text("Edit")
                         .frame(width: 170, height: 50)
                         .background(
@@ -75,6 +104,30 @@ struct AccountInformation: View {
                 }
                 Spacer()
         
+            }.onAppear{
+                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+                
+                name = userInfo?.name ?? ""
+                email = userInfo?.email ?? ""
+                password = userInfo?.password ?? ""
+
+                if let imageFilename = userInfo?.image {
+                    print("Saved image filename: \(imageFilename)")
+
+                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+
+                    print("Full file path: \(fileURL.path)")
+
+                    if FileManager.default.fileExists(atPath: fileURL.path),
+                       let data = try? Data(contentsOf: fileURL) {
+                        self.imageData = data
+                        self.imageURL = fileURL
+                        print("Image data loaded from documents")
+                    } else {
+                        print("File not found in documents")
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -85,9 +138,10 @@ struct AccountInformation: View {
             }
             .navigationBarBackButtonHidden(true)
         }
+        
     }
 }
 
 #Preview {
-    AccountInformation()
+    AccountInformation(userId: .constant(""))
 }

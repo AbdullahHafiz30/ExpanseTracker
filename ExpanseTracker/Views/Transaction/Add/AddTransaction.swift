@@ -4,22 +4,21 @@
 //
 //  Created by Rawan on 12/10/1446 AH.
 //
-
-
 import SwiftUI
 import PhotosUI
 
 struct AddTransaction: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var price: String = ""
     @State private var amount: String = ""
+    @State private var title: String = ""
     @State private var description: String = ""
     @State private var date = Date()
     @State private var showDatePicker = false
     @State private var selectedCategory = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
+    @State private var amountError: String?
     //enum of the types of the transactions
     enum transactionType: String, CaseIterable, Identifiable {
         case income
@@ -29,24 +28,28 @@ struct AddTransaction: View {
     @State private var selectedType: transactionType = .income
     var body: some View {
         NavigationStack {
-            //background
-            ZStack{
-                themeManager.backgroundColor
-                    .ignoresSafeArea()
-                //show the 3 sections of the page
-                VStack(alignment: .leading) {
-                    headerSection
-                    priceSection
-                    formSection
-                    
+            ScrollView(.vertical) {
+                LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
+                    //background
+                    ZStack{
+                        themeManager.backgroundColor
+                            .ignoresSafeArea()
+                        //show the 3 sections of the page
+                        VStack(alignment: .leading) {
+                            headerSection
+                            priceSection
+                            formSection
+                            
+                        }
+                        
+                    }
                 }
-                
-                .padding(.horizontal)
             }
             //load the image
             .onChange(of: selectedImage) { _, newItem in
                 loadImage(from: newItem)
             }
+
         }.navigationBarBackButtonHidden(true)
         
     }
@@ -71,7 +74,7 @@ private extension AddTransaction {
                 .foregroundColor(themeManager.textColor)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top,20)
+        .padding(.top,10)
     }
     //price section
     var priceSection: some View {
@@ -86,10 +89,20 @@ private extension AddTransaction {
                 Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
                     .resizable()
                     .frame(width: 60, height: 60)
-                
-                TextField("0", text: $price)
-                    .font(.system(size: 50))
-                    .foregroundColor(themeManager.textColor)
+                VStack{
+                    TextField("0", text: $amount)
+                        .font(.system(size: 50))
+                        .foregroundColor(themeManager.textColor)
+                        .onChange(of: amount) { _ , newValue in
+                            validateAmount(newValue)
+                        }
+                    
+                    if let error = amountError {
+                        Text(error)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                }
             }
             .padding(.leading)
         }
@@ -99,43 +112,44 @@ private extension AddTransaction {
         ZStack {
             RoundedRectangle(cornerRadius: 32)
                 .fill(themeManager.isDarkMode ? Color.gray.opacity(0.3) : Color.gray.opacity(0.15))
-                .frame(width: 397, height: 650)
                 .edgesIgnoringSafeArea(.bottom)
+                .padding(.bottom,-35)
             
-            VStack() {
-                ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 20)]) {
-                        VStack(spacing: 25){
-                            //categories
-                            DropDownMenu(
-                                title: "Category",
-                                options: ["Food", "Transport", "Shopping", "Bills"],
-                                selectedOption: $selectedCategory
-                            )
+            ScrollView(showsIndicators: false) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 20)]) {
+                    VStack(spacing: 25){
+                        //title
+                        CustomTextField(placeholder: "Title", text: $title,isSecure: .constant(false))
                             .environmentObject(themeManager)
-                            //amount
-                            CustomTextField(placeholder: "Amount", text: $amount)
-                                .environmentObject(themeManager)
-                            //date picker
-                            DatePickerField(date: $date, showDatePicker: $showDatePicker)
-                                .environmentObject(themeManager)
-                            //Description
-                            CustomTextField(placeholder: "Description", text: $description)
-                                .environmentObject(themeManager)
-                            //image picker
-                            ImagePickerField(imageData: $imageData)
-                                .environmentObject(themeManager)
-                            //type selector
-                            transactionTypeSelector
-                            //the add button
-                            addButton
-                            Spacer()
-                        }.padding(.bottom,30)
-                    }.frame(maxWidth: .infinity)
+                        //categories
+                        DropDownMenu(
+                            title: "Category",
+                            options: ["Food", "Transport", "Shopping", "Bills"],
+                            selectedOption: $selectedCategory
+                        )
+                        .environmentObject(themeManager)
+                        //date picker
+                        DatePickerField(date: $date, showDatePicker: $showDatePicker)
+                            .environmentObject(themeManager)
+                        //Description
+                        CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
+                            .environmentObject(themeManager)
+                        //image picker
+                        ImagePickerField(imageData: $imageData)
+                            .environmentObject(themeManager)
+                        //type selector
+                        transactionTypeSelector
+                        //the add button
+                        addButton
+                        Spacer()
+                    }
+                    .padding(.top,10)
+                    
                 }
-                .padding(.top, 30)
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal)
             }
+            
         }
     }
     //the type selector section
@@ -175,7 +189,10 @@ private extension AddTransaction {
     var addButton: some View {
         CustomButton(
             title: "Add",
-            action: {}
+            action: {
+                //validate amount
+                validateAmount(amount)
+            }
         )
         .padding(.top, 10)
     }
@@ -192,4 +209,18 @@ private extension AddTransaction {
             }
         }
     }
+    //validate error mesg for amount
+    func validateAmount(_ text: String) {
+        if isValidNumber(text) {
+            amountError = nil
+        } else {
+            amountError = "Price must be a number only."
+        }
+    }
+    //validate function
+    func isValidNumber(_ text: String) -> Bool {
+        let numberPattern = "^[0-9]+$"
+        return text.range(of: numberPattern, options: .regularExpression) != nil
+    }
+    
 }

@@ -12,6 +12,7 @@ struct MainTabView: View {
     @State private var selectedTab = 0
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
+    @ObservedObject var auth: AuthViewModel
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
@@ -29,13 +30,13 @@ struct MainTabView: View {
                 
                 Spacer()
                 
-                Text("Stats")
+                GraphsView()
                     .tabItem {
                         Image(systemName: "chart.bar.xaxis.ascending")
                         Text("Stats")
                     }.tag(2)
-                
-                Profile()
+
+                Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Profile")
@@ -67,13 +68,10 @@ struct MainTabView: View {
                     Spacer()
                 }
             }
-        }
+        }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            EditAccountInformation()
+            AddTransaction()
         }
     }
 }
 
-#Preview {
-    MainTabView()
-}
