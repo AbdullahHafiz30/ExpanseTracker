@@ -6,8 +6,8 @@
 //
 
 enum CategoryType: String, CaseIterable, Codable {
-    case Essential = "Essential"
-    case Entertainment = "Entertainment"
+    case essential = "Essential"
+    case entertainment = "Entertainment"
     case emergency = "Emergency"
     case other = "Other"
 }
