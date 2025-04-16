@@ -65,10 +65,7 @@ struct CoreDataHelper {
         }
     }
     
-<<<<<<< Updated upstream
-=======
     // Save the edits user makes
->>>>>>> Stashed changes
     func saveEditedUser(user: User) {
         // Fetch the Core Data object directly
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
