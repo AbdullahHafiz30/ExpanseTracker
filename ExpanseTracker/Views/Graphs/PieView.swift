@@ -11,14 +11,6 @@ import Charts
 struct PieView: View {
     
     @ObservedObject var viewModel = DummyDataView()
-//    func loadFilteredData() -> [Double]{
-//        let essentials = viewModel.getEssential()
-//        let entertainment = viewModel.getEntertainment()
-//        let emergency = viewModel.getEmergency()
-//        let other = viewModel.getOther()
-//        
-//        return [emergency, entertainment, essentials, other]
-//    }
     
     
     var body: some View {

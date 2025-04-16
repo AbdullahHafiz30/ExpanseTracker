@@ -229,26 +229,6 @@ class DummyDataView: ObservableObject {
         return allTotal
     }
     
-    //    func getSections() -> [String] {
-    //        return ["Essential", "Entertainment", "Emergency", "Other"]
-    //    }
-    //
-    //    func getChartData() -> [PieChartDataEntry] {
-    //        return [
-    //            PieChartDataEntry(value: getEssential()),
-    //            PieChartDataEntry(value: getEntertainment()),
-    //            PieChartDataEntry(value: getEmergency()),
-    //            PieChartDataEntry(value: getOther())
-    //        ]
-    //    }
-    //
-    //    struct PieChartDataEntry : Identifiable {
-    //        var id: ObjectIdentifier
-    //
-    //        var
-    //        }
-    //    }
-    
     func getTestData() -> [Test] {
         return [
             Test(text: "Essential", number: getEssential()),
