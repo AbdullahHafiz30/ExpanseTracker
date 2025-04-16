@@ -6,9 +6,26 @@
 //
 
 import SwiftUI
+import Charts
 
 struct PieView: View {
+    
+    @ObservedObject var viewModel = DummyDataView()
+    
     var body: some View {
-        Text("Pie View")
+        VStack {
+            //            Chart(viewModel.dummyData) { dummydata in
+            //                SerctorMark(
+            //                    angle: .value(
+            //                        Text(verbatim: dummydata.),
+            //                        product.revenue
+            //                    )
+            //
+            //                )
+            //
+            //            }
+        }.onAppear {
+            viewModel.getEssential()
+        }
     }
 }
