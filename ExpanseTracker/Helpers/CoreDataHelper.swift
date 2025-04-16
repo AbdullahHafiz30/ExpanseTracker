@@ -90,6 +90,23 @@ struct CoreDataHelper {
         }
     }
     
+    func deleteUser(userId: String) {
+        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+        userRequest.predicate = NSPredicate(format: "id == %@", userId)
+        
+        do {
+            if let userToDelete = try context.fetch(userRequest).first{
+                context.delete(userToDelete)
+                PersistanceController.shared.saveContext()
+                print("✅ User deleted successfully.")
+            } else {
+                print("User not found.")
+            }
+        } catch {
+            print("❌ Failed to delete user: \(error)")
+        }
+    }
+    
     // Save the image of the user profile
     func saveImageToDocuments(_ image: UIImage) -> String? {
         let filename = UUID().uuidString + ".jpg"
