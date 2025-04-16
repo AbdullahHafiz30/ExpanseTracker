@@ -14,11 +14,10 @@ struct LogInPage: View {
     @State private var backHome = false
     @State private var goToHome = false
     @State private var isLoading = false
-    @State private var errorMessage: String?
     @EnvironmentObject var themeManager: ThemeManager
     @ObservedObject var auth: AuthViewModel
     @State private var isPasswordSecure: Bool = true
-    @EnvironmentObject var alertManager: AlertManager
+    @StateObject private var alertManager = AlertManager.shared
     var body: some View {
         //MARK: - View
         NavigationStack{
@@ -93,8 +92,6 @@ struct LogInPage: View {
                                     isLoading = false
                                     if success {
                                         goToHome = true
-                                    } else if let message = message {
-                                        alertManager.showAlert(title: "Login Failed", message: message)
                                     }
                                 }
                             }
@@ -120,6 +117,11 @@ struct LogInPage: View {
             }
         }
     }
+        } .alert(isPresented: $alertManager.alertState.isPresented) {
+            Alert(
+                title: Text(alertManager.alertState.title),
+                message: Text(alertManager.alertState.message),
+                dismissButton: .default(Text("OK")))
         }
         // Cover the whole page with the sign up page
         .fullScreenCover(isPresented: $isLoggedIn) {
