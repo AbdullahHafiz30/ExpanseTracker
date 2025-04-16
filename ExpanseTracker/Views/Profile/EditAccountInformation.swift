@@ -32,18 +32,18 @@ struct EditAccountInformation: View {
                 ZStack{
                     Circle()
                         .stroke(lineWidth: 2)
-                        .frame(width: 180, height: 180)
+                        .frame(width: 170, height: 170)
                     
                     if let imageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 170, height: 170)
+                            .frame(width: 160, height: 160)
                             .clipShape(Circle())
                     } else {
                         Image(systemName: "person")
                             .resizable()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 90, height: 90)
                             .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
                     }
                     
@@ -74,6 +74,7 @@ struct EditAccountInformation: View {
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
+                        .disabled(true)
                     
                     
                     Text("Password")
@@ -85,6 +86,7 @@ struct EditAccountInformation: View {
                             text: $userPassword,
                             isSecure: $isPasswordSecure
                         )
+                        .disabled(true)
                         
                         Button(action: {
                             isPasswordSecure.toggle()
@@ -99,8 +101,6 @@ struct EditAccountInformation: View {
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)
                 .padding(.horizontal)
-                .padding(.bottom,5)
-                
                 
                 Spacer()
                 // MARK: - Save edited account information button
