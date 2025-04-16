@@ -1,28 +1,30 @@
 //
-//  Transaction.swift
+//  Transactions.swift
 //  ExpanseTracker
 //
-//  Created by Tahani Ayman on 12/10/1446 AH.
+//  Created by Abdullah Hafiz on 12/10/1446 AH.
 //
 
-import SwiftUI
+import Foundation
 
-struct Transaction: Identifiable{
-    let id = UUID()
-    var title: String?
-    var description: String?
-    var amount: Double?
-    var date: Date?
-    var type: TransactionType?
-    var category: Category?
-    var receiptImage: String?
+
+struct Transaction: Identifiable, Hashable {
+    let id: String?
+    let title: String?
+    let description: String?
+    let amount: Double?
+    let date: Date?
+    let transactionType: TransactionType?
+    let category: Category?
+    let receiptImage: String?
     
-    init(title: String, description: String, amount: Double, date: Date, type: TransactionType, category: Category, receiptImage: String) {
+    init(id: String?, title: String?, description: String?, amount: Double?, date: Date?, transactionType: TransactionType?, category: Category?, receiptImage: String?) {
+        self.id = id
         self.title = title
         self.description = description
         self.amount = amount
         self.date = date
-        self.type = type
+        self.transactionType = transactionType
         self.category = category
         self.receiptImage = receiptImage
     }

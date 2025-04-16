@@ -19,9 +19,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct YourApp: App {
-    // Register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
+    
+    // Add persistence controller
+    let persistenceController = PersistanceController.shared
+
     var body: some Scene {
         WindowGroup {
             WelcomePage()
@@ -32,6 +35,7 @@ struct YourApp: App {
         }
     }
 }
+
 
 
 

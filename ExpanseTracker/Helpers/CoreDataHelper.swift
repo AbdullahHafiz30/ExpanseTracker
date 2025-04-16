@@ -41,7 +41,7 @@ struct CoreDataHelper {
                     email: result.email ?? "",
                     password: result.password ?? "",
                     image: result.imageURL ?? "",
-                    transactions: Array(result.transaction as? Set<Transactions> ?? []),
+                    transactions: Array(result.transaction as? Set<Transaction> ?? []),
                     budgets: Array((result.budget as? Set<BudgetEntity>)?.map { Budget(from: $0) } ?? []),
                     categories: Array(result.category as? Set<Category> ?? [])
                 )

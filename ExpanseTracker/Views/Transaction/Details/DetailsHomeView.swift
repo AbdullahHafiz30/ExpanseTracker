@@ -10,67 +10,81 @@ import SwiftUI
 /// A SwiftUI view that displays detailed information about a specific transaction.
 struct DetailsHomeView: View {
     
-    // Access the shared theme manager for dark/light mode styling
     @EnvironmentObject var themeManager: ThemeManager
-    
-    // Used to dismiss the current view
     @Environment(\.dismiss) var dismiss
     
-    // The transaction to display details for
-    var transaction: Transaction
+    let transaction: TransacionsEntity
+    
     @State private var imageData: Data?
+    
+    var formattedTransactionDate: String {
+        guard let dateString = transaction.date else {
+            return "No Date Provided"
+        }
+        
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "dd MMM yyyy" 
+        
+        if let date = inputFormatter.date(from: dateString) {
+            return date.formatted(date: .abbreviated, time: .omitted)
+        }
+        
+        return "No Date Provided"
+    }
     
     var body: some View {
         ScrollView {
-            ZStack {
-                VStack(alignment: .leading) {
+            VStack(alignment: .leading) {
+                
+                // Amount
+                PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
+                
+                VStack(alignment: .leading, spacing: 15) {
                     
-                    // Display the transaction amount using a styled price section
-                    PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
+                    // Title
+                    CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
                     
-                    VStack(alignment: .leading, spacing: 15) {
-                        
-                        // Display the transaction title
-                        CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
+                    // Category
+                    CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
+                    
+                    // Date
+                    CustomText(text: formattedTransactionDate, placeholder: "Date:")
+                    
+                    // Description
+                    CustomText(text: transaction.desc ?? "No Description", placeholder: "Description:")
+                    
+                    // Transaction Type
+                    SelectedTransactionType(
+                        themeManager: themeManager,
+                        selectedType: TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
+                    )
 
-                        CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
-
-                        
-                        // Display the formatted transaction date
-                        CustomText(
-                            text: transaction.date?.formatted(date: .abbreviated, time: .omitted) ?? Date().formatted(date: .abbreviated, time: .omitted),
-                            placeholder: "Date:"
-                        )
-                        
-                        // Display the transaction description
-                        CustomText(text: transaction.description ?? "No Description", placeholder: "Description:")
-                            .environmentObject(themeManager)
-                        
-                        
-                        // Display the transaction type
-                        SelectedTransactionType(themeManager: themeManager, selectedType: transaction.type ?? .income)
-                        
-                        // Display an attached receipt image
-                        ImagePickerField(imageData: $imageData, image: transaction.receiptImage ?? "No Image Provided")
-                        
-                        Spacer() // Push content to the top
+                    // Receipt Image
+                    if let base64String = transaction.image {
+                        if let imageData = Data(base64Encoded: base64String),
+                           let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 100)
+                        }
                     }
-                    .padding()
-                    .ignoresSafeArea(edges: .bottom)
-                    .background(.gray.opacity(0.15))
-                    .cornerRadius(32)
-                    .padding(.bottom, -35) // Adjust bottom spacing
+                    
+                    Spacer()
                 }
+                .padding()
+                .background(.gray.opacity(0.15))
+                .cornerRadius(32)
+                .padding(.bottom, -35)
             }
-            // Custom toolbar with localized title and dismiss button
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    HeaderSection(title: "Transaction Details", action: {
-                        dismiss() // Dismiss the view when the header arrow is tapped
-                    })
-                }
-            }
-            .navigationBarBackButtonHidden(true) // Hide the default navigation back button
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                CustomBackward(title: "Transaction Details") {
+                    dismiss()
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }

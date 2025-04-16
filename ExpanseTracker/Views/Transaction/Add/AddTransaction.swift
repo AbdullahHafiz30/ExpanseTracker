@@ -1,3 +1,4 @@
+
 import SwiftUI
 import PhotosUI
 import CoreData
@@ -14,18 +15,9 @@ struct AddTransaction: View {
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
     @State private var amountError: String?
-    @StateObject private var transactionVM: TransactionViewModel
-//        init(userVM: UserViewModel) {
-//            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
-//        }
+    @StateObject private var transVM = AddTransactionViewModel()
     
-    // Enum of the types of the transactions
-    enum transactionType: String, CaseIterable, Identifiable {
-        case income
-        case expense
-        var id: String { self.rawValue }
-    }
-    @State private var selectedType: transactionType = .income
+    @State private var selectedType: TransactionType = .income
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
@@ -46,9 +38,9 @@ struct AddTransaction: View {
                 }
             }
             // Load the image
-            .onChange(of: selectedImage) { _, newItem in
-                loadImage(from: newItem)
-            }
+//            .onChange(of: imageData) { _, newItem in
+//                loadImage(from: newItem)
+//            }
 
         }.navigationBarBackButtonHidden(true)
         
@@ -162,7 +154,7 @@ private extension AddTransaction {
                 .padding(.leading, -60)
             
             HStack(spacing: 12) {
-                ForEach(transactionType.allCases) { type in
+                ForEach(TransactionType.allCases) { type in
                     Text(type.rawValue.capitalized)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
@@ -195,10 +187,10 @@ private extension AddTransaction {
                 validateAmount(amount)
                 if amountError == nil {
                     // Add transaction
-                    transactionVM.addTransaction(
+                    AddTransactionViewModel().addTransaction(
                         title: title,
                         description: description,
-                        amount: amount,
+                        amount: Double(amount) ?? 0,
                         date: date,
                         type: selectedType,
                         selectedCategoryName: selectedCategory,
@@ -211,18 +203,18 @@ private extension AddTransaction {
         .padding(.top, 10)
     }
     // Load image function
-    func loadImage(from item: PhotosPickerItem?) {
-        Task {
-            guard let item = item else { return }
-            do {
-                if let data = try await item.loadTransferable(type: Data.self) {
-                    imageData = data
-                }
-            } catch {
-                print("Failed to load image data: \(error)")
-            }
-        }
-    }
+//    func loadImage(from item: Data?) {
+//        Task {
+//            guard let item = item else { return }
+//            do {
+//                if let data = try await item.loadTransferable(type: Data.self) {
+//                    imageData = data
+//                }
+//            } catch {
+//                print("Failed to load image data: \(error)")
+//            }
+//        }
+//    }
     // Validate error mesg for amount
     func validateAmount(_ text: String) {
         if isValidNumber(text) {
