@@ -22,7 +22,7 @@ struct MainTabView: View {
                         Text("Home")
                     }.tag(0)
                 
-                Text("list of categories")
+                CategoryView()
                     .tabItem {
                         Image(systemName: "doc.on.doc")
                         Text("Categories")
