@@ -1,18 +1,33 @@
+//
+//  EditTransaction.swift
+//  ExpanseTracker
+//
+//  Created by Tahani Ayman on 15/10/1446 AH.
+//
+
 import SwiftUI
 import PhotosUI
 import CoreData
+
 struct AddTransaction: View {
     //MARK: - Variables
     @Environment(\.dismiss) var dismiss
+
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var amount: String = ""
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @State private var showDatePicker = false
+    @State private var isSecure: Bool = false
+    
     @State private var title: String = ""
     @State private var description: String = ""
-    @State private var date = Date()
-    @State private var showDatePicker = false
-    @State private var selectedCategory = ""
+    @State private var amount: Double = 0.0
+    @State private var date: Date = Date()
+    @State private var type: TransactionType = .income
+    @State private var selectedCategoryName: String = "Food"
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
+<<<<<<< Updated upstream
     @State private var amountError: String?
     @StateObject private var transactionVM: TransactionViewModel
 //        init(userVM: UserViewModel) {
@@ -49,12 +64,25 @@ struct AddTransaction: View {
             .onChange(of: selectedImage) { _, newItem in
                 loadImage(from: newItem)
             }
+=======
+    
+    @FetchRequest(
+        entity: CategoryEntity.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)]
+    ) private var categories: FetchedResults<CategoryEntity>
 
-        }.navigationBarBackButtonHidden(true)
-        
-    }
-}
+    var body: some View {
+        ScrollView {
+            LazyVStack {
+                ZStack {
+                    VStack(alignment: .leading) {
+                        PriceSection(amount: $amount, readOnlyAmount: nil, themeManager: themeManager)
+>>>>>>> Stashed changes
 
+                        VStack(alignment: .center, spacing: 15) {
+                            CustomTextField(placeholder: "Title", text: $title, isSecure: $isSecure)
+
+<<<<<<< Updated upstream
 private extension AddTransaction {
     //MARK: - View
     // Header section
@@ -96,14 +124,41 @@ private extension AddTransaction {
                         .foregroundColor(themeManager.textColor)
                         .onChange(of: amount) { _ , newValue in
                             validateAmount(newValue)
+=======
+                            DropDownMenu(
+                                title: "Category",
+                                options: ["Food", "Transport", "Shopping", "Bills"],
+                                selectedOption: $selectedCategoryName
+                            )
+
+                            DatePickerField(date: $date, showDatePicker: $showDatePicker)
+
+                            CustomTextField(placeholder: "Description", text: $description, isSecure: $isSecure)
+
+                            TransactionTypeSelector(selectedType: $type, themeManager: themeManager)
+
+                            ImagePickerField(imageData: $imageData, image: "")
+
+                            CustomButton(
+                                title: "Save",
+                                action: {
+                                    addTransaction()
+                                }
+                            )
+                            .padding(.top, 10)
+
+                            Spacer()
+>>>>>>> Stashed changes
                         }
-                    
-                    if let error = amountError {
-                        Text(error)
-                            .foregroundColor(.red)
-                            .font(.caption)
+                        .padding()
+                        .ignoresSafeArea(edges: .bottom)
+                        .background(.gray.opacity(0.15))
+                        .cornerRadius(32)
+                        .frame(maxWidth: 400)
+                        .padding(.bottom, -35)
                     }
                 }
+<<<<<<< Updated upstream
             }
             .padding(.leading)
         }
@@ -143,10 +198,16 @@ private extension AddTransaction {
                         // The add button
                         addButton
                         Spacer()
+=======
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CustomBackward(title: "Add Transaction", tapEvent: {
+                            dismiss()
+                        })
+>>>>>>> Stashed changes
                     }
-                    .padding(.top,10)
-                    
                 }
+<<<<<<< Updated upstream
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal)
             }
@@ -236,5 +297,44 @@ private extension AddTransaction {
         let numberPattern = "^[0-9]+$"
         return text.range(of: numberPattern, options: .regularExpression) != nil
     }
+=======
+                .navigationBarBackButtonHidden(true)
+            }
+        }
+    }
+>>>>>>> Stashed changes
     
+    private func addTransaction() {
+        let newTransaction = TransacionsEntity(context: viewContext)
+        newTransaction.id = UUID().uuidString
+        newTransaction.title = title
+        newTransaction.desc = description
+        newTransaction.amount = amount
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        newTransaction.date = formatter.string(from: date)
+
+        newTransaction.transactionType = type.rawValue
+
+        // Convert image data to Base64 string
+        if let imageData = imageData {
+            newTransaction.receiptImage = imageData.base64EncodedString()
+        }
+
+        // Fetch category
+        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
+
+        do {
+            let results = try viewContext.fetch(fetchRequest)
+            if let matchedCategory = results.first {
+                newTransaction.category = matchedCategory
+            }
+        } catch {
+            print("Error fetching category: \(error.localizedDescription)")
+        }
+
+        PersistanceController.shared.saveContext()
+    }
 }

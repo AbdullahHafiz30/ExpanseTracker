@@ -7,9 +7,14 @@
 
 import Foundation
 
+<<<<<<< Updated upstream
 
 struct Transactions: Identifiable, Hashable {
     let id: String?
+=======
+struct Transactions: Identifiable {
+    let id: String
+>>>>>>> Stashed changes
     let title: String?
     let description: String?
     let amount: Double?
@@ -17,6 +22,7 @@ struct Transactions: Identifiable, Hashable {
     let transactionType: TransactionType?
     let category: Category?
     let receiptImage: String? 
+<<<<<<< Updated upstream
     
     init(id: String?, title: String?, description: String?, amount: Double?, date: Date?, transactionType: TransactionType?, category: Category?, receiptImage: String?) {
         self.id = id
@@ -28,5 +34,7 @@ struct Transactions: Identifiable, Hashable {
         self.category = category
         self.receiptImage = receiptImage
     }
+=======
+>>>>>>> Stashed changes
 }
 

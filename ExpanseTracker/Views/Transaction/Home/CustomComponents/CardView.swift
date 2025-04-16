@@ -12,6 +12,8 @@ struct CardView: View {
     var income: Double
     var expense: Double
     
+    @EnvironmentObject var themeManager: ThemeManager
+    
     var body: some View {
         ZStack {
             // Background card with rounded corners
@@ -22,8 +24,13 @@ struct CardView: View {
                 
                 // Top section: balance and trend icon
                 HStack(spacing: 12) {
+                    
+                    Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                    
                     // Net balance = income - expense
-                    Text("\(currencyString(income - expense))")
+                    Text("\(NumberFormatterManager.shared.decimalString(from: income - expense))")
                         .font(.title.bold())
                     
                     // Show a trend icon based on whether net is positive or negative
@@ -57,7 +64,7 @@ struct CardView: View {
                                     .font(.caption2)
                                     .foregroundStyle(.gray)
                                 
-                                Text(currencyString(type == .income ? income : expense, allowedDigits: 0))
+                                Text(NumberFormatterManager.shared.decimalString(from: type == .income ? income : expense))
                                     .font(.callout)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.primary)

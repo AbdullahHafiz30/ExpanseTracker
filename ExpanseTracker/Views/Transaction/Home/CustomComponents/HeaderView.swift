@@ -9,7 +9,7 @@ import SwiftUI
 
 /// A header view showing a welcome message, user name, and a search/filter bar.
 @ViewBuilder
-func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some View {
+func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -> some View {
     HStack(spacing: 10) {
         
         VStack(alignment: .leading, spacing: 5) {
@@ -23,7 +23,7 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some 
                 
                 Menu{
                     Picker("Select Tab", selection: selectedTab) {
-                        ForEach(Tab.allCases, id: \.self) { tab in
+                        ForEach(TimeFilter.allCases, id: \.self) { tab in
                             Text(tab.rawValue).tag(tab)
                         }
                     }
@@ -34,7 +34,10 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some 
                 }
             }
             
+<<<<<<< Updated upstream
             
+=======
+>>>>>>> Stashed changes
             // Custom search and filter UI
             SearchBar(
                 searchText: searchText

@@ -10,7 +10,23 @@ import SwiftUI
 /// A card-style view that displays information about a single transaction.
 struct TransactionCardView: View {
     
-    var transaction: Transaction  // The transaction data to display
+    var transaction: TransacionsEntity  // The transaction data to display
+    @EnvironmentObject var themeManager: ThemeManager
+    
+    var formattedTransactionDate: String {
+        guard let dateString = transaction.date else {
+            return "No Date Provided"
+        }
+        
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "dd MMM yyyy"
+        
+        if let date = inputFormatter.date(from: dateString) {
+            return date.formatted(date: .abbreviated, time: .omitted)
+        }
+        
+        return "No Date Provided"
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -34,12 +50,12 @@ struct TransactionCardView: View {
                     .foregroundStyle(.primary)
                 
                 // Transaction description
-                Text(transaction.description ?? "No Description")
+                Text(transaction.desc ?? "No Description")
                     .font(.caption)
                     .foregroundStyle(.primary.secondary)
                 
                 // Formatted transaction date
-                Text(format(date: transaction.date ?? Date(), format: "dd MMM yyyy"))
+                Text(formattedTransactionDate)
                     .font(.caption2)
                     .foregroundStyle(.gray)
             }
@@ -56,10 +72,16 @@ struct TransactionCardView: View {
                         .padding(.leading, 100)
                 }
 
-                
-                // Transaction amount formatted as currency
-                Text(currencyString(transaction.amount ?? 0.0, allowedDigits: 1))
-                    .fontWeight(.semibold)
+                HStack{
+                    
+                    Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                    
+                    // Transaction amount formatted as currency
+                    Text(NumberFormatterManager.shared.decimalString(from: transaction.amount))
+                        .fontWeight(.semibold)
+                }
                 
                 Spacer()
             }

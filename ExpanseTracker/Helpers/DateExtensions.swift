@@ -5,36 +5,40 @@
 //  Created by Tahani Ayman on 06/10/1446 AH.
 //
 
-import SwiftUI
+import Foundation
 
 extension Date {
     
-    /// Returns the start of the current month.
+    // MARK: - Start Of Month computed variable
+    /// Returns a Date representing the start of the current month.
     var startOfMonth: Date {
+        
         let calendar = Calendar.current
-        
-        // Extract only the year and month components from the current date.
+        // Extract the year and month from the current date
         let components = calendar.dateComponents([.year, .month], from: self)
-        
-        // Reconstruct a date using only year and month, which defaults to the 1st of the month at midnight.
+        // Recreate a new date using the extracted components
         return calendar.date(from: components) ?? self
     }
     
-    /// Returns the end of the current month.
+    // MARK: - End Of Month computed variable
+    /// Returns a Date representing the end of the current month.
     var endOfMonth: Date {
+        
         let calendar = Calendar.current
         
-        // Add 1 month to the start of the month, then subtract 1 minute to get the very end of the current month.
+        //This is computed by adding one month to the start of the current month, then subtracting one minute, resulting in the last minute of the current month.
         return calendar.date(byAdding: .init(month: 1, minute: -1), to: self.startOfMonth) ?? self
     }
     
-    /// Formats a given `Date` into a `String` based on the specified date format.
-    /// - Parameters:
-    ///   - format: A date format string.
-    /// - Returns: A formatted date string.
+    // MARK: - Formatted function
+    /// Formats the date into a string using the specified format.
+    /// - Parameter format: A format string.
+    /// - Returns: A formatted string representing the date.
     func formatted(as format: String) -> String {
+        
         let formatter = DateFormatter()
         formatter.dateFormat = format
         return formatter.string(from: self)
     }
 }
+
