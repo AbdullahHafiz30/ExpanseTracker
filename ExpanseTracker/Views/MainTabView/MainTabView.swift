@@ -68,13 +68,13 @@ struct MainTabView: View {
                                 .font(.system(size: 30))
                         }
                     }
-                    .offset(y: 0)
+                    .offset(y: -5)
                     Spacer()
                 }
             }
         }.navigationBarBackButtonHidden(true)
-//        .fullScreenCover(isPresented: $showAddTransactionView) {
-//            AddTransaction()
-//        }
+        .fullScreenCover(isPresented: $showAddTransactionView) {
+            AddTransaction()
+        }
     }
 }

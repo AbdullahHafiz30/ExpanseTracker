@@ -17,14 +17,13 @@ struct EditAccountInformation: View {
     @State var userPassword: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var errorMessage: String = ""
-    @State private var showAlert: Bool = false
     @State private var imageData: Data? = nil
     @State private var showPhotoLibrary = false
     @State private var selectedPhoto: PhotosPickerItem? = nil
     @State private var imageURL: URL? = nil
     @Binding var userId: String
     @State private var isPasswordSecure: Bool = true
+    @StateObject private var alertManager = AlertManager.shared
     // MARK: - UI Design
     var body: some View {
         NavigationStack{
@@ -32,18 +31,18 @@ struct EditAccountInformation: View {
                 ZStack{
                     Circle()
                         .stroke(lineWidth: 2)
-                        .frame(width: 180, height: 180)
+                        .frame(width: 170, height: 170)
                     
                     if let imageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 170, height: 170)
+                            .frame(width: 160, height: 160)
                             .clipShape(Circle())
                     } else {
                         Image(systemName: "person")
                             .resizable()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 90, height: 90)
                             .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
                     }
                     
@@ -74,6 +73,7 @@ struct EditAccountInformation: View {
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
+                        .disabled(true)
                     
                     
                     Text("Password")
@@ -85,6 +85,7 @@ struct EditAccountInformation: View {
                             text: $userPassword,
                             isSecure: $isPasswordSecure
                         )
+                        .disabled(true)
                         
                         Button(action: {
                             isPasswordSecure.toggle()
@@ -99,27 +100,25 @@ struct EditAccountInformation: View {
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)
                 .padding(.horizontal)
-                .padding(.bottom,5)
-                
                 
                 Spacer()
                 // MARK: - Save edited account information button
                 CustomButton(title: "Save", action: {
                     guard !userName.trimmingCharacters(in: .whitespaces).isEmpty else {
-                        errorMessage = "Name is required"
-                        showAlert = true
+                        let message = "Name is required"
+                        AlertManager.shared.showAlert(title: "Error", message: message)
                         return
                     }
                     
                     guard isValidEmail(userEmail) else {
-                        errorMessage = "Invalid email address"
-                        showAlert = true
+                        let message = "Invalid email address"
+                        AlertManager.shared.showAlert(title: "Error", message: message)
                         return
                     }
                     
                     guard userPassword.count >= 6 else {
-                        errorMessage = "Password must be at least 6 characters"
-                        showAlert = true
+                        let message = "Password must be at least 6 characters"
+                        AlertManager.shared.showAlert(title: "Error", message: message)
                         return
                     }
                     
@@ -173,11 +172,12 @@ struct EditAccountInformation: View {
             }
             .onAppear {
                 loadUserData()
-            }.alert("Error", isPresented: $showAlert, actions: {
-                Button("OK", role: .cancel) { }
-            }, message: {
-                Text(errorMessage)
-            })
+            } .alert(isPresented: $alertManager.alertState.isPresented) {
+                Alert(
+                    title: Text(alertManager.alertState.title),
+                    message: Text(alertManager.alertState.message),
+                    dismissButton: .default(Text("OK")))
+            }
             .navigationBarBackButtonHidden(true)
         }
     }
