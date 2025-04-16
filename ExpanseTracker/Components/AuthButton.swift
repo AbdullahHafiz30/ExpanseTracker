@@ -7,13 +7,15 @@
 
 
 import SwiftUI
-//custom auth button to be used in the welcome page for log in and sign up 
+// Custom auth button to be used in the welcome page for log in and sign up 
 struct AuthButton: View {
+    //MARK: - auth button variables
     let label: String
     let isFilled: Bool
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
+        //MARK: - auth button view
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .fill(isFilled ? themeManager.textColor : Color.clear)

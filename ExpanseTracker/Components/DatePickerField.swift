@@ -9,12 +9,14 @@
 import SwiftUI
 
 struct DatePickerField: View {
+    //MARK: - Variables
     @Binding var date: Date
     @Binding var showDatePicker: Bool
     @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
+        //MARK: - View
         VStack(alignment: .leading) {
-            //the field to pick the date
+            // The field to pick the date
             RoundedRectangle(cornerRadius: 7)
                 .stroke(themeManager.textColor, lineWidth: 1)
                 .frame(height: 48)
@@ -34,7 +36,7 @@ struct DatePickerField: View {
                         showDatePicker.toggle()
                     }
                 }
-            //display the dates
+            // Display the dates
             if showDatePicker {
                 DatePicker(
                     "Pick a date",
@@ -51,7 +53,7 @@ struct DatePickerField: View {
             }
         }
     }
-    //function to format the date
+    // Function to format the date
     private func dateFormatted(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

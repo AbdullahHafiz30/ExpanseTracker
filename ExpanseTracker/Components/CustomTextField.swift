@@ -7,8 +7,8 @@
 
 
 import SwiftUI
-//reuseable text feild
-// so i can change the color of placeholder
+// Reuseable text feild
+// So i can change the color of placeholder
 extension View {
     func placeholder<Content: View>(
         when shouldShow: Bool,
@@ -25,14 +25,15 @@ extension View {
 }
 
 struct CustomTextField: View {
+    //MARK: - Variables 
     var placeholder: String
     @Binding var text: String
-    //if it is for a password then this will be true
+    // If it is for a password then this will be true
     @Binding var isSecure: Bool
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
-        
+        //MARK: - View
         HStack {
             if isSecure {
                 SecureField(placeholder, text: $text)

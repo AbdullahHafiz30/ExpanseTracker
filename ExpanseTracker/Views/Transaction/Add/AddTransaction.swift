@@ -2,6 +2,7 @@ import SwiftUI
 import PhotosUI
 import CoreData
 struct AddTransaction: View {
+    //MARK: - Variables
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
     @State private var amount: String = ""
@@ -18,7 +19,7 @@ struct AddTransaction: View {
 //            _transactionVM = StateObject(wrappedValue: TransactionViewModel(userVM: userVM))
 //        }
     
-    //enum of the types of the transactions
+    // Enum of the types of the transactions
     enum transactionType: String, CaseIterable, Identifiable {
         case income
         case expense
@@ -29,11 +30,11 @@ struct AddTransaction: View {
         NavigationStack {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
-                    //background
+                    // Background
                     ZStack{
                         themeManager.backgroundColor
                             .ignoresSafeArea()
-                        //show the 3 sections of the page
+                        // Show the 3 sections of the page
                         VStack(alignment: .leading) {
                             headerSection
                             priceSection
@@ -44,7 +45,7 @@ struct AddTransaction: View {
                     }
                 }
             }
-            //load the image
+            // Load the image
             .onChange(of: selectedImage) { _, newItem in
                 loadImage(from: newItem)
             }
@@ -55,7 +56,8 @@ struct AddTransaction: View {
 }
 
 private extension AddTransaction {
-    //header section
+    //MARK: - View
+    // Header section
     var headerSection: some View {
         HStack {
             Button(action: {
@@ -75,7 +77,7 @@ private extension AddTransaction {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top,10)
     }
-    //price section
+    // Price section
     var priceSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("How much?")
@@ -106,7 +108,7 @@ private extension AddTransaction {
             .padding(.leading)
         }
     }
-    // form section
+    // Form section
     var formSection: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32)
@@ -117,28 +119,28 @@ private extension AddTransaction {
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 20)]) {
                     VStack(spacing: 25){
-                        //title
+                        // Title
                         CustomTextField(placeholder: "Title", text: $title,isSecure: .constant(false))
                             .environmentObject(themeManager)
-                        //categories
+                        // Categories
                         DropDownMenu(
                             title: "Category",
                             options: ["Food", "Transport", "Shopping", "Bills"],
                             selectedOption: $selectedCategory
                         )
                         .environmentObject(themeManager)
-                        //date picker
+                        // Date picker
                         DatePickerField(date: $date, showDatePicker: $showDatePicker)
                             .environmentObject(themeManager)
                         //Description
                         CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
-                        //image picker
+                        // Image picker
                         ImagePickerField(imageData: $imageData, image: "")
                             .environmentObject(themeManager)
-                        //type selector
+                        // Type selector
                         transactionTypeSelector
-                        //the add button
+                        // The add button
                         addButton
                         Spacer()
                     }
@@ -151,7 +153,7 @@ private extension AddTransaction {
             
         }
     }
-    //the type selector section
+    // The type selector section
     var transactionTypeSelector: some View {
         VStack(alignment: .leading) {
             Text("Transaction type:")
@@ -189,7 +191,7 @@ private extension AddTransaction {
         CustomButton(
             title: "Add",
             action: {
-                //validate amount
+                // Validate amount
                 validateAmount(amount)
                 if amountError == nil {
                     // Add transaction
@@ -208,7 +210,7 @@ private extension AddTransaction {
         )
         .padding(.top, 10)
     }
-    //load image function
+    // Load image function
     func loadImage(from item: PhotosPickerItem?) {
         Task {
             guard let item = item else { return }
@@ -221,7 +223,7 @@ private extension AddTransaction {
             }
         }
     }
-    //validate error mesg for amount
+    // Validate error mesg for amount
     func validateAmount(_ text: String) {
         if isValidNumber(text) {
             amountError = nil
@@ -229,7 +231,7 @@ private extension AddTransaction {
             amountError = "Price must be a number only."
         }
     }
-    //validate function
+    // Validate function
     func isValidNumber(_ text: String) -> Bool {
         let numberPattern = "^[0-9]+$"
         return text.range(of: numberPattern, options: .regularExpression) != nil

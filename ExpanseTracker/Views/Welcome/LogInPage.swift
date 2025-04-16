@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct LogInPage: View {
+    //MARK: - Variables
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn = false
@@ -19,6 +20,7 @@ struct LogInPage: View {
     @State private var isPasswordSecure: Bool = true
     @EnvironmentObject var alertManager: AlertManager
     var body: some View {
+        //MARK: - View
         NavigationStack{
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
@@ -27,7 +29,7 @@ struct LogInPage: View {
                     .ignoresSafeArea()
                 VStack{
                     
-                    //logo
+                    // Logo
                     HStack() {
                         Button(action: {
                             backHome.toggle()
@@ -45,20 +47,20 @@ struct LogInPage: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.top,-20)
                     
-                    //image
+                    // Image
                     Image(themeManager.isDarkMode ?  "loginW":"loginB")
                         .resizable()
                         .frame(width: 300,height: 300)
                         .padding(-40)
                     
-                    //text
+                    // Text
                     Text("Log in")
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(themeManager.textColor)
                         .padding()
                     
-                    //Custom Text feild
+                    // Custom Text feild
                     VStack(spacing: 20) {
                         
                         CustomTextField(
@@ -81,12 +83,12 @@ struct LogInPage: View {
                                     .padding(.trailing, 16)
                             }
                         }
-                        //Cutsom button
+                        // Cutsom button
                         CustomButton(
                             title: "Login",
                             action: {
                                 isLoading = true
-                                //Firebase login
+                                // Firebase login
                                 auth.logIn(email: email, password: password) { success, message in
                                     isLoading = false
                                     if success {
@@ -103,7 +105,7 @@ struct LogInPage: View {
                     .padding()
                     Spacer()
                     .padding(.bottom,100)
-                    //navigation to sign up
+                    // Navigation to sign up
                     HStack{
                         Text("Don't have an account?")
                             .foregroundColor(themeManager.textColor)
@@ -119,11 +121,11 @@ struct LogInPage: View {
         }
     }
         }
-        //cover the whole page with the sign up page
+        // Cover the whole page with the sign up page
         .fullScreenCover(isPresented: $isLoggedIn) {
             SignUpPage(auth:auth)
         }
-        //cover the whole page with the welcome page
+        // Cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
         }
