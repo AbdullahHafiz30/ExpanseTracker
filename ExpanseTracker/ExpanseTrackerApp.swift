@@ -19,27 +19,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct YourApp: App {
-<<<<<<< Updated upstream
-    // Register app delegate for Firebase setup
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject private var themeManager = ThemeManager()
-=======
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
     
     // Add persistence controller
     let persistenceController = PersistanceController.shared
 
->>>>>>> Stashed changes
     var body: some Scene {
         WindowGroup {
             WelcomePage()
                 .environmentObject(themeManager)
-<<<<<<< Updated upstream
                 .environmentObject(AlertManager.shared)
-=======
-                .environment(\.managedObjectContext, persistenceController.context)
->>>>>>> Stashed changes
                 .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
                 .environment(\.managedObjectContext, PersistanceController.shared.context)
         }
@@ -48,8 +38,4 @@ struct YourApp: App {
 
 
 
-<<<<<<< Updated upstream
-=======
 
-
->>>>>>> Stashed changes

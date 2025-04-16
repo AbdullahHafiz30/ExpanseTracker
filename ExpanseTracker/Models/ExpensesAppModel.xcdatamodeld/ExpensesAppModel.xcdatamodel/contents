@@ -22,11 +22,7 @@
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="desc" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-<<<<<<< Updated upstream
-        <attribute name="image" optional="YES" attributeType="Binary"/>
-=======
-        <attribute name="receiptImage" optional="YES" attributeType="String"/>
->>>>>>> Stashed changes
+        <attribute name="image" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="transactionType" optional="YES" attributeType="String"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CategoryEntity" inverseName="transaction" inverseEntity="CategoryEntity"/>

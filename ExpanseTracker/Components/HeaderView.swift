@@ -34,10 +34,6 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
                 }
             }
             
-<<<<<<< Updated upstream
-            
-=======
->>>>>>> Stashed changes
             // Custom search and filter UI
             SearchBar(
                 searchText: searchText

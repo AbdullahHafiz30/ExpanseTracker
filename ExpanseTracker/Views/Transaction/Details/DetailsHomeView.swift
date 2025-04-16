@@ -60,7 +60,7 @@ struct DetailsHomeView: View {
                     )
 
                     // Receipt Image
-                    if let base64String = transaction.receiptImage {
+                    if let base64String = transaction.image {
                         if let imageData = Data(base64Encoded: base64String),
                            let uiImage = UIImage(data: imageData) {
                             Image(uiImage: uiImage)

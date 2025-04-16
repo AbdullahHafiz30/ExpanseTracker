@@ -10,8 +10,8 @@ import SwiftUI
 class DummyDataView: ObservableObject {
     
     
-    @Published var dummyData: [Transactions] = [
-        Transactions(
+    @Published var dummyData: [Transaction] = [
+        Transaction(
             id: "1",
             title: "tt",
             description: "aa",
@@ -28,7 +28,7 @@ class DummyDataView: ObservableObject {
             ),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "2",
             title: "Groceries",
             description: "Weekly shopping",
@@ -45,7 +45,7 @@ class DummyDataView: ObservableObject {
             ),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "3",
             title: "Netflix",
             description: "Monthly subscription",
@@ -62,7 +62,7 @@ class DummyDataView: ObservableObject {
             ),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "4",
             title: "Freelance",
             description: "App design project",
@@ -79,7 +79,7 @@ class DummyDataView: ObservableObject {
             ),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "5",
             title: "Doctor Visit",
             description: "Emergency check-up",
@@ -96,7 +96,7 @@ class DummyDataView: ObservableObject {
             ),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "6",
             title: "Salary",
             description: "Monthly payment",
@@ -106,7 +106,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "1", name: "Salary", color: "#34C759", icon: "banknote", categoryType: .essential, budgetLimit: 10000.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "7",
             title: "Groceries",
             description: "Weekly shopping",
@@ -116,7 +116,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "2", name: "Groceries", color: "#FF9500", icon: "cart", categoryType: .essential, budgetLimit: 1500.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "8",
             title: "Spotify",
             description: "Music subscription",
@@ -126,7 +126,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "3", name: "Music", color: "#AF52DE", icon: "music.note", categoryType: .entertainment, budgetLimit: 200.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "9",
             title: "Freelance Job",
             description: "Logo design",
@@ -136,7 +136,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "4", name: "Freelance", color: "#007AFF", icon: "laptopcomputer", categoryType: .other, budgetLimit: 0.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "10",
             title: "ER Visit",
             description: "Emergency room charges",
@@ -146,7 +146,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "5", name: "Health", color: "#FF3B30", icon: "cross.case.fill", categoryType: .emergency, budgetLimit: 1200.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "11",
             title: "Bonus",
             description: "End of year bonus",
@@ -156,7 +156,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "6", name: "Bonus", color: "#5AC8FA", icon: "gift", categoryType: .other, budgetLimit: 0.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "12",
             title: "Gift Shopping",
             description: "Birthday gifts",
@@ -166,7 +166,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "7", name: "Gifts", color: "#AF52DE", icon: "gift.fill", categoryType: .entertainment, budgetLimit: 500.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "13",
             title: "Rent",
             description: "Monthly apartment rent",
@@ -176,7 +176,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "8", name: "Rent", color: "#FF9500", icon: "house.fill", categoryType: .essential, budgetLimit: 3000.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "14",
             title: "Investment Return",
             description: "Dividend from stocks",
@@ -186,7 +186,7 @@ class DummyDataView: ObservableObject {
             category: Category(id: "9", name: "Stocks", color: "#007AFF", icon: "chart.bar.xaxis", categoryType: .other, budgetLimit: 0.00),
             receiptImage: ""
         ),
-        Transactions(
+        Transaction(
             id: "15",
             title: "Car Repair",
             description: "Fixing brake system",

@@ -35,7 +35,7 @@ final class EditTransactionViewModel: ObservableObject {
         editedCategoryName = transaction.category?.name ?? ""
         editedType = TransactionType(rawValue: transaction.transactionType ?? "") ?? .income
 
-        if let base64String = transaction.receiptImage,
+        if let base64String = transaction.image,
            let data = Data(base64Encoded: base64String) {
             imageData = data
         }
@@ -69,7 +69,7 @@ final class EditTransactionViewModel: ObservableObject {
         fetchRequest.predicate = NSPredicate(format: "name == %@", editedCategoryName)
 
         if let imageData = imageData {
-            transaction.receiptImage = imageData.base64EncodedString()
+            transaction.image = imageData.base64EncodedString()
         }
 
         do {
