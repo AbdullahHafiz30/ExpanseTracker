@@ -14,7 +14,7 @@ class HomeViewModel: ObservableObject {
                 name: "Salary",
                 color: "#34C759",
                 icon: "banknote",
-                categoryType: .Essential,
+                categoryType: .essential,
                 budgetLimit: 0
             ),
             receiptImage: "Image"
@@ -30,7 +30,7 @@ class HomeViewModel: ObservableObject {
                 name: "Groceries",
                 color: "#FF9500",
                 icon: "cart",
-                categoryType: .Essential,
+                categoryType: .essential,
                 budgetLimit: 1500
             ),
             receiptImage: "Image"
@@ -46,7 +46,7 @@ class HomeViewModel: ObservableObject {
                 name: "Entertainment",
                 color: "#AF52DE",
                 icon: "tv",
-                categoryType: .Entertainment,
+                categoryType: .entertainment,
                 budgetLimit: 200
             ),
             receiptImage: "Image"
