@@ -73,8 +73,8 @@ struct MainTabView: View {
                 }
             }
         }.navigationBarBackButtonHidden(true)
-//        .fullScreenCover(isPresented: $showAddTransactionView) {
-//            AddTransaction()
-//        }
+        .fullScreenCover(isPresented: $showAddTransactionView) {
+            AddTransaction()
+        }
     }
 }

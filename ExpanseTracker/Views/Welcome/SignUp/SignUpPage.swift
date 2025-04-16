@@ -22,7 +22,7 @@ struct SignUpPage: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @ObservedObject var auth: AuthViewModel
-    @EnvironmentObject var alertManager: AlertManager
+    @StateObject private var alertManager = AlertManager.shared
     var body: some View {
         //MARK: - View
         NavigationStack{
@@ -110,14 +110,18 @@ struct SignUpPage: View {
                             CustomButton(
                                 title: "Sign up",
                                 action: {
+                                    // Check name
+                                    guard !username.trimmingCharacters(in: .whitespaces).isEmpty else {
+                                        let message = "Need to add a name"
+                                        AlertManager.shared.showAlert(title: "Name is required", message: message)
+                                        return
+                                    }
                                     // Create User with Firebase
                                     isLoading = true
                                     auth.signUp(name: username, email: email, password: password,confirmPassword: confirmPassword) { success, message in
                                         isLoading = false
                                         if success {
                                             goToHome = true
-                                        } else if let message = message {
-                                            alertManager.showAlert(title: "Sign up Failed", message: message)
                                         }
                                     }
                                 }
@@ -143,7 +147,12 @@ struct SignUpPage: View {
             }
         }
     }
-        }
+        } .alert(isPresented: $alertManager.alertState.isPresented) {
+            Alert(
+                title: Text(alertManager.alertState.title),
+                message: Text(alertManager.alertState.message),
+                dismissButton: .default(Text("OK"))
+        )}
         //cover the whole page with the sign up page
         .fullScreenCover(isPresented: $isLoggedIn) {
             LogInPage(auth:auth)

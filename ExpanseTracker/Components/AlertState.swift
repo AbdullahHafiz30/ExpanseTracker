@@ -20,8 +20,9 @@ class AlertManager: ObservableObject {
     @Published var alertState = AlertState()
     
     func showAlert(title: String, message: String) {
+        print("Attempting to show alert: \(title) - \(message)") // Debug
         DispatchQueue.main.async {
             self.alertState = AlertState(isPresented: true, title: title, message: message)
+            print("Alert state updated: \(self.alertState)") // Debug
         }
-    }
-}
+    }}
