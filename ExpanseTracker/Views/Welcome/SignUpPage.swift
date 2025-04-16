@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpPage: View {
+    //MARK: - Variables
     @State private var username: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
@@ -23,6 +24,7 @@ struct SignUpPage: View {
     @ObservedObject var auth: AuthViewModel
     @EnvironmentObject var alertManager: AlertManager
     var body: some View {
+        //MARK: - View
         NavigationStack{
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
@@ -31,12 +33,12 @@ struct SignUpPage: View {
                     .ignoresSafeArea()
                 ScrollView(showsIndicators: false) {
                     VStack{
-                        //logo
+                        // Logo
                         HStack() {
                             Button(action: {
                                 backHome.toggle()
                             }) {
-                                //go back to the welcome page
+                                // Go back to the welcome page
                                 Image(systemName: "chevron.left")
                                     .foregroundColor(themeManager.textColor)
                                     .font(.system(size: 18, weight: .medium))
@@ -49,15 +51,15 @@ struct SignUpPage: View {
                                 .padding()
                         }.frame(maxWidth: .infinity, alignment: .leading)
                         
-                        //image
+                        // Image
                         Image(themeManager.isDarkMode ?  "loginW":"loginB")
                             .resizable()
                             .frame(width: 280,height: 280)
                             .padding(-40)
                         
-                        //Custom Text feild
+                        // Custom Text feild
                         VStack(spacing: 20) {
-                            //text
+                            // Text
                             Text("Sign up")
                                 .font(.largeTitle)
                                 .bold()
@@ -104,7 +106,7 @@ struct SignUpPage: View {
                                 }
                             }
 
-                            //Custom button
+                            // Custom button
                             CustomButton(
                                 title: "Sign up",
                                 action: {
@@ -122,7 +124,7 @@ struct SignUpPage: View {
                             )
                             .disabled(isLoading)
                             
-                            //navigation to sign up
+                            // Navigation to sign up
                             HStack{
                                 Text("Already have an account?")
                                     .foregroundColor(themeManager.textColor)

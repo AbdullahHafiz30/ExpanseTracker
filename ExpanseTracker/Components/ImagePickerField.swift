@@ -9,6 +9,7 @@ import PhotosUI
 import AVFoundation
 
 struct ImagePickerField: View {
+    //MARK: - Variables
     @Binding var imageData: Data?
     @State private var showImageSourcePicker = false
     @State private var showCamera = false
@@ -19,8 +20,9 @@ struct ImagePickerField: View {
     var image: String
     
     var body: some View {
+        //MARK: - View
         VStack {
-            //photo field
+            // Photo field
             Button(action: {
                 showCustomPicker = true
             }) {
@@ -56,7 +58,7 @@ struct ImagePickerField: View {
                     }
                 }
             }
-            //sheet to pick image or use the camera
+            // Sheet to pick image or use the camera
             .sheet(isPresented: $showCustomPicker) {
                 
                 HStack(spacing: 20) {
@@ -184,7 +186,7 @@ struct CustomCameraView: UIViewControllerRepresentable {
         picker.showsCameraControls = true
         picker.modalPresentationStyle = .fullScreen
         picker.view.backgroundColor = .black
-        //fix the size of the camera
+        // Fix the size of the camera
         let screenSize = UIScreen.main.bounds.size
         let cameraAspectRatio: CGFloat = 4.0 / 3.0
         let screenAspectRatio = screenSize.height / screenSize.width

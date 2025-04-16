@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+//MARK: - alert state structure
 struct AlertState {
     var isPresented: Bool = false
     var title: String = ""
     var message: String = ""
 }
-
+//MARK: - alert manager class
 class AlertManager: ObservableObject {
     static let shared = AlertManager()
     private init() {}

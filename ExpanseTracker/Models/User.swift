@@ -15,6 +15,10 @@ struct User: Identifiable {
     let image: String?
     let transactions: [Transactions]?
     let budgets: [Budget?]
+<<<<<<< Updated upstream
     let categories: [Category?]
+=======
+    let categories: [Category?] 
+>>>>>>> Stashed changes
 }
 

@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct DropDownMenu: View {
+    //MARK: - Variables
     let title: String
     let options: [String]
     @Binding var selectedOption: String
@@ -16,8 +17,9 @@ struct DropDownMenu: View {
     @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
+        //MARK: - View
         VStack(spacing: 4) {
-            //the drop down menu it will expand
+            // The drop down menu it will expand
             Button(action: {
                 withAnimation {
                     isExpanded.toggle()

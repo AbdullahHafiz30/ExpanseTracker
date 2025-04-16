@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct WelcomePage: View {
+    //MARK: - Variables
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject var auth = AuthViewModel()
     // Get UID from user default
@@ -16,6 +17,7 @@ struct WelcomePage: View {
            UIDManager.loadUID()
        }
     var body: some View {
+        //MARK: - Auto navigation
            NavigationStack {
                // Auto-navigation to Home if already authenticated
                if auth.isAuthenticated {
@@ -31,6 +33,7 @@ struct WelcomePage: View {
        // keeps welcome layout separate
 
        var welcomeBody: some View {
+           //MARK: - View
         ZStack {
             themeManager.gradient
                 .ignoresSafeArea()
@@ -59,7 +62,7 @@ struct WelcomePage: View {
                             .foregroundColor(themeManager.textColor.opacity(0.7))
                             .multilineTextAlignment(.center)
                             .padding(.bottom)
-                        //navigation to log in and sign up pages with the use of the custom AuthButton
+                        // Navigation to log in and sign up pages with the use of the custom AuthButton
                         NavigationLink(destination: LogInPage(auth:auth)) {
                             AuthButton(label: "Log in", isFilled: true)
                         }

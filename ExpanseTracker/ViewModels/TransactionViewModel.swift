@@ -19,7 +19,7 @@ class TransactionViewModel: ObservableObject{
            selectedCategoryName: String,
            imageData: Data?
        ) {
-           // Get UID from UIDManager instead of UserViewModel
+           // Get UID from UIDManager 
            guard let userId = UIDManager.loadUID() else {
                print("❌ User ID not found in UIDManager")
                return
@@ -43,7 +43,7 @@ class TransactionViewModel: ObservableObject{
                    newTransaction.date = convertDateToString(date: date)
                    newTransaction.transactionType = type.rawValue
                    newTransaction.image = imageData
-                  // newTransaction.category = selectedCategory 
+                   //newTransaction.category = selectedCategory 
 
                    existingUser.addToTransaction(newTransaction)
 

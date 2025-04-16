@@ -11,8 +11,9 @@ import CoreData
 import Combine
 import UIKit
 struct CoreDataHelper {
+    //MARK: - Variables
     private let context = PersistanceController.shared.context
-    
+    // Save user to core data
     func saveUserToCoreData(user: User, uid: String) {
         let newUser = UserEntity(context: context)
         newUser.id = uid
@@ -25,6 +26,7 @@ struct CoreDataHelper {
         UIDManager.saveUID(uid)
     }
     
+    // Fetch user from core data
     func fetchUserFromCoreData(uid: String) -> User? {
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", uid)
@@ -63,11 +65,15 @@ struct CoreDataHelper {
         }
     }
     
+<<<<<<< Updated upstream
+=======
+    // Save the edits user makes
+>>>>>>> Stashed changes
     func saveEditedUser(user: User) {
         // Fetch the Core Data object directly
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", user.id ?? "")
-
+        
         do {
             if let existingUserEntity = try context.fetch(userRequest).first {
                 // Update the Core Data object
@@ -87,11 +93,12 @@ struct CoreDataHelper {
         }
     }
     
+    // Save the image of the user profile
     func saveImageToDocuments(_ image: UIImage) -> String? {
         let filename = UUID().uuidString + ".jpg"
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(filename)
-
+        
         if let imageData = image.jpegData(compressionQuality: 0.9) {
             do {
                 try imageData.write(to: fileURL)
@@ -102,5 +109,5 @@ struct CoreDataHelper {
         }
         return nil
     }
-
+    
 }

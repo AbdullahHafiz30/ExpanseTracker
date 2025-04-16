@@ -7,13 +7,14 @@
 
 
 import SwiftUI
-//custom button to be used everywhere we need
+// Custom button to be used everywhere we need
 struct CustomButton: View {
+    //MARK: - Variables
     var title: String
     var action: () -> Void = {}
     var cornerRadius: CGFloat = 8
     @EnvironmentObject var themeManager: ThemeManager
-    //to manage the colors of the background and text
+    // To manage the colors of the background and text
     private var backgroundColor: Color {
         themeManager.isDarkMode ? .white : .black
     }
@@ -23,7 +24,8 @@ struct CustomButton: View {
     }
     
     var body: some View {
-        //the button 
+        //MARK: - View
+        // The button
         Button(action: action) {
             Text(title)
                 .fontWeight(.semibold)

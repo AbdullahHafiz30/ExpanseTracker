@@ -9,6 +9,7 @@
 import SwiftUI
 
 class ThemeManager: ObservableObject {
+    //MARK: - Variables
     @Published var isDarkMode: Bool = false
     
     // Colors that adapt to dark/light mode

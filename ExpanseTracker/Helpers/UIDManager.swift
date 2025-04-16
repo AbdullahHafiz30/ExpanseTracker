@@ -7,6 +7,7 @@
 import Foundation
 
 struct UIDManager {
+    //MARK: - Variables
     private static let uidKey = "userUID"
     private static let userDefaults = UserDefaults.standard
     
