@@ -8,18 +8,21 @@
 import SwiftUI
 
 struct Profile: View {
+    // MARK: - Variables
     @State private var isArabic: Bool = false
     @State var showNotification: Bool = false
     @State var showAccountInformation: Bool = false
     @State var isPresented: Bool = false
     @EnvironmentObject var themeManager: ThemeManager
-
+    @State private var backHome = false
     let languageCode = Locale.current.language.languageCode?.identifier
-    @StateObject var userViewModel = UserViewModel()
     @State var userName = ""
     @Binding var userId: String
+    @State var userBudget: Double = 100
+    @State var userSpend: Double = 500
+    @StateObject var budgetViewModel = BudgetViewModel()
     @ObservedObject var auth: AuthViewModel
-
+    // MARK: - UI Design
     var body: some View {
         ZStack{
             NavigationStack {
@@ -28,7 +31,7 @@ struct Profile: View {
                         .font(.headline)
                     
                     HStack {
-                        ShapeView()
+                        ShapeView(usedWaterAmount: CGFloat(userSpend), maxWaterAmount: CGFloat(userBudget))
                         
                         Spacer()
                         
@@ -40,7 +43,7 @@ struct Profile: View {
                                     .frame(height: 60)
                                     .cornerRadius(10)
                                 
-                                Text("5500 Riyals")
+                                Text("\(String(format: "%.1f", userBudget)) Riyals")
                                 
                                 // set budget pop up
                                 Text("Budget")
@@ -57,7 +60,7 @@ struct Profile: View {
                                     .frame(height: 60)
                                     .cornerRadius(10)
                                 
-                                Text("2000 Riyals")
+                                Text("\(String(format: "%.1f", userSpend)) Riyals")
                                 
                                 Text("Your Spend")
                                     .bold()
@@ -124,7 +127,7 @@ struct Profile: View {
                         HStack {
                             Image(systemName: "globe")
                             Text("Language")
-                                
+                            
                             
                             Spacer()
                             
@@ -169,11 +172,10 @@ struct Profile: View {
                     Section {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
-                            Text("Logout")
-                                .onTapGesture {
-                                    auth.logOut()
-                                }
-                            
+                            Text("Logout")  
+                        }.onTapGesture {
+                            auth.logOut()
+                            backHome = true
                         }
                         
                         Divider()
@@ -183,37 +185,33 @@ struct Profile: View {
                     .padding(.top, 10)
                     
                     Spacer()
-        
+                    
                 }
                 .padding()
             }
             .onAppear{
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+                // MARK: - Get user information from core 
+                let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                userName = user?.name ?? "Guest"
+                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
                 
-                userName = userInfo?.name ?? ""
-                print(userName)
+                userBudget = budget?.amount ?? 0.0
+                print("User loaded .\(String(describing: user))")
             }
-            
-            if isPresented {
-                ZStack {
-                    (themeManager.isDarkMode ? Color.black.opacity(0.65) : Color.white.opacity(0.65))
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            isPresented.toggle()
-                        }
-                    
-                    VStack {
-                        SetBudget(isPresented: $isPresented)
+            .sheet(isPresented: $isPresented) {
+                SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
+            }
+            .onChange(of: isPresented) { oldValue, newValue in
+                if !newValue {
+                    if let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId) {
+                        userBudget = budget.amount
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
+            
+        } //cover the whole page with the welcome page
+        .fullScreenCover(isPresented: $backHome) {
+            WelcomePage(auth:auth)
         }
     }
 }
-
-
-#Preview {
-    Profile(userId: .constant("E5076426-D308-4CD1-9385-1DA8C928068F"), auth: AuthViewModel())
-}
-

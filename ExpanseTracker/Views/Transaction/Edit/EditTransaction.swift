@@ -47,7 +47,7 @@ struct EditTransactionView: View {
                         // Price display + input
                         PriceSection(amount: $editedAmount, readOnlyAmount: nil, themeManager: themeManager)
                         
-                        VStack(alignment: .leading, spacing: 15) {
+                        VStack(alignment: .center, spacing: 15) {
                             
                             // Title
                             CustomTextField(placeholder: "\(transaction.title ?? "No Title")", text: $editedTitle, isSecure: $isSecure)

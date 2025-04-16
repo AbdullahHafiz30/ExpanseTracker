@@ -34,10 +34,6 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<Tab>) -> some 
                 }
             }
             
-            // User name subtitle
-            Text("Tahani Ayman")
-                .font(.callout)
-                .foregroundStyle(.gray)
             
             // Custom search and filter UI
             SearchBar(

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AccountInformation: View {
+    // MARK: - Variables
     @State var showPassword: Bool = false
     @State var showEditPage: Bool = false
     @Environment(\.dismiss) var dismiss
@@ -15,12 +16,11 @@ struct AccountInformation: View {
     @State var email: String = ""
     @State var password: String = ""
     @EnvironmentObject var themeManager: ThemeManager
-    @StateObject var userViewModel = UserViewModel()
     @Binding var userId: String
     @State private var imageURL: URL? = nil
     @State private var imageData: Data? = nil
     @State private var isPasswordSecure: Bool = true
-    
+    // MARK: - UI Design
     var body: some View {
         NavigationStack{
             VStack (spacing:10){
@@ -103,29 +103,30 @@ struct AccountInformation: View {
                         .padding(.bottom, 20)
                 }
                 Spacer()
-        
+                
             }.onAppear{
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
+                // MARK: - Get user information from core
+                let userInfo =  CoreDataHelper().fetchUserFromCoreData(uid: userId)
                 
                 name = userInfo?.name ?? ""
                 email = userInfo?.email ?? ""
                 password = userInfo?.password ?? ""
-
+                
                 if let imageFilename = userInfo?.image {
                     print("Saved image filename: \(imageFilename)")
-
+                    
                     let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                     let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
-
+                    
                     print("Full file path: \(fileURL.path)")
-
+                    
                     if FileManager.default.fileExists(atPath: fileURL.path),
                        let data = try? Data(contentsOf: fileURL) {
                         self.imageData = data
                         self.imageURL = fileURL
                         print("Image data loaded from documents")
                     } else {
-                        print("File not found in documents")
+                        print("❌ File not found in documents")
                     }
                 }
             }
@@ -140,8 +141,4 @@ struct AccountInformation: View {
         }
         
     }
-}
-
-#Preview {
-    AccountInformation(userId: .constant(""))
 }

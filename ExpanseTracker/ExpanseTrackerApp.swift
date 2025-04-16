@@ -6,7 +6,7 @@
 //
 import SwiftUI
 import FirebaseCore
-
+import FirebaseAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -22,16 +22,16 @@ struct YourApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
-    
     var body: some Scene {
         WindowGroup {
             WelcomePage()
                 .environmentObject(themeManager)
+                .environmentObject(AlertManager.shared)
                 .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+                .environment(\.managedObjectContext, PersistanceController.shared.context)
         }
     }
 }
-
 
 
 

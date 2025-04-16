@@ -10,6 +10,8 @@ import SwiftUI
 
 struct GraphsView: View {
     
+    
+    
     @State private var selectedTab: DateTab = .monthly
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
@@ -36,9 +38,9 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    Text("A Tab Content").tag(0)
-                    Text("B Tab Content").tag(1)
-                    Text("C Tab Content").tag(2)
+                    PieView().tag(0)
+                    BarView().tag(1)
+                    LineView().tag(2)
                 })
                 .tabViewStyle(PageTabViewStyle())
                 .background(Color.gray.opacity(0.1))
@@ -51,7 +53,7 @@ struct GraphsView: View {
                 .foregroundColor(.gray)
 
             Spacer()
-
+            Spacer()
             // Chart view can go here
         }
         .padding(.top)

@@ -12,9 +12,12 @@ struct LogInPage: View {
     @State private var isLoggedIn = false
     @State private var backHome = false
     @State private var goToHome = false
+    @State private var isLoading = false
+    @State private var errorMessage: String?
     @EnvironmentObject var themeManager: ThemeManager
     @ObservedObject var auth: AuthViewModel
     @State private var isPasswordSecure: Bool = true
+    @EnvironmentObject var alertManager: AlertManager
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
@@ -82,15 +85,19 @@ struct LogInPage: View {
                         CustomButton(
                             title: "Login",
                             action: {
+                                isLoading = true
                                 //Firebase login
-                                auth.logIn(email: email, password: password){ success in
+                                auth.logIn(email: email, password: password) { success, message in
+                                    isLoading = false
                                     if success {
                                         goToHome = true
+                                    } else if let message = message {
+                                        alertManager.showAlert(title: "Login Failed", message: message)
                                     }
                                 }
-                                
                             }
-                        ).disabled(auth.isLoading)
+                        )
+                        .disabled(isLoading)
                         
                     }
                     .padding()
@@ -114,16 +121,13 @@ struct LogInPage: View {
         }
         //cover the whole page with the sign up page
         .fullScreenCover(isPresented: $isLoggedIn) {
-            SignUpPage(auth: auth)
+            SignUpPage(auth:auth)
         }
         //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
-            WelcomePage()
+            WelcomePage(auth:auth)
         }
         .navigationBarBackButtonHidden(true)
-        .alert(isPresented: $auth.showAlert) {
-                    Alert(title: Text(auth.alertTitle), message: Text(auth.alertMessage), dismissButton: .default(Text("OK")))
-                }
         NavigationLink(
             destination: MainTabView(auth:auth),
                     isActive: $goToHome,

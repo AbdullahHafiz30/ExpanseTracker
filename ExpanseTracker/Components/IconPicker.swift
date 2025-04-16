@@ -5,16 +5,9 @@
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
 //
 
-
-//
-//  IconPicker.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
 import SwiftUI
-
+/// A view that presents a searchable  system icons for selection.
+/// Selected icon is highlighted with the user-selected color and automatically dismissed after selection.
 struct IconPicker: View {
     @StateObject var viewModel = IconModel()
     @Binding var selectedIcon: String
@@ -34,7 +27,7 @@ struct IconPicker: View {
                                     .matchedGeometryEffect(id: "icon", in: animation)
                                     .frame(width: 40, height: 40)
                             }
-
+                            
                             Image(systemName: icon)
                                 .foregroundColor(selectedIcon == icon ? .white : .black)
                                 .frame(width: 40, height: 40)

@@ -9,6 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct EditAccountInformation: View {
+    // MARK: - Variables
     @State var showPassword: Bool = false
     @State var showEditPage: Bool = false
     @State var userName: String = ""
@@ -16,15 +17,15 @@ struct EditAccountInformation: View {
     @State var userPassword: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
-    
+    @State private var errorMessage: String = ""
+    @State private var showAlert: Bool = false
     @State private var imageData: Data? = nil
     @State private var showPhotoLibrary = false
     @State private var selectedPhoto: PhotosPickerItem? = nil
     @State private var imageURL: URL? = nil
-    
-    @StateObject var userViewModel = UserViewModel()
     @Binding var userId: String
     @State private var isPasswordSecure: Bool = true
+    // MARK: - UI Design
     var body: some View {
         NavigationStack{
             VStack (spacing:10){
@@ -46,19 +47,19 @@ struct EditAccountInformation: View {
                             .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
                     }
                     
-                        Circle()
+                    Circle()
                         .fill(themeManager.isDarkMode ? .white : .black)
-                            .frame(width: 50, height: 50)
-                            .offset(x: 60, y: 70)
-                        
-                        Image(systemName: "camera.fill")
-                            .resizable()
-                            .foregroundColor(themeManager.isDarkMode ? .black : .white)
-                            .frame(width: 25,height: 20)
-                            .offset(x: 60, y: 70)
-                            .onTapGesture {
-                                showPhotoLibrary = true
-                            }
+                        .frame(width: 50, height: 50)
+                        .offset(x: 60, y: 70)
+                    
+                    Image(systemName: "camera.fill")
+                        .resizable()
+                        .foregroundColor(themeManager.isDarkMode ? .black : .white)
+                        .frame(width: 25,height: 20)
+                        .offset(x: 60, y: 70)
+                        .onTapGesture {
+                            showPhotoLibrary = true
+                        }
                     
                 }
                 .padding(.top,10)
@@ -67,17 +68,17 @@ struct EditAccountInformation: View {
                 Group{
                     Text("Name")
                         .font(.system(size: 22, weight: .medium, design: .default))
-
+                    
                     CustomTextField(placeholder: "", text: $userName, isSecure: .constant(false))
                     
                     Text("Email")
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
-
-
+                    
+                    
                     Text("Password")
                         .font(.system(size: 22, weight: .medium, design: .default))
-
+                    
                     ZStack(alignment: .trailing) {
                         CustomTextField(
                             placeholder: "123456789",
@@ -102,8 +103,25 @@ struct EditAccountInformation: View {
                 
                 
                 Spacer()
-                
+                // MARK: - Save edited account information button
                 CustomButton(title: "Save", action: {
+                    guard !userName.trimmingCharacters(in: .whitespaces).isEmpty else {
+                        errorMessage = "Name is required"
+                        showAlert = true
+                        return
+                    }
+                    
+                    guard isValidEmail(userEmail) else {
+                        errorMessage = "Invalid email address"
+                        showAlert = true
+                        return
+                    }
+                    
+                    guard userPassword.count >= 6 else {
+                        errorMessage = "Password must be at least 6 characters"
+                        showAlert = true
+                        return
+                    }
                     
                     let user = User(
                         id: userId,
@@ -115,12 +133,12 @@ struct EditAccountInformation: View {
                         budgets: [],
                         categories: []
                     )
-
-                    userViewModel.saveEditedUser(user: user)
+                    
+                    CoreDataHelper().saveEditedUser(user: user)
                     dismiss()
                 })
                 .padding(.bottom, 20)
-
+                
                 Spacer()
                 
             }
@@ -140,13 +158,13 @@ struct EditAccountInformation: View {
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
                         self.imageData = data
-
+                        
                         if let uiImage = UIImage(data: data),
-                           let filename = userViewModel.saveImageToDocuments(uiImage) {
+                           let filename = CoreDataHelper().saveImageToDocuments(uiImage) {
                             
                             let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                             let savedURL = documentsDirectory.appendingPathComponent(filename)
-
+                            
                             self.imageURL = savedURL
                             print("✅ Image saved to documents at: \(savedURL)")
                         }
@@ -154,36 +172,46 @@ struct EditAccountInformation: View {
                 }
             }
             .onAppear {
-                let userInfo = userViewModel.fetchUserFromCoreDataWithId(id: userId)
-
-                userName = userInfo?.name ?? ""
-                userEmail = userInfo?.email ?? ""
-                userPassword = userInfo?.password ?? ""
-                
-                if let imageFilename = userInfo?.image {
-                    print("Saved image filename: \(imageFilename)")
-
-                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
-
-                    print("Full file path: \(fileURL.path)")
-
-                    if FileManager.default.fileExists(atPath: fileURL.path),
-                       let data = try? Data(contentsOf: fileURL) {
-                        self.imageData = data
-                        self.imageURL = fileURL
-                        print("Image data loaded from documents")
-                    } else {
-                        print("File not found in documents")
-                    }
-                }
-                
-            }
+                loadUserData()
+            }.alert("Error", isPresented: $showAlert, actions: {
+                Button("OK", role: .cancel) { }
+            }, message: {
+                Text(errorMessage)
+            })
             .navigationBarBackButtonHidden(true)
         }
     }
-}
-
-#Preview {
-    EditAccountInformation(userId: .constant(""))
+    
+    // MARK: - Functions
+    private func loadUserData() {
+        let userInfo = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+        
+        userName = userInfo?.name ?? ""
+        userEmail = userInfo?.email ?? ""
+        userPassword = userInfo?.password ?? ""
+        
+        if let imageFilename = userInfo?.image {
+            print("Saved image filename: \(imageFilename)")
+            
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+            
+            print("Full file path: \(fileURL.path)")
+            
+            if FileManager.default.fileExists(atPath: fileURL.path),
+               let data = try? Data(contentsOf: fileURL) {
+                self.imageData = data
+                self.imageURL = fileURL
+                print("Image data loaded from documents")
+            } else {
+                print("File not found in documents")
+            }
+        }
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: email)
+    }
 }

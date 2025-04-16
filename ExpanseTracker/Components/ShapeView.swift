@@ -5,26 +5,20 @@
 //  Created by Rayaheen Mseri on 12/10/1446 AH.
 //
 
-
-//
-//  shape.swift
-//  ExpensesMonthlyProjrct
-//
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
-//
-
 import SwiftUI
-
+/// A view that displays a circular water usage  indicator with a wave animation to show how much the user spend from the budget.
+/// The circle fills with color based on water usage percentage and displays the usage as a percentage text.
 struct ShapeView: View {
-    @State private var usedWaterAmount: CGFloat = 2000 // Current value
-    private let maxWaterAmount: CGFloat = 5500        // Max value
-
+    var usedWaterAmount: CGFloat
+    var maxWaterAmount: CGFloat
+    
     var body: some View {
-        VStack (alignment: .leading){
+        VStack(alignment: .leading) {
             GeometryReader { geometry in
                 let width = geometry.size.width
                 let height = geometry.size.height
-                let fillPercentage = usedWaterAmount / maxWaterAmount
+                let usagePercentage = usedWaterAmount / maxWaterAmount
+                let remainingPercentage = 1 - usagePercentage
                 
                 ZStack {
                     // Background Circle with shadow
@@ -32,35 +26,38 @@ struct ShapeView: View {
                         .fill(Color.white)
                         .frame(width: width, height: height)
                         .shadow(color: Color.gray.opacity(0.4), radius: 10, x: 0, y: 4)
-
-                    // Outer Stroke to give border effect
+                    
+                    // Outer Stroke
                     Circle()
-                        .fill(Color.white)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 2)
                         .frame(width: width, height: height)
-
+                    
                     // Water Fill (WaveShape)
                     Circle()
                         .clipShape(
                             WaveShape(
                                 waveHeight: 20,
                                 waveWidth: width / 3,
-                                fillPercentage: 1 - fillPercentage, // Invert to fill from bottom
+                                fillPercentage: remainingPercentage,
                                 width: width,
                                 height: height
                             )
                         )
-                        .foregroundColor(fillPercentage > 0.5 ? .green.opacity(0.4) : fillPercentage > 0.2 ? .yellow.opacity(0.4) : .red.opacity(0.4))
+                        .foregroundColor(
+                            usagePercentage > 0.8 ? .red.opacity(0.4) :
+                                usagePercentage > 0.5 ? .yellow.opacity(0.4) :
+                                    .green.opacity(0.4)
+                        )
                         .frame(width: width, height: height)
-                        .animation(.easeInOut(duration: 0.5), value: fillPercentage)
-
+                        .animation(.easeInOut(duration: 0.5), value: usagePercentage)
+                    
                     // Percentage Text
-                    Text("\(Int(fillPercentage * 100))%")
+                    Text("\(maxWaterAmount == 0 ? 0 : Int(usagePercentage * 100))%")
                         .font(.title)
                         .bold()
                         .foregroundColor(.black)
-                        .shadow(color: .white.opacity(0.8), radius: 4) // Text shadow to add depth
+                        .shadow(color: .white.opacity(0.8), radius: 4)
                 }
-
             }
             .frame(width: 170, height: 170)
         }
@@ -83,7 +80,7 @@ struct WaveShape: Shape {
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let waterHeight = fillPercentage * height
+        let waterHeight = (1 - fillPercentage) * height
         
         path.move(to: CGPoint(x:0 , y: waterHeight))
         for x in stride(from: 0, to: width, by: waveWidth) {
@@ -99,15 +96,11 @@ struct WaveShape: Shape {
                 control2: CGPoint(x: x2, y: y2)
             )
         }
-            
-            path.addLine(to: CGPoint(x: width, y: height))
-            path.addLine(to: CGPoint(x: 0, y: height))
-            path.closeSubpath()
+        
+        path.addLine(to: CGPoint(x: width, y: height))
+        path.addLine(to: CGPoint(x: 0, y: height))
+        path.closeSubpath()
         
         return path
     }
-}
-
-#Preview {
-    ShapeView()
 }

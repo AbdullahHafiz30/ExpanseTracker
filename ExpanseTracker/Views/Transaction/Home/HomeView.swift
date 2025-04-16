@@ -22,7 +22,6 @@ struct HomeView: View {
     @State private var searchText: String = ""
     @State private var selectedTab: Tab = .monthly
     
-    
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
@@ -72,10 +71,10 @@ struct HomeView: View {
             }
             
         }
-        .onChange(of: selectedTab) {
-            startDate = selectedTab.startDate(from: Date())
-            endDate = Date()
-        }
+//        .onChange(of: selectedTab) {
+//            startDate = selectedTab.startDate(from: Date())
+//            endDate = Date()
+//        }
     }
     
     private var filteredTransactions: [Transaction] {
