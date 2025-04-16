@@ -5,10 +5,15 @@ struct CategoryView: View {
     @StateObject private var viewModel = CategoryViewModel()
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
+    @Binding var userId: String
+    //@State private var selectedType: CategoryType = .all
+
+    
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
+                addButton
                 searchBarView
                 categoryTypeFilter
                 categoryList
@@ -21,7 +26,7 @@ struct CategoryView: View {
                 }
             }
             .sheet(isPresented: $showingAddCategory) {
-                AddCategory()
+                AddCategory(userId : $userId)
                     .environmentObject(viewModel)
             }
             .background(Color.white)
@@ -59,33 +64,60 @@ struct CategoryView: View {
             .padding(.horizontal)
         }
     }
-
+//    
+//    List {
+//                       ForEach(viewModel.filteredCategories) { category in
+//                           CategoryRow(category: category)
+//                               .environmentObject(themeManager)
+//                               .swipeActions(edge: .trailing) {
+//                                   Button(role: .destructive) {
+//                                       viewModel.deleteCategory(withId: category.id)
+//                                   } label: {
+//                                       Label("Delete", systemImage: "trash")
+//                                   }
+//                               }
+//                               .swipeActions(edge: .leading) {
+//                                   NavigationLink(destination: EditCategory(id: .constant(category.id))) {
+//                                       Label("Edit", systemImage: "pencil")
+//                                   }
+//                               }
+//                               .listRowBackground(Color.white)
+//                               .listRowSeparator(.hidden)
+//                       }
+//                   }
+//                   .listStyle(.plain)
+//                   .padding(.bottom, 20)
     private var categoryList: some View {
         List {
             ForEach(viewModel.filteredCategories) { category in
-                if let id = category.id {
-                    CategoryRow(category: category)
-                        .environmentObject(themeManager)
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
+                CategoryRow(category: category)
+                    .environmentObject(themeManager)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            if let id = category.id {
                                 viewModel.deleteCategory(withId: id)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
                             }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
-                        .swipeActions(edge: .leading) {
-                            NavigationLink(destination: EditCategory(id: .constant(id))) {
+                    }
+                    .swipeActions(edge: .leading) {
+                        if let id = category.id {
+                            NavigationLink {
+                                EditCategory(id: id, userId: userId)
+                            } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
                         }
-                        .listRowBackground(Color.white)
-                        .listRowSeparator(.hidden)
-                }
+                    }
+                    .listRowBackground(Color.white)
+                    .listRowSeparator(.hidden)
             }
         }
         .listStyle(.plain)
         .padding(.bottom, 20)
     }
+
 
     private var addButton: some View {
         Button {

@@ -130,12 +130,12 @@ class CategoryViewModel: ObservableObject {
         } catch {
             print("⚠️ Failed to fetch category by ID: \(error.localizedDescription)")
         }
-        
         return nil
     }
-
-    // MARK: - Save Category for Specific User
+    
+    // MARK: - Save Category to Core Data with User ID
     func saveCategoryToCoreData(category: Category, userId: String) {
+        print("save category to core data")
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
         
@@ -150,9 +150,9 @@ class CategoryViewModel: ObservableObject {
                 newCategory.budgetLimit = category.budgetLimit ?? 0.0
                 
                 existingUserEntity.addToCategory(newCategory)
+                print("✅ Added new category for the user.")
                 
                 PersistanceController.shared.saveContext()
-                print("✅ Added new category for the user.")
             } else {
                 print("No user found with id: \(userId)")
             }
@@ -161,50 +161,58 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Fetch All Categories
+    // MARK: - Fetch All Categories from Core Data
     func fetchAllCategoriesFromCoreData() -> [Category] {
-        let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        print("fetching list of Categories from core data")
+        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        let categoryData = (try! context.fetch(categoryRequest))
         
-        do {
-            let entities = try context.fetch(request)
-            return entities.map {
-                Category(
-                    id: $0.id ?? "",
-                    name: $0.name ?? "",
-                    color: $0.color ?? "",
-                    icon: $0.icon ?? "",
-                    categoryType: CategoryType(rawValue: $0.categoryType ?? "") ?? .other,
-                    budgetLimit: $0.budgetLimit
-                )
-            }
-        } catch {
-            print("❌ Failed to fetch categories: \(error)")
-            return []
+        let categoryMapping = categoryData.map {
+            Category(
+                id: $0.id ?? "",
+                name: $0.name ?? "",
+                color: $0.color ?? "",
+                icon: $0.icon ?? "",
+                categoryType: CategoryType(rawValue: $0.categoryType ?? "") ?? .other,
+                budgetLimit: $0.budgetLimit
+            )
         }
+        
+        print(categoryMapping)
+        
+        return categoryMapping
     }
     
-    // MARK: - Fetch Category for User by ID
+    // MARK: - Fetch Category from Core Data by Category ID and User ID
     func fetchCategoryFromCoreDataWithId(categoryId: String, userId: String) -> Category? {
+        print("Fetching category with id: \(categoryId)")
+        
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
         userRequest.fetchLimit = 1
         
         do {
-            if let user = try context.fetch(userRequest).first,
-               let matchedCategory = user.category?
-                   .compactMap({ $0 as? CategoryEntity })
-                   .first(where: { $0.id == categoryId }) {
-                
-                return Category(
-                    id: matchedCategory.id ?? "",
-                    name: matchedCategory.name ?? "",
-                    color: matchedCategory.color ?? "",
-                    icon: matchedCategory.icon ?? "",
-                    categoryType: CategoryType(rawValue: matchedCategory.categoryType ?? "") ?? .other,
-                    budgetLimit: matchedCategory.budgetLimit
-                )
+            if let user = try context.fetch(userRequest).first {
+                if let matchedCategory = user.category?
+                    .compactMap({ $0 as? CategoryEntity })
+                    .first(where: { $0.id == categoryId }) {
+                    let category = Category(
+                        id: matchedCategory.id ?? "",
+                        name: matchedCategory.name ?? "",
+                        color: matchedCategory.color ?? "",
+                        icon: matchedCategory.icon ?? "",
+                        categoryType: CategoryType(rawValue: matchedCategory.categoryType ?? "") ?? .other,
+                        budgetLimit: matchedCategory.budgetLimit
+                    )
+                    
+                    print("✅ Found category: \(category.name ?? "")")
+                    return category
+                } else {
+                    print("❌ Category with id \(categoryId) not found in user's categories")
+                    return nil
+                }
             } else {
-                print("❌ Category or User not found.")
+                print("❌ User with id \(userId) not found")
                 return nil
             }
         } catch {
@@ -213,30 +221,29 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Save Edited Category (with userId)
-    func saveEditedCategory(category: Category, userId: String) {
-        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        categoryRequest.predicate = NSPredicate(format: "id == %@", category.id ?? "")
+    // MARK: - Save Edited Category
+    func saveEditedCategory(category: Category) {
+        let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", category.id ?? "")
         
         do {
-            if let existingCategoryEntity = try context.fetch(categoryRequest).first {
-                existingCategoryEntity.name = category.name
-                existingCategoryEntity.icon = category.icon
-                existingCategoryEntity.color = category.color
-                existingCategoryEntity.categoryType = category.categoryType?.rawValue
-                existingCategoryEntity.budgetLimit = category.budgetLimit ?? 0.0
+            if let entity = try context.fetch(request).first {
+                entity.name = category.name
+                entity.color = category.color
+                entity.icon = category.icon
+                entity.categoryType = category.categoryType?.rawValue ?? CategoryType.other.rawValue
+                entity.budgetLimit = category.budgetLimit ?? 0.0
                 
                 PersistanceController.shared.saveContext()
-                print("✅ Category updated successfully.")
-            } else {
-                print("No category found with id: \(category.id ?? "")")
+                loadCategories()
+                print("✅ Category updated successfully")
             }
         } catch {
-            print("❌ Failed to save context: \(error)")
+            print("⚠️ Failed to update category: \(error.localizedDescription)")
         }
     }
     
-    // MARK: - Filtered Categories
+    // MARK: - Filtered Categories (for UI)
     var filteredCategories: [Category] {
         var filtered = categories
         
@@ -253,5 +260,47 @@ class CategoryViewModel: ObservableObject {
         }
         
         return filtered
+    }
+    
+    // MARK: - Save Edited Category with User ID
+    func saveEditedCategory(category: Category, userId: String) {
+        // Fetch the Core Data object directly
+        let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        categoryRequest.predicate = NSPredicate(format: "id == %@", category.id ?? "")
+        
+        do {
+            if let existingCategoryEntity = try context.fetch(categoryRequest).first {
+                // Update the Core Data object
+                existingCategoryEntity.name = category.name
+                existingCategoryEntity.icon = category.icon
+                existingCategoryEntity.color = category.color
+                existingCategoryEntity.categoryType = category.categoryType?.rawValue
+                existingCategoryEntity.budgetLimit = category.budgetLimit ?? 0.0
+                
+                // Save the context
+                PersistanceController.shared.saveContext()
+                print("✅ Category updated successfully.")
+            } else {
+                print("No category found with id: \(category.id ?? "")")
+            }
+        } catch {
+            print("❌ Failed to save context: \(error)")
+        }
+    }
+    
+    // MARK: - Delete All Categories
+    func deleteAll() {
+        let newsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CategoryEntity")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: newsRequest)
+        
+        do {
+            // Execute the delete request
+            try context.execute(deleteRequest)
+            // Save the context after deletion
+            PersistanceController.shared.saveContext()
+            print("All categories deleted successfully.")
+        } catch {
+            print("Delete Error \(error)")
+        }
     }
 }
