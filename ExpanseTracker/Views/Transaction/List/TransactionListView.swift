@@ -10,7 +10,7 @@ import SwiftUI
 /// The main home screen view that displays transaction data, filters, and navigation.
 struct HomeView: View {
     
-    @State private var startDate: Date = Tab.monthly.startDate(from: Date())
+    @State private var startDate: Date = TimeFilter.monthly.startDate(from: Date())
     @State private var endDate: Date = Date()
     
     @State private var selectedType: TransactionType = .income  // Currently selected transaction type (income/expense)
@@ -20,7 +20,14 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel() // ViewModel containing transaction data
     
     @State private var searchText: String = ""
-    @State private var selectedTab: Tab = .monthly
+    @State private var selectedTab: TimeFilter = .monthly
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(
+        entity: TransacionsEntity.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)]
+    ) private var transacions: FetchedResults<TransacionsEntity>
     
     var body: some View {
         NavigationStack {
@@ -29,10 +36,11 @@ struct HomeView: View {
                     
                     Section {
                         
-                        Text("\(format(date: startDate, format: "dd - MMM yy")) **to** \(format(date: endDate, format: "dd - MMM yy"))")
+                        Text("\(startDate.formatted(as: "dd - MMM yy")) **to** \(endDate.formatted(as: "dd - MMM yy"))")
                             .font(.caption)
                             .foregroundStyle(.gray)
                             .hSpacing(.leading)
+
                         
                         // Income/Expense summary card
                         CardView(
@@ -50,7 +58,7 @@ struct HomeView: View {
                         .padding(.bottom, 10)
 
                         // List of filtered transactions
-                        ForEach(filteredTransactions) { transaction in
+                        ForEach(transacions) { transaction in
                             NavigationLink {
                                 DetailsHomeView(transaction: transaction)
                             } label: {
@@ -77,17 +85,17 @@ struct HomeView: View {
 //        }
     }
     
-    private var filteredTransactions: [Transaction] {
-        viewModel.sampleTransactions.filter { transaction in
-            let matchesSearch = searchText.isEmpty ||
-            ((transaction.title?.localizedCaseInsensitiveContains(searchText)) != nil) ||
-            ((transaction.description?.localizedCaseInsensitiveContains(searchText)) != nil)
-
-            let matchesType = transaction.type == selectedType
-            let matchesDate = transaction.date ?? Date() >= startDate && transaction.date ?? Date() <= endDate
-
-            return matchesSearch && matchesType && matchesDate
-        }
-    }
+//    private var filteredTransactions: [TransacionsEntity] {
+//        transacions.filter { transaction in
+//            let matchesSearch = searchText.isEmpty ||
+//            ((transaction.title?.localizedCaseInsensitiveContains(searchText)) != nil) ||
+//            ((transaction.description.localizedCaseInsensitiveContains(searchText)) != nil)
+//
+//            let matchesType = transaction.transactionType == selectedType.rawValue
+//            let matchesDate = transaction.date ?? Date() >= startDate && transaction.date ?? Date() <= endDate
+//
+//            return matchesSearch && matchesType && matchesDate
+//        }
+//    }
 
 }

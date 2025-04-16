@@ -13,11 +13,6 @@ import SwiftUI
 ///   - themeManager: An instance of ThemeManager used to control theme-based styling.
 /// - Returns: A SwiftUI view representing the price section.
 func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManager: ThemeManager) -> some View {
-    
-    let formatter = NumberFormatter.decimalFormatter
-    let displayedValue = amount?.wrappedValue ?? readOnlyAmount ?? 0.0
-    let formattedAmount = formatter.string(from: NSNumber(value: displayedValue)) ?? "0.00"
-    
     return VStack(alignment: .leading, spacing: 10) {
         
         Text("How much?")
@@ -32,12 +27,12 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
                 .frame(width: 50, height: 50)
             
             if let amountBinding = amount {
-                TextField("Amount", value: amountBinding, formatter: formatter)
+                TextField("Amount", value: amountBinding, formatter: NumberFormatterManager.shared.formatter)
                     .font(.system(size: 33))
                     .keyboardType(.decimalPad)
                     .foregroundColor(themeManager.textColor)
             } else {
-                Text("\(formattedAmount)")
+                Text(NumberFormatterManager.shared.decimalString(from: readOnlyAmount ?? 0.0))
                     .font(.system(size: 33))
                     .foregroundColor(themeManager.textColor)
             }
@@ -45,3 +40,5 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
     }
     .padding()
 }
+
+

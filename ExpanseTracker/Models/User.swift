@@ -13,7 +13,7 @@ struct User: Identifiable {
     let email: String?
     let password: String?
     let image: String?
-    let transactions: [Transactions]?
+    let transactions: [Transaction]?
     let budgets: [Budget?]
     let categories: [Category?]
 }

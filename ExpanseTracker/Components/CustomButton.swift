@@ -9,7 +9,8 @@
 import SwiftUI
 // Custom button to be used everywhere we need
 struct CustomButton: View {
-    //MARK: - Variables
+    // MARK: - Variables
+
     var title: String
     var action: () -> Void = {}
     var cornerRadius: CGFloat = 8
