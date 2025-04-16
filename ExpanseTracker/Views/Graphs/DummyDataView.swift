@@ -9,6 +9,7 @@ import SwiftUI
 
 class DummyDataView: ObservableObject {
     
+    
     @Published var dummyData: [Transactions] = [
         Transactions(
             id: "1",
@@ -202,17 +203,77 @@ class DummyDataView: ObservableObject {
     // get all Emergency amounts added
     // for the (all) filter I can use all the amounts callculated above then present it in the pie chart
     
-    func getEssential() {
+    func getEssential() -> Double {
         let essentialTotal = dummyData.filter { $0.category?.categoryType == .essential }.filter { $0.transactionType == .expense }.reduce(0) { $0 + ($1.amount ?? 0.0) }
-        print(essentialTotal)
+        return essentialTotal
     }
     
-    func getEntertainment() {
+    func getEntertainment() -> Double {
         let entertainmentTotal = dummyData.filter { $0.category?.categoryType == .entertainment }.filter { $0.transactionType == .expense }.reduce(0) { $0 + ($1.amount ?? 0.0) }
-        print(entertainmentTotal)
+        return entertainmentTotal
     }
     
-    func getEmergency() {
-        let emergencyTotal = dummyData.filter { $0.category?.categoryType == .emergency}
+    func getEmergency() -> Double {
+        let emergencyTotal = dummyData.filter { $0.category?.categoryType == .emergency}.filter{
+            $0.transactionType == .expense}.reduce(0) { $0 + ($1.amount ?? 0.0) }
+        return emergencyTotal
+    }
+    
+    func getOther() -> Double {
+        let otherTotal = dummyData.filter {
+            $0.category?.categoryType == .other }.filter { $0.transactionType == .expense }.reduce(0) { $0 + ($1.amount ?? 0.0) }
+        return otherTotal
+    }
+    func getAll() -> Double {
+        let allTotal = dummyData.filter { $0.transactionType == .expense }.reduce(0) { $0 + ($1.amount ?? 0.0) }
+        return allTotal
+    }
+    
+    //    func getSections() -> [String] {
+    //        return ["Essential", "Entertainment", "Emergency", "Other"]
+    //    }
+    //
+    //    func getChartData() -> [PieChartDataEntry] {
+    //        return [
+    //            PieChartDataEntry(value: getEssential()),
+    //            PieChartDataEntry(value: getEntertainment()),
+    //            PieChartDataEntry(value: getEmergency()),
+    //            PieChartDataEntry(value: getOther())
+    //        ]
+    //    }
+    //
+    //    struct PieChartDataEntry : Identifiable {
+    //        var id: ObjectIdentifier
+    //
+    //        var
+    //        }
+    //    }
+    
+    func getTestData() -> [Test] {
+        return [
+            Test(text: "Essential", number: getEssential()),
+            Test(text: "Entertainment", number: getEntertainment()),
+            Test(text: "Emergency", number: getEmergency()),
+            Test(text: "Other", number: getOther()),
+        ]
+    }
+    
+    
+    
+    
+}
+
+
+
+struct Test: Identifiable {
+    let text: String
+    let number: Double
+    
+    let id = UUID()
+    
+    init(text: String, number: Double) {
+        self.text = text
+        self.number = number
     }
 }
+
