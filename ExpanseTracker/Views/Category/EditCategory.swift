@@ -18,11 +18,11 @@ struct EditCategory: View {
     @State private var showIcons: Bool = false
     @State private var showColorPicker: Bool = false
     @State var categoryType: CategoryType = .other
-    @Binding var id: String
+    var id: String
     @EnvironmentObject var themeManager: ThemeManager
     @Namespace var animation
     @State private var showNameAlert: Bool = false
-    @Binding var userId: String
+    var userId: String
     // MARK: - UI Design
     var body: some View {
         NavigationStack {

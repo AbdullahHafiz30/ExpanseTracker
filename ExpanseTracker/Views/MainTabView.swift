@@ -26,7 +26,7 @@ struct MainTabView: View {
                         Text("Home")
                     }.tag(0)
                 
-                Text("list of categories")
+                CategoryView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "doc.on.doc")
                         Text("Categories")
