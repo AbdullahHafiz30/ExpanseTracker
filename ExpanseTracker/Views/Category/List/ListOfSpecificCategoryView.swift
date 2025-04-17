@@ -90,6 +90,7 @@ struct ListOfSpecificCategoryView: View {
                 .listStyle(.insetGrouped)
             }
         }
+        .padding()
         .navigationBarBackButtonHidden(true)
         //.navigationTitle("\(categoryName)")
         .navigationBarTitleDisplayMode(.inline)

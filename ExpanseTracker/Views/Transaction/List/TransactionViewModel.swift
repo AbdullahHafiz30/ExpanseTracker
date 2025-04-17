@@ -8,14 +8,10 @@
 import SwiftUI
 import CoreData
 
-<<<<<<< Updated upstream
 
-final class TransactionViewModel: ObservableObject {
-=======
 /// ViewModel for managing logic on the Home screen.
 /// Handles filtering, transaction totals, and deletion.
-final class HomeViewModel: ObservableObject {
->>>>>>> Stashed changes
+final class TransactionViewModel: ObservableObject {
     
     // MARK: - Published Variable
     @Published var searchText: String = ""
