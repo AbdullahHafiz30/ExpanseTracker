@@ -25,8 +25,9 @@ struct CategoryView: View {
                     addButton
                 }
             }
-            .sheet(isPresented: $showingAddCategory) {
-                AddCategory(userId : $userId)
+            .fullScreenCover(isPresented: $showingAddCategory) {
+               // AddCategory(userId : $userId)
+                CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
                     .environmentObject(viewModel)
             }
             .background(Color.white)
@@ -104,7 +105,8 @@ struct CategoryView: View {
                     .swipeActions(edge: .leading) {
                         if let id = category.id {
                             NavigationLink {
-                                EditCategory(id: id, userId: userId)
+                                //EditCategory(id: id, userId: userId)
+                                CategoryFunctionallity(id: id, userId: $userId, type: .constant("Edit"))
                             } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
