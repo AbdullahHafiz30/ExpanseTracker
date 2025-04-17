@@ -16,13 +16,14 @@ import SwiftUI
 @ViewBuilder
 func CustomBackward(title: String, tapEvent: @escaping () -> Void) -> some View {
     HStack{
+        // Back icon with tap event to dimiss the view
         Image(systemName: "arrow.left")
             .font(.system(size: 22))
             .contentShape(Rectangle())
             .onTapGesture {
                 tapEvent()
             }
-        
+        // Page title 
         Text(title)
             .font(.system(size: 22))
             .bold()
