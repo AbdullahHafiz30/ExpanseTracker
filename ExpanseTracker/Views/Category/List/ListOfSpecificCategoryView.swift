@@ -11,6 +11,7 @@ import CoreData
 struct ListOfSpecificCategoryView: View {
     // The name of the category to filter transactions
     var categoryName: String
+    @Environment(\.dismiss) var dismiss
 
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
     @FetchRequest private var transactions: FetchedResults<TransacionsEntity>
@@ -32,6 +33,8 @@ struct ListOfSpecificCategoryView: View {
 //                .font(.title2)
 //                .bold()
 //                .padding(.horizontal)
+            CustomBackward(title:"\(categoryName)", tapEvent: {dismiss()})
+                .frame(maxWidth: .infinity, alignment: .leading)
             
             if transactions.isEmpty {
                 // Display message when no transactions are found
@@ -87,7 +90,8 @@ struct ListOfSpecificCategoryView: View {
                 .listStyle(.insetGrouped)
             }
         }
-        .navigationTitle("\(categoryName)")
+        .navigationBarBackButtonHidden(true)
+        //.navigationTitle("\(categoryName)")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
