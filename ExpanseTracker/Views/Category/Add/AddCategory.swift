@@ -22,6 +22,8 @@ struct AddCategory: View {
     @Namespace var animation
     @State private var showNameAlert: Bool = false
     @Binding var userId: String
+    @Environment(\.dismiss) var dismiss
+
     // MARK: - UI Design
     var body: some View {
         NavigationStack {
@@ -158,7 +160,8 @@ struct AddCategory: View {
                     )
                     
                     categoryViewModel.saveCategoryToCoreData(category: newCategory, userId: userId)
-                    
+                    dismiss()
+
                 })
                 
             }
