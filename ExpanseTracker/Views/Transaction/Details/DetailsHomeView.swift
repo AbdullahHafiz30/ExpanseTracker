@@ -10,13 +10,16 @@ import SwiftUI
 /// A SwiftUI view that displays detailed information about a specific transaction.
 struct DetailsHomeView: View {
     
+    // MARK: - Variable
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
     
     let transaction: TransacionsEntity
     
     var body: some View {
+        
         ScrollView {
+            
             VStack(alignment: .leading) {
                 
                 // Amount

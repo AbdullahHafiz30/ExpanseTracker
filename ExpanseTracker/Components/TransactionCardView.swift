@@ -10,7 +10,8 @@ import SwiftUI
 /// A card-style view that displays information about a single transaction.
 struct TransactionCardView: View {
     
-    var transaction: TransacionsEntity  // The transaction data to display
+    @ObservedObject var transaction: TransacionsEntity
+    
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {

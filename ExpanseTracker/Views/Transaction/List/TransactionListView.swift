@@ -8,7 +8,13 @@
 import SwiftUI
 
 /// The main home screen view that displays transaction data, filters, and navigation.
+<<<<<<< Updated upstream
 struct TransactionListView: View {
+=======
+struct HomeView: View {
+    
+    // MARK: - Variable
+>>>>>>> Stashed changes
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = TransactionViewModel()
     
@@ -48,7 +54,7 @@ struct TransactionListView: View {
                             
                             // List of filtered transactions
                             
-                            ForEach(viewModel.filteredTransactions(transacions)) { transaction in
+                            ForEach(viewModel.filteredTransactions(transacions), id: \.self) { transaction in
                                 NavigationLink {
                                     DetailsHomeView(transaction: transaction)
                                 } label: {
