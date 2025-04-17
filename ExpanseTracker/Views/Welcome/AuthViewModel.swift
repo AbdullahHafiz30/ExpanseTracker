@@ -8,6 +8,8 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
+/// A view model responsible for handling user authentication logic,
+/// including sign-up, login, logout, and session management.
 class AuthViewModel:ObservableObject {
     
     //MARK: - Variables
@@ -15,12 +17,14 @@ class AuthViewModel:ObservableObject {
     @Published var isLoading: Bool = false
     private let coreDataService = CoreDataHelper()
     
-    // If user logged in and left the app without logging out and they came back they will go to home page insted tp be asked to log in again
+    // MARK: - Initialization
+    /// Checks user authentication status when the view model is initialized
     init() {
         checkUserLoggedIn()
     }
     
-    // Check if user is logged in
+    // MARK: - Check Login State
+    /// Determines if a user is already logged in using Firebase
     func checkUserLoggedIn(){
         if Auth.auth().currentUser != nil {
             isAuthenticated = true
@@ -29,7 +33,12 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Log in
+    // MARK: - Log In Function
+    /// Attempts to log the user in with Firebase Auth
+    /// - Parameters:
+    ///   - email: User's email address
+    ///   - password: User's password
+    ///   - completion: Closure returning success status and optional error message
     func logIn(email: String, password: String, completion: @escaping (Bool,String?) -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
             AlertManager.shared.showAlert(title: "Error", message: "Please fill in all fields")
@@ -52,8 +61,8 @@ class AuthViewModel:ObservableObject {
                 if let error = error {
                     if let rootVC = UIApplication.shared.windows.first?.rootViewController { //  This will get the root view controller of the app
                         let alert = UIAlertController(title: "Login Failed", message:self.mapFirebaseError(error), preferredStyle: .alert) // This will make an alert controller that has the title i chose with the message i chose
-                        alert.addAction(UIAlertAction(title: "OK", style: .default)) // Adding the ok button to dimiss the alert
-                        rootVC.present(alert, animated: true) // Present what i made on the screen
+                        alert.addAction(UIAlertAction(title: "OK", style: .default)) // Adding the ok button to dismiss the alert
+                        rootVC.present(alert, animated: true) // Present it the screen
                     }
                     
                     completion(false, self.mapFirebaseError(error))
@@ -72,7 +81,8 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Log out
+    // MARK: - Log Out Function
+    /// Signs out the user and clears session info from storage
     func logOut() {
         do {
             try Auth.auth().signOut()
@@ -85,7 +95,14 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Sign up
+    // MARK: - Sign Up Function
+    /// Registers a new user with Firebase Authentication and stores user data in Firestore
+    /// - Parameters:
+    ///   - name: User's full name
+    ///   - email: Email address
+    ///   - password: Password
+    ///   - confirmPassword: Password confirmation
+    ///   - completion: Closure returning success status and optional error message
     func signUp(name: String, email: String, password: String, confirmPassword: String, completion: @escaping (Bool,String?) -> Void) {
         // Check password match first
         guard !name.isEmpty, !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
@@ -123,8 +140,8 @@ class AuthViewModel:ObservableObject {
                 if let error = error {
                     if let rootVC = UIApplication.shared.windows.first?.rootViewController { //  This will get the root view controller of the app
                         let alert = UIAlertController(title: "Signup Failed", message:self.mapFirebaseError(error), preferredStyle: .alert)// This will make an alert controller that has the title i chose with the message i chose
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))// Adding the ok button to dimiss the alert
-                        rootVC.present(alert, animated: true) // Present what i made on the screen
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))// Adding the ok button to dismiss the alert
+                        rootVC.present(alert, animated: true) // Present it on the screen
                     }
                     
                     completion(false, self.mapFirebaseError(error))
@@ -145,6 +162,9 @@ class AuthViewModel:ObservableObject {
         }
     }
     
+    // MARK: - Successful Login Handling
+    
+    /// Handles logic after a successful login.
     private func handleSuccessfulLogin(uid: String, completion: @escaping (Bool, String?) -> Void) {
         UIDManager.saveUID(uid)
         
@@ -162,7 +182,9 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Save data to firestore
+    // MARK: - Firestore - Save and Fetch
+    
+    /// Saves user data to Firestore after signup.
     private func saveUserData(uid: String, name: String, email: String, password:String) {
         let db = Firestore.firestore()
         db.collection("users").document(uid).setData([
@@ -180,7 +202,7 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Fetch user from fire store to be able to save it in core data
+    /// Fetches user data from Firestore to store locally in Core Data.
     func fetchUserFromFirestore(uid: String, completion: @escaping (Bool) -> Void) {
         let db = Firestore.firestore()
         db.collection("users").document(uid).getDocument { document, error in
@@ -216,7 +238,9 @@ class AuthViewModel:ObservableObject {
         }
     }
     
-    // Delete user from firebase auth and firestore
+    // MARK: - Delete User
+    
+    /// Deletes a user's account from Firebase Auth and Firestore after reauthentication.
     func deleteUserAccount(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let user = Auth.auth().currentUser else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No logged-in user found."])))
@@ -224,7 +248,7 @@ class AuthViewModel:ObservableObject {
         }
         
         let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-
+        
         // Re-authenticate - firebase wont allow user to delete until it reauthenticated
         user.reauthenticate(with: credential) { result, error in
             if let error = error {
@@ -247,27 +271,31 @@ class AuthViewModel:ObservableObject {
                     if let error = error {
                         completion(.failure(error))
                     } else {
-                        completion(.success("🔥 User successfully deleted from Firebase and Firestore."))
+                        completion(.success(" User successfully deleted from Firebase and Firestore."))
                     }
                 }
             }
         }
     }
     
-    // Valid email format
+    // MARK: - Validation Helpers
+    
+    /// Validates if an email string matches proper format.
     private func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
     }
     
-    // Valid pssword should be more than 8 char and contain at least 1 number and 1 uppercase letter and 1 lowercase
+    /// Validates password strength (min 8 chars, at least 1 uppercase, 1 lowercase, 1 number).
     func isValidPassword(_ password: String) -> Bool {
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")
         return passwordTest.evaluate(with: password)
     }
     
-    // Error formatter to be readable by users
+    // MARK: - Firebase Error Mapping
+    
+    /// Converts Firebase error codes to user-friendly messages.
     private func mapFirebaseError(_ error: Error) -> String {
         let nsError = error as NSError
         

@@ -2,7 +2,9 @@
 import SwiftUI
 import PhotosUI
 import CoreData
+
 struct AddTransaction: View {
+    
     //MARK: - Variables
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
@@ -16,8 +18,9 @@ struct AddTransaction: View {
     @State private var imageData: Data?
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
-    
     @State private var selectedType: TransactionType = .income
+    
+    //MARK: - View
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
@@ -47,8 +50,8 @@ struct AddTransaction: View {
     }
 }
 
+//MARK: - View extension
 private extension AddTransaction {
-    //MARK: - View
     // Header section
     var headerSection: some View {
         HStack {

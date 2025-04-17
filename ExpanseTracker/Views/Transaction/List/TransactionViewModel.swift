@@ -1,6 +1,6 @@
 import Foundation
 
-class HomeViewModel: ObservableObject {
+class TransactionViewModel: ObservableObject {
 
     @Published var sampleTransactions: [Transaction] = []
     /// Calculates the total amount for a given transaction type within a specified date range.

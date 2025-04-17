@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  TransactionListView.swift
 //  ExpanseTracker
 //
 //  Created by Tahani Ayman on 11/10/1446 AH.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// The main home screen view that displays transaction data, filters, and navigation.
-struct HomeView: View {
+struct TransactionListView: View {
     
     @State private var startDate: Date = TimeFilter.monthly.startDate(from: Date())
     @State private var endDate: Date = Date()
@@ -17,7 +17,7 @@ struct HomeView: View {
     
     @Namespace private var animation // Namespace for matchedGeometryEffect animations
     
-    @StateObject private var viewModel = HomeViewModel() // ViewModel containing transaction data
+    @StateObject private var viewModel = TransactionViewModel() // ViewModel containing transaction data
     
     @State private var searchText: String = ""
     @State private var selectedTab: TimeFilter = .monthly

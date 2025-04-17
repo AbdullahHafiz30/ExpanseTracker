@@ -7,15 +7,18 @@
 
 
 import SwiftUI
-// Custom auth button to be used in the welcome page for log in and sign up 
+
+/// A custom authentication button used for log in and sign up screens.
+/// The button supports both filled and outlined styles based on the `isFilled` flag.
 struct AuthButton: View {
-    //MARK: - auth button variables
+    //MARK: - Variables
     let label: String
     let isFilled: Bool
     @EnvironmentObject var themeManager: ThemeManager
     
+    //MARK: - View
     var body: some View {
-        //MARK: - auth button view
+        
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .fill(isFilled ? themeManager.textColor : Color.clear)
