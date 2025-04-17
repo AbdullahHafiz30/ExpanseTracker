@@ -10,6 +10,7 @@ import PhotosUI
 import CoreData
 
 final class EditTransactionViewModel: ObservableObject {
+    
     @Published var editedTitle: String = ""
     @Published var editedDescription: String = ""
     @Published var editedAmount: Double = 0.0
@@ -19,19 +20,17 @@ final class EditTransactionViewModel: ObservableObject {
     @Published var selectedImage: PhotosPickerItem? = nil
     @Published var imageData: Data?
 
-    func initialize(from transaction: TransacionsEntity) {
+    func initialize(transaction: TransacionsEntity) {
         editedTitle = transaction.title ?? ""
         editedDescription = transaction.desc ?? ""
         editedAmount = transaction.amount
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "dd MMM yyyy"
         if let dateString = transaction.date, let parsedDate = formatter.date(from: dateString) {
             editedDate = parsedDate
-        } else {
-            editedDate = Date()
         }
-
+        
         editedCategoryName = transaction.category?.name ?? ""
         editedType = TransactionType(rawValue: transaction.transactionType ?? "") ?? .income
 
@@ -41,26 +40,13 @@ final class EditTransactionViewModel: ObservableObject {
         }
     }
 
-    func loadImage(from item: PhotosPickerItem?) async {
-        guard let item = item else { return }
-        do {
-            if let data = try await item.loadTransferable(type: Data.self) {
-                await MainActor.run {
-                    self.imageData = data
-                }
-            }
-        } catch {
-            print("Failed to load image data: \(error)")
-        }
-    }
-
-    func editTransaction(_ transaction: TransacionsEntity, in viewContext: NSManagedObjectContext, dismiss: @escaping () -> Void) {
+    func editTransaction(_ transaction: TransacionsEntity, viewContext: NSManagedObjectContext, dismiss: @escaping () -> Void) {
         transaction.title = editedTitle
         transaction.desc = editedDescription
         transaction.amount = editedAmount
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "dd MMM yyyy"
         transaction.date = formatter.string(from: editedDate)
 
         transaction.transactionType = editedType.rawValue

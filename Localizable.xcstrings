@@ -1,0 +1,291 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "   Welcome to SpendSmartly" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ **To** %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ **To** %2$@"
+          }
+        }
+      }
+    },
+    "%@ Riyals" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "0" : {
+
+    },
+    "A" : {
+
+    },
+    "Account Information" : {
+
+    },
+    "Add Category" : {
+
+    },
+    "Add transaction" : {
+
+    },
+    "All" : {
+
+    },
+    "Already have an account?" : {
+
+    },
+    "Amount" : {
+
+    },
+    "AR" : {
+
+    },
+    "Are you sure?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل انت متاكد؟"
+          }
+        }
+      }
+    },
+    "B" : {
+
+    },
+    "Bar Chart Placeholder" : {
+
+    },
+    "Bar View" : {
+
+    },
+    "Budget" : {
+
+    },
+    "Budget Limit" : {
+
+    },
+    "C" : {
+
+    },
+    "Camera" : {
+
+    },
+    "Camera Error" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Categories" : {
+
+    },
+    "Category Color" : {
+
+    },
+    "Category Icon" : {
+
+    },
+    "Category name is required" : {
+
+    },
+    "Category Type" : {
+
+    },
+    "Chart Type" : {
+
+    },
+    "Close" : {
+
+    },
+    "Dark Mode" : {
+
+    },
+    "Date Mode" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete Account" : {
+
+    },
+    "Deleting your account will erase all your data." : {
+
+    },
+    "Do you want to set this budget as repeated?" : {
+
+    },
+    "Don't have an account?" : {
+
+    },
+    "Done" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit Category" : {
+
+    },
+    "Email" : {
+
+    },
+    "EN" : {
+
+    },
+    "Filter Categories" : {
+
+    },
+    "Gallery" : {
+
+    },
+    "Graphs" : {
+
+    },
+    "Hello, %@!" : {
+
+    },
+    "Home" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الصفحة الرئيسية"
+          }
+        }
+      }
+    },
+    "How much?" : {
+
+    },
+    "Icons" : {
+
+    },
+    "Language" : {
+
+    },
+    "Light Mode" : {
+
+    },
+    "Line Chart Placeholder" : {
+
+    },
+    "Line View" : {
+
+    },
+    "Log in" : {
+
+    },
+    "Logout" : {
+
+    },
+    "Main Categories" : {
+
+    },
+    "Make your expense tracking experience more better today." : {
+
+    },
+    "Month" : {
+
+    },
+    "Name" : {
+
+    },
+    "no" : {
+
+    },
+    "Notifications" : {
+
+    },
+    "Notifications Disabled" : {
+
+    },
+    "OK" : {
+
+    },
+    "Open Settings" : {
+
+    },
+    "Password" : {
+
+    },
+    "Pick a Color" : {
+
+    },
+    "Pick a date" : {
+
+    },
+    "Pie Chart Placeholder" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Receipt image" : {
+
+    },
+    "Search for a transaction..." : {
+
+    },
+    "Select Mode" : {
+
+    },
+    "Select Tab" : {
+
+    },
+    "Selected: %@" : {
+
+    },
+    "Set Budget" : {
+
+    },
+    "Sign up" : {
+
+    },
+    "Sign Up" : {
+
+    },
+    "Stats" : {
+
+    },
+    "To receive reminders, please enable notifications in Settings." : {
+
+    },
+    "Transaction type:" : {
+
+    },
+    "Type" : {
+
+    },
+    "Welcome!" : {
+
+    },
+    "Year" : {
+
+    },
+    "yes" : {
+
+    },
+    "Your Spend" : {
+
+    }
+  },
+  "version" : "1.0"
+}

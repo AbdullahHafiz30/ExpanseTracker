@@ -55,7 +55,6 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
 }
 
 /// A computed property to get the device's current safe area insets.
-/// Useful for layout adjustments, especially at the top of the screen.
 var safeArea: UIEdgeInsets {
     if let windowScene = (UIApplication.shared.connectedScenes.first as? UIWindowScene) {
         return windowScene.keyWindow?.safeAreaInsets ?? .zero

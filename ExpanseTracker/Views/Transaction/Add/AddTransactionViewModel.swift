@@ -27,7 +27,7 @@ class AddTransactionViewModel: ObservableObject {
          newTransaction.amount = amount
 
          let formatter = DateFormatter()
-         formatter.dateFormat = "yyyy-MM-dd"
+         formatter.dateFormat = "dd MMM yyyy"
          newTransaction.date = formatter.string(from: date)
 
          newTransaction.transactionType = type.rawValue
