@@ -8,16 +8,19 @@
 
 import SwiftUI
 
+/// A custom drop-down menu that allows users to select one option from a list.
+/// This component uses a button to toggle the visibility of the options and updates the selected value.
 struct DropDownMenu: View {
+    
     //MARK: - Variables
     let title: String
     let options: [String]
     @Binding var selectedOption: String
     @State private var isExpanded = false
     @EnvironmentObject var themeManager: ThemeManager
-
+    
+    //MARK: - View
     var body: some View {
-        //MARK: - View
         VStack(spacing: 4) {
             // The drop down menu it will expand
             Button(action: {
@@ -29,10 +32,10 @@ struct DropDownMenu: View {
                     Text(selectedOption.isEmpty ? title : selectedOption)
                         .foregroundColor(
                             selectedOption.isEmpty
-                                ? themeManager.isDarkMode ? Color.white.opacity(0.6) : Color.black.opacity(0.6)
-                                : themeManager.textColor
+                            ? themeManager.isDarkMode ? Color.white.opacity(0.6) : Color.black.opacity(0.6)
+                            : themeManager.textColor
                         )
-
+                    
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .foregroundColor(themeManager.textColor)
@@ -40,7 +43,7 @@ struct DropDownMenu: View {
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 7).stroke(themeManager.textColor, lineWidth: 1))
             }
-
+            
             if isExpanded {
                 VStack(spacing: 0) {
                     ForEach(options, id: \.self) { option in
@@ -57,7 +60,7 @@ struct DropDownMenu: View {
                             }
                             .padding()
                         }
-
+                        
                         if option != options.last {
                             Divider()
                         }

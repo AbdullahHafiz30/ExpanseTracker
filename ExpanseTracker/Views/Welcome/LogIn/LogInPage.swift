@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct LogInPage: View {
+    
     //MARK: - Variables
     @State private var email: String = ""
     @State private var password: String = ""
@@ -18,8 +19,9 @@ struct LogInPage: View {
     @ObservedObject var auth: AuthViewModel
     @State private var isPasswordSecure: Bool = true
     @StateObject private var alertManager = AlertManager.shared
+    
+    //MARK: - View
     var body: some View {
-        //MARK: - View
         NavigationStack{
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {

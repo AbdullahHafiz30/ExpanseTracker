@@ -7,33 +7,21 @@
 
 
 import SwiftUI
-// Reuseable text feild
-// So i can change the color of placeholder
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content
-    ) -> some View {
-        ZStack(alignment: alignment) {
-            if shouldShow {
-                placeholder()
-            }
-            self
-        }
-    }
-}
 
+/// A reusable custom text field component that adapts to secure or regular input.
+/// Uses a placeholder overlay extension to customize placeholder styling.
 struct CustomTextField: View {
-    //MARK: - Variables 
+    
+    //MARK: - Variables
+    
     var placeholder: String
     @Binding var text: String
     // If it is for a password then this will be true
     @Binding var isSecure: Bool
     @EnvironmentObject var themeManager: ThemeManager
     
+    //MARK: - View
     var body: some View {
-        //MARK: - View
         HStack {
             if isSecure {
                 SecureField(placeholder, text: $text)

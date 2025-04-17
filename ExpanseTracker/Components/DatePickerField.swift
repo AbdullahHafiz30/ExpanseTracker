@@ -8,13 +8,19 @@
 
 import SwiftUI
 
+/// A custom view that mimics a styled text field and toggles a graphical calendar picker.
+/// Useful for forms where users need to select a date, with theme support and animation.
+
 struct DatePickerField: View {
     //MARK: - Variables
+    
     @Binding var date: Date
     @Binding var showDatePicker: Bool
     @EnvironmentObject var themeManager: ThemeManager
+    
+    //MARK: - View
+    
     var body: some View {
-        //MARK: - View
         VStack(alignment: .leading) {
             // The field to pick the date
             RoundedRectangle(cornerRadius: 7)
@@ -53,7 +59,10 @@ struct DatePickerField: View {
             }
         }
     }
-    // Function to format the date
+    
+    /// Formats the selected date to a readable string format.
+    /// - Parameter date: The date to format.
+    /// - Returns: A string representing the date in "MMM d, yyyy" style.
     private func dateFormatted(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

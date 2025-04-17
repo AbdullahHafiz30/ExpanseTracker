@@ -7,14 +7,18 @@
 
 
 import SwiftUI
-// Custom button to be used everywhere we need
+
+/// A custom reusable button that adapts to the app's theme.
+/// This button can be used anywhere throughout the app with a dynamic title, action, and corner radius.
 struct CustomButton: View {
+    
     // MARK: - Variables
 
     var title: String
     var action: () -> Void = {}
     var cornerRadius: CGFloat = 8
     @EnvironmentObject var themeManager: ThemeManager
+    
     // To manage the colors of the background and text
     private var backgroundColor: Color {
         themeManager.isDarkMode ? .white : .black
@@ -24,8 +28,9 @@ struct CustomButton: View {
         themeManager.isDarkMode ? .black : .white
     }
     
+    //MARK: - View
+    
     var body: some View {
-        //MARK: - View
         // The button
         Button(action: action) {
             Text(title)

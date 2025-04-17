@@ -8,7 +8,8 @@
 import SwiftUI
 import CoreData
 
-final class HomeViewModel: ObservableObject {
+
+final class TransactionViewModel: ObservableObject {
     
     @Published var searchText: String = ""
     @Published var selectedType: TransactionType = .income
