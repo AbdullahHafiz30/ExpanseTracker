@@ -11,8 +11,6 @@ import SwiftUI
 struct SearchBar: View {
     
     @Binding var searchText: String
-
-    @State private var debounceTimer: Timer?
     
     var body: some View {
         HStack {
@@ -22,10 +20,6 @@ struct SearchBar: View {
             // TextField for user input
             TextField("Search for a transaction...", text: $searchText)
                 .font(.footnote)
-                .onChange(of: searchText) {
-                    debounceTimer?.invalidate()
-                    debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in}
-                }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)

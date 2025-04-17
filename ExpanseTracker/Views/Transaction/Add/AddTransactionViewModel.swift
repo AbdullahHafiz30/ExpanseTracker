@@ -10,7 +10,6 @@ import CoreData
 class AddTransactionViewModel: ObservableObject {
     
     private let context = PersistanceController.shared.context
-    
     //MARK: - Functions
     
     /// Adds a new transaction to Core Data.
@@ -22,53 +21,49 @@ class AddTransactionViewModel: ObservableObject {
     ///   - type: The transaction type (e.g., income or expense).
     ///   - selectedCategoryName: The name of the category to associate with this transaction.
     ///   - imageData: Optional image data to be stored with the transaction.
-    func addTransaction(
-        title: String,
-        description: String,
-        amount: Double,
-        date: Date,
-        type: TransactionType,
-        selectedCategoryName: String,
-        imageData: Data?
-    ) {
-        let newTransaction = TransacionsEntity(context: context)
-        newTransaction.id = UUID().uuidString
-        newTransaction.title = title
-        newTransaction.desc = description
-        newTransaction.amount = amount
-        
-        // Format the date to string (yyyy-MM-dd)
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        newTransaction.date = formatter.string(from: date)
-        
-        newTransaction.transactionType = type.rawValue
-        
-        // Encode image data if available
-        if let imageData = imageData {
-            newTransaction.image = imageData.base64EncodedString()
-        }
-        
-        // Fetch and Assign Category
-        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            if let matchedCategory = results.first {
-                newTransaction.category = matchedCategory
-            }
-        } catch {
-            print("Error fetching category: \(error.localizedDescription)")
-        }
-        
-        // Save to Core Data
-        do {
-            try context.save()
-            print("Transaction saved")
-        } catch {
-            print("Error saving transaction: \(error.localizedDescription)")
-        }
-    }
-}
+     func addTransaction(
+         title: String,
+         description: String,
+         amount: Double,
+         date: Date,
+         type: TransactionType,
+         selectedCategoryName: String,
+         imageData: Data?
+     ) {
+         let newTransaction = TransacionsEntity(context: context)
+         newTransaction.id = UUID().uuidString
+         newTransaction.title = title
+         newTransaction.desc = description
+         newTransaction.amount = amount
+
+         let formatter = DateFormatter()
+         formatter.dateFormat = "dd MMM yyyy"
+         newTransaction.date = formatter.string(from: date)
+
+         newTransaction.transactionType = type.rawValue
+
+         if let imageData = imageData {
+             newTransaction.image = imageData.base64EncodedString()
+         }
+
+         let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+         fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
+
+         do {
+             let results = try context.fetch(fetchRequest)
+             if let matchedCategory = results.first {
+                 newTransaction.category = matchedCategory
+             }
+         } catch {
+             print("Error fetching category: \(error.localizedDescription)")
+         }
+
+         do {
+             try context.save()
+             print("Transaction saved")
+         } catch {
+             print("Error saving transaction: \(error.localizedDescription)")
+         }
+     }
+ }
 

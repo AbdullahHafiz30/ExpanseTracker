@@ -13,21 +13,6 @@ struct TransactionCardView: View {
     var transaction: TransacionsEntity  // The transaction data to display
     @EnvironmentObject var themeManager: ThemeManager
     
-    var formattedTransactionDate: String {
-        guard let dateString = transaction.date else {
-            return "No Date Provided"
-        }
-        
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "dd MMM yyyy"
-        
-        if let date = inputFormatter.date(from: dateString) {
-            return date.formatted(date: .abbreviated, time: .omitted)
-        }
-        
-        return "No Date Provided"
-    }
-    
     var body: some View {
         HStack(spacing: 12) {
             
@@ -50,12 +35,12 @@ struct TransactionCardView: View {
                     .foregroundStyle(.primary)
                 
                 // Transaction description
-                Text(transaction.desc ?? "No Description")
+                Text(transaction.desc ?? "No Description Provided")
                     .font(.caption)
                     .foregroundStyle(.primary.secondary)
                 
                 // Formatted transaction date
-                Text(formattedTransactionDate)
+                Text(transaction.date ?? "No Date Provided")
                     .font(.caption2)
                     .foregroundStyle(.gray)
             }
@@ -70,6 +55,7 @@ struct TransactionCardView: View {
                         .foregroundStyle(.blue)
                         .frame(width: 15, height: 15)
                         .padding(.leading, 100)
+                    
                 }
 
                 HStack{
