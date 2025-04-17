@@ -16,6 +16,8 @@ struct Profile: View {
     @State private var backHome = false
     let languageCode = Locale.current.language.languageCode?.identifier
     @State var userName = ""
+    @State var userEmail: String = ""
+    @State var userPassword: String = ""
     @Binding var userId: String
     @State var userBudget: Double = 100
     @State var userSpend: Double = 500
@@ -32,6 +34,7 @@ struct Profile: View {
                 VStack(alignment: .leading){
                     Text("Hello, \(userName)!")
                         .font(.headline)
+                    
                     
                     HStack {
                         ShapeView(usedWaterAmount: CGFloat(userSpend), maxWaterAmount: CGFloat(userBudget))
@@ -230,26 +233,43 @@ struct Profile: View {
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
-                    CoreDataHelper().deleteUser(userId: userId)
                     //delete from firebase
-                    backHome = true
+                    AuthViewModel().deleteUserAccount(email: userEmail, password: userPassword){ result in
+                        switch result {
+                        case .success(let message):
+                            print(message)
+                            backHome = true
+                        case .failure(let error):
+                            print("Error deleting user: \(error.localizedDescription)")
+                        }
+                    }
+                    //delete from core helper
+                    CoreDataHelper().deleteUser(userId: userId)
                 } , secondaryButton: .cancel())
             }
             .onAppear{
-                // MARK: - Get user information from core 
+                // MARK: - Get user information from core
+                // Fetch the user from Core Date using user id
                 let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
-                userName = user?.name ?? "Guest"
-                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
                 
+                // Assign its properties to local state variables
+                userName = user?.name ?? "Guest"
+                userEmail = user?.email ?? ""
+                userPassword = user?.password ?? ""
+                // Fetch the Current Month Budget from Core Date using user id
+                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+                // Assign its properties to local state variables
                 userBudget = budget?.amount ?? 0.0
                 print("User loaded .\(String(describing: user))")
                 
+                // Set the badge count of the app icon to 0
                 UNUserNotificationCenter.current().setBadgeCount(0) { error in
                  if let error = error {
                         print("Error setting badge: \(error)")
                     }
                 }
                 
+                // Retrieve the value of whether notifications are enabled from UserDefaults
                 notificationsEnabled =  UserDefaults.standard.bool(forKey: "notificationsEnabled")
                 print(notificationsEnabled)
             }

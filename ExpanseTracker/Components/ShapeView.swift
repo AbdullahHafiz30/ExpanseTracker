@@ -9,14 +9,17 @@ import SwiftUI
 /// A view that displays a circular water usage  indicator with a wave animation to show how much the user spend from the budget.
 /// The circle fills with color based on water usage percentage and displays the usage as a percentage text.
 struct ShapeView: View {
-    var usedWaterAmount: CGFloat
-    var maxWaterAmount: CGFloat
+    var usedWaterAmount: CGFloat // Amount of budget used
+    var maxWaterAmount: CGFloat // Total budget
     
     var body: some View {
         VStack(alignment: .leading) {
             GeometryReader { geometry in
+                // Get the width and height dynamically
                 let width = geometry.size.width
                 let height = geometry.size.height
+                
+                // Calculate usage and remaining as a percentage
                 let usagePercentage = usedWaterAmount / maxWaterAmount
                 let remainingPercentage = 1 - usagePercentage
                 
@@ -36,14 +39,14 @@ struct ShapeView: View {
                     Circle()
                         .clipShape(
                             WaveShape(
-                                waveHeight: 20,
-                                waveWidth: width / 3,
+                                waveHeight: 20, // How high the wave rises/falls
+                                waveWidth: width / 3, // fit approximately 3 full waves across the shape’s width
                                 fillPercentage: remainingPercentage,
                                 width: width,
                                 height: height
                             )
                         )
-                        .foregroundColor(
+                        .foregroundColor( // Change wave color based on usage
                             usagePercentage > 0.8 ? .red.opacity(0.4) :
                                 usagePercentage > 0.5 ? .yellow.opacity(0.4) :
                                     .green.opacity(0.4)
@@ -65,13 +68,13 @@ struct ShapeView: View {
     }
 }
 
-
+/// A custom wave shape used to fill inside the circle.
 struct WaveShape: Shape {
-    var waveHeight: CGFloat
-    var waveWidth: CGFloat
-    var fillPercentage: CGFloat
-    var width: CGFloat
-    var height: CGFloat
+    var waveHeight: CGFloat // Vertical size of wave
+    var waveWidth: CGFloat // Horizontal length of wave
+    var fillPercentage: CGFloat // How much of the circle should be filled
+    var width: CGFloat // Total width of the wave area
+    var height: CGFloat // Total height of the wave area
     
     var animatableData: CGFloat {
         get { fillPercentage }
@@ -79,26 +82,33 @@ struct WaveShape: Shape {
     }
     
     func path(in rect: CGRect) -> Path {
-        var path = Path()
+        var path = Path() // Initialize an empty path object to begin drawing the wave shape
+        
+        // Calculate how high the water level should be
         let waterHeight = (1 - fillPercentage) * height
         
+        // Start at the left edge at the water height
         path.move(to: CGPoint(x:0 , y: waterHeight))
+        
+        // Loop across the width and draw curves
         for x in stride(from: 0, to: width, by: waveWidth) {
             let x1 = x + waveWidth / 2
-            let y1 = waterHeight - waveHeight
+            let y1 = waterHeight - waveHeight // Peak of the wave
             let x2 = x + waveWidth / 2
-            let y2 = waterHeight + waveHeight
-            let x3 = x + waveWidth
+            let y2 = waterHeight + waveHeight // Bottom of the wave
+            let x3 = x + waveWidth // End X of one wave segment
             
+            // Add a smooth Bézier wave curve
             path.addCurve(
-                to: CGPoint(x: x3, y: waterHeight),
-                control1: CGPoint(x: x1, y: y1),
-                control2: CGPoint(x: x2, y: y2)
+                to: CGPoint(x: x3, y: waterHeight), // End point of the curve
+                control1: CGPoint(x: x1, y: y1),// Guide the curve from the left
+                control2: CGPoint(x: x2, y: y2) // Guide the curve towards the right
             )
         }
         
-        path.addLine(to: CGPoint(x: width, y: height))
-        path.addLine(to: CGPoint(x: 0, y: height))
+        // Close the bottom of the wave area by drawing straight lines to the bottom corners of the shape
+        path.addLine(to: CGPoint(x: width, y: height))  // Draw line to bottom right corner
+        path.addLine(to: CGPoint(x: 0, y: height)) // Draw line to bottom left corner
         path.closeSubpath()
         
         return path

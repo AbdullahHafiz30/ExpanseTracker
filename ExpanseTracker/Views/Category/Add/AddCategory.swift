@@ -27,19 +27,11 @@ struct AddCategory: View {
         NavigationStack {
             VStack {
                 // Title
-                ZStack {
-                    // Background Layer
-                    Rectangle()
-                        .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
-                        .frame(width: 220, height: 10)
-                        .cornerRadius(5)
-                        .offset(y: 10)
-                    
-                    // Foreground Layer
-                    Text("Add Category")
-                        .foregroundColor(themeManager.isDarkMode ? .white : .black)
-                        .font(.largeTitle)
-                }
+                Text("Add Category")
+                    .foregroundColor(themeManager.isDarkMode ? .white : .black)
+                    .font(.largeTitle)
+                    .padding()
+                
                 VStack(alignment: .leading, spacing: 30) {
                     // Category Name and Icon
                     HStack {
@@ -155,7 +147,7 @@ struct AddCategory: View {
                         showNameAlert = true
                         return
                     }
-                    
+                    // Create new category object
                     let newCategory = Category(
                         id: UUID().uuidString,
                         name: categoryName,
@@ -184,3 +176,4 @@ struct AddCategory: View {
         }
     }
 }
+

@@ -10,7 +10,7 @@ import SwiftUI
 struct EditCategory: View {
     // MARK: - Variables
     @State var viewModel = IconModel()
-    @StateObject var categoryViewModel = CategoryViewModel()
+    @StateObject var categoryViewModel = EditCategoryViewModel()
     @State private var color: Color = .black
     @State private var limit: Double = 1
     @State private var selectedIcon: String = "star"
@@ -28,19 +28,10 @@ struct EditCategory: View {
         NavigationStack {
             VStack {
                 // Title
-                ZStack {
-                    // Background Layer
-                    Rectangle()
-                        .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
-                        .frame(width: 220, height: 10)
-                        .cornerRadius(5)
-                        .offset(y: 10)
-                    
-                    // Foreground Layer
                     Text("Edit Category")
                         .foregroundColor(themeManager.isDarkMode ? .white : .black)
                         .font(.largeTitle)
-                }
+
                 VStack(alignment: .leading, spacing: 30) {
                     // Category Name and Icon
                     HStack {
@@ -157,6 +148,7 @@ struct EditCategory: View {
                         return
                     }
                     
+                    // Create a new Category object to hold the updated/edited data
                     let category = Category(
                         id: id,
                         name: categoryName,
@@ -181,7 +173,9 @@ struct EditCategory: View {
         }
         .onAppear {
             // MARK: - Get user information from core
+            // Fetch the category from Core Date using (category id , user id)
             if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
+                // If found assign its properties to local state variables
                 categoryName = category.name ?? ""
                 selectedIcon = category.icon ?? ""
                 color = colorFromHexString(category.color ?? "")
@@ -199,23 +193,29 @@ struct EditCategory: View {
 }
 // MARK: - Functions
 func colorFromHexString(_ hex: String) -> Color {
+    // Remove whitespace, newlines, and make the string uppercase
     var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     
+    // Remove the "#" symbol at the beginning if it exists
     if hexFormatted.hasPrefix("#") {
         hexFormatted.remove(at: hexFormatted.startIndex)
     }
     
+    // Check if the cleaned string is not exactly 6 characters
     if hexFormatted.count != 6 {
         return Color.gray // default fallback
     }
     
+    // Create a scanner instance that will read from the hexFormatted string and tries to convert the hex string into an integer and store it in rgbValue
     var rgbValue: UInt64 = 0
     Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
     
+    // Extract the red, green, and blue components from the hex value
     let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
     let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
     let blue = Double(rgbValue & 0x0000FF) / 255.0
     
+    // Return a SwiftUI Color with the RGB values
     return Color(red: red, green: green, blue: blue)
 }
 

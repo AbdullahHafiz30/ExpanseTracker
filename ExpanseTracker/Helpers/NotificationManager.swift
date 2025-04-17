@@ -11,6 +11,7 @@ import UserNotifications
 class NotificationManager {
     static let shared = NotificationManager() // Singleton
     
+    // Check the request permission
     func requestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             switch settings.authorizationStatus {
@@ -35,11 +36,15 @@ class NotificationManager {
                 DispatchQueue.main.async {
                     completion(false)
                 }
-            @unknown default:
+            case .ephemeral:
+                print("Missing")
+                completion(false)
+            default:
                 completion(false)
             }
         }
     }
+    // Schedule notifications to be send every month
     func scheduleNotification(title: String, body: String, delay: TimeInterval = 5) {
         let content = UNMutableNotificationContent()
         content.title = title
@@ -62,6 +67,7 @@ class NotificationManager {
         }
     }
     
+    // Remove all notifications if user turned off his notification
     func removeAllPendingNotifications() {
          UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
          print("All scheduled notifications removed.")
