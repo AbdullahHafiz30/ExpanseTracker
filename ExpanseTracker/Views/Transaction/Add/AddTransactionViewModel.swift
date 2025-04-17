@@ -10,7 +10,17 @@ import CoreData
 class AddTransactionViewModel: ObservableObject {
     
     private let context = PersistanceController.shared.context
-
+    //MARK: - Functions
+    
+    /// Adds a new transaction to Core Data.
+    /// - Parameters:
+    ///   - title: The title of the transaction.
+    ///   - description: A short description of the transaction.
+    ///   - amount: The monetary amount of the transaction.
+    ///   - date: The date when the transaction occurred.
+    ///   - type: The transaction type (e.g., income or expense).
+    ///   - selectedCategoryName: The name of the category to associate with this transaction.
+    ///   - imageData: Optional image data to be stored with the transaction.
      func addTransaction(
          title: String,
          description: String,

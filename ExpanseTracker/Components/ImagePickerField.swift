@@ -5,11 +5,14 @@
 //  Created by Rawan on 12/10/1446 AH.
 //
 import SwiftUI
-import PhotosUI
-import AVFoundation
+import PhotosUI // Need this to use PhotosPicker
+import AVFoundation // Need this to use camera
 
+/// Custom field that allows the user to pick an image from gallery or take one with the camera.
 struct ImagePickerField: View {
-    //MARK: - Variables
+    
+    // MARK: - Variables
+    
     @Binding var imageData: Data?
     @State private var showImageSourcePicker = false
     @State private var showCamera = false
@@ -19,10 +22,10 @@ struct ImagePickerField: View {
     @State private var showCustomPicker = false
     var image: String
     
+    // MARK: - View
     var body: some View {
-        //MARK: - View
         VStack {
-            // Photo field
+            // Image Display Button
             Button(action: {
                 showCustomPicker = true
             }) {
@@ -31,6 +34,7 @@ struct ImagePickerField: View {
                         .stroke(themeManager.textColor, lineWidth: 1)
                         .frame(height: (imageData == nil) && (image == "") ? 48 : 350)
                     
+                    // Case 1: Image picked as Data
                     if let imageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
@@ -38,14 +42,16 @@ struct ImagePickerField: View {
                             .frame(width: 300, height: 300)
                             .clipShape(RoundedRectangle(cornerRadius: 7))
                         
+                        // Case 2: Static Image string
                     } else if image != "" {
                         Image(image)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 300, height: 300)
                             .clipShape(RoundedRectangle(cornerRadius: 7))
-                    }
-                    else {
+                        
+                        // Case 3: Empty
+                    } else {
                         HStack {
                             Text("Receipt image")
                                 .foregroundColor(themeManager.textColor.opacity(0.5))
@@ -58,71 +64,33 @@ struct ImagePickerField: View {
                     }
                 }
             }
-            // Sheet to pick image or use the camera
+            
+            // MARK: - Sheet: Choose Image Source
             .sheet(isPresented: $showCustomPicker) {
-                
-                HStack(spacing: 20) {
-                    // Camera Button
-                    Button(action: {
+                ImageSourcePickerView(
+                    onCameraTap: {
                         checkCameraPermission()
                         showCustomPicker = false
-                    }) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(themeManager.backgroundColor)
-                                .frame(width: 130, height: 130)
-                                .shadow(radius: 5)
-                            VStack{
-                                Image(systemName: "camera")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(themeManager.textColor)
-                                Text("Camera")
-                                    .foregroundColor(themeManager.textColor)
-                            }
-                        }
-                    }
-                    
-                    // Photo Library Button
-                    Button(action: {
+                    },
+                    onGalleryTap: {
                         showPhotoLibrary = true
                         showCustomPicker = false
-                    }) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(themeManager.backgroundColor)
-                                .frame(width: 130, height: 130)
-                                .shadow(radius: 5)
-                            VStack{
-                                Image(systemName: "photo.on.rectangle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(themeManager.textColor)
-                                Text("Gallery")
-                                    .foregroundColor(themeManager.textColor)
-                            }
-                        }
                     }
-                }
-                
-                .padding()
-                .presentationDetents([.height(200)])
-                .cornerRadius(16)
+                )
             }
             
-            
+            // MARK: - Alert for Camera Error
             .alert("Camera Error", isPresented: .constant(cameraError != nil), actions: {
                 Button("OK", role: .cancel) { cameraError = nil }
             }, message: {
                 Text(cameraError ?? "")
             })
             
+            // MARK: - Photos Picker (Gallery)
             .photosPicker(
                 isPresented: $showPhotoLibrary,
                 selection: .init(
-                    get: { nil },
+                    get: { nil }, // We dont get anything back from it
                     set: { newItem in
                         if let newItem {
                             Task {
@@ -131,12 +99,13 @@ struct ImagePickerField: View {
                                 }
                             }
                         }
-                    }
+                    } // We set an image in it and get the data of this image saved to imageData
                 ),
-                matching: .images,
-                photoLibrary: .shared()
+                matching: .images, // Only present images
+                photoLibrary: .shared() //User the default system library
             )
             
+            // MARK: - Full Screen Camera
             .fullScreenCover(isPresented: $showCamera) {
                 CustomCameraView(imageData: $imageData, errorHandler: { error in
                     cameraError = error
@@ -146,16 +115,20 @@ struct ImagePickerField: View {
         }
     }
     
+    // MARK: - Permission Logic
     private func checkCameraPermission() {
+        // Access the camera hardware AVCaptureDevice
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         
         switch status {
+            // If the app is authorized to access the camera then show camera if not then show error message
         case .authorized:
             if UIImagePickerController.isCameraDeviceAvailable(.rear) {
                 showCamera = true
             } else {
                 cameraError = "Camera not available on this device"
             }
+            // If there the app is not authorized yet then it will ask for access if it is allowed then it will show camera otherwise it will show error message
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
@@ -166,64 +139,9 @@ struct ImagePickerField: View {
                     }
                 }
             }
+            // Permission has been denied or restricted
         default:
             cameraError = "Please enable camera access in Settings"
         }
     }
 }
-
-struct CustomCameraView: UIViewControllerRepresentable {
-    @Binding var imageData: Data?
-    var errorHandler: (String) -> Void
-    @Environment(\.dismiss) private var dismiss
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.sourceType = .camera
-        picker.cameraDevice = .rear
-        picker.cameraCaptureMode = .photo
-        picker.delegate = context.coordinator
-        picker.showsCameraControls = true
-        picker.modalPresentationStyle = .fullScreen
-        picker.view.backgroundColor = .black
-        // Fix the size of the camera
-        let screenSize = UIScreen.main.bounds.size
-        let cameraAspectRatio: CGFloat = 4.0 / 3.0
-        let screenAspectRatio = screenSize.height / screenSize.width
-        let scale = screenAspectRatio / cameraAspectRatio
-        
-        picker.cameraViewTransform = CGAffineTransform(scaleX: scale, y: scale)
-        
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self, errorHandler: errorHandler)
-    }
-    
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: CustomCameraView
-        let errorHandler: (String) -> Void// Closure to handle error reporting
-        
-        init(parent: CustomCameraView, errorHandler: @escaping (String) -> Void) {
-            self.parent = parent
-            self.errorHandler = errorHandler
-        }
-        // Called when the user successfully picks a photo using the camera
-        func imagePickerController(_ picker: UIImagePickerController,
-                                   didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                parent.imageData = image.jpegData(compressionQuality: 0.8)
-            }
-            // Dismiss the camera view
-            parent.dismiss()
-        }
-        // Called when the user cancels the image picker
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.dismiss()
-        }
-    }
-}
-

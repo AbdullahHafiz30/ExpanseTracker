@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  TransactionListView.swift
 //  ExpanseTracker
 //
 //  Created by Tahani Ayman on 11/10/1446 AH.
@@ -8,10 +8,9 @@
 import SwiftUI
 
 /// The main home screen view that displays transaction data, filters, and navigation.
-struct HomeView: View {
-    
+struct TransactionListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel = TransactionViewModel()
     
     @FetchRequest(
         entity: TransacionsEntity.entity(),

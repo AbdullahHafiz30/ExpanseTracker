@@ -8,7 +8,9 @@
 
 import SwiftUI
 
+/// Manages the app's theme appearance (Dark/Light mode) and provides adaptive colors
 class ThemeManager: ObservableObject {
+    
     //MARK: - Variables
     @Published var isDarkMode: Bool = false
     
