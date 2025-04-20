@@ -26,4 +26,31 @@ extension UIColor {
         // Return the combined integer as a hexadecimal string and ensuring the format is always 6 characters long
         return String(format:"#%06x", rgb)
     }
+    
+    func colorFromHexString(_ hex: String) -> Color {
+        // Remove whitespace, newlines, and make the string uppercase
+        var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        // Remove the "#" symbol at the beginning if it exists
+        if hexFormatted.hasPrefix("#") {
+            hexFormatted.remove(at: hexFormatted.startIndex)
+        }
+        
+        // Check if the cleaned string is not exactly 6 characters
+        if hexFormatted.count != 6 {
+            return Color.gray // default fallback
+        }
+        
+        // Create a scanner instance that will read from the hexFormatted string and tries to convert the hex string into an integer and store it in rgbValue
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
+        
+        // Extract the red, green, and blue components from the hex value
+        let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
+        let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
+        let blue = Double(rgbValue & 0x0000FF) / 255.0
+        
+        // Return a SwiftUI Color with the RGB values
+        return Color(red: red, green: green, blue: blue)
+    }
 }

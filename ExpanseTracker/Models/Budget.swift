@@ -18,10 +18,6 @@ struct Budget: Identifiable, Hashable {
         self.amount = entity.amount
         self.startDate = entity.startDate
         self.endDate = entity.endDate
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-    
     }
     
     init(id: String?, amount: Double?, startDate: String?, endDate: String?) {

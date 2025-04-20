@@ -21,12 +21,11 @@ struct AddTransaction: View {
     @StateObject private var transVM = AddTransactionViewModel()
     @State private var selectedType: TransactionType = .income
     @Binding var userId: String
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     init(userId: Binding<String>) {
             self._userId = userId
             _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
         }
-    
     
     //MARK: - View
     var body: some View {
@@ -48,13 +47,14 @@ struct AddTransaction: View {
                 }
             }.toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    CustomBackward(title: "Add transaction") {
-                        dismiss()
+                    CustomBackward(title: "Addtransaction".localized(using: currentLanguage)) {
+         dismiss()
                     }
                 }
             }
 
         }.navigationBarBackButtonHidden(true)
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         
     }
 }
@@ -64,16 +64,19 @@ private extension AddTransaction {
     // Price section
     var priceSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("How much?")
+            Text("howMuch".localized(using: currentLanguage))
                 .font(.largeTitle)
                 .foregroundColor(themeManager.textColor.opacity(0.2))
                 .bold()
                 .padding(.leading)
             
             HStack {
-                Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
-                    .resizable()
-                    .frame(width: 60, height: 60)
+                if currentLanguage == "en" {
+                    Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                }
+               
                 VStack{
                     TextField("0", text: $amount)
                         .font(.system(size: 50))
@@ -88,8 +91,14 @@ private extension AddTransaction {
                             .font(.caption)
                     }
                 }
+                
+                if currentLanguage == "ar" {
+                    Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                }
             }
-            .padding(.leading)
+            .padding(currentLanguage == "en" ? .leading : .trailing)
         }
     }
     
@@ -106,12 +115,12 @@ private extension AddTransaction {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 20)]) {
                     VStack(spacing: 25){
                         // Title
-                        CustomTextField(placeholder: "Title", text: $title,isSecure: .constant(false))
+                        CustomTextField(placeholder: "Title".localized(using: currentLanguage), text: $title,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         // Categories
                         DropDownMenu(
-                            title: "Category",
-                            options:categoryVM.categories.map { $0.name ?? "" },
+                            title: "Category".localized(using: currentLanguage),
+                            options: categoryVM.categories.map{$0.name ?? ""},
                             selectedOption: $selectedCategory
                         )
                         .environmentObject(themeManager)
@@ -119,7 +128,7 @@ private extension AddTransaction {
                         DatePickerField(date: $date, showDatePicker: $showDatePicker)
                             .environmentObject(themeManager)
                         //Description
-                        CustomTextField(placeholder: "Description", text: $description,isSecure: .constant(false))
+                        CustomTextField(placeholder: "Description".localized(using: currentLanguage), text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         // Image picker
                         ImagePickerField(imageData: $imageData, image: "")
@@ -142,14 +151,14 @@ private extension AddTransaction {
     // The type selector section
     var transactionTypeSelector: some View {
         VStack(alignment: .leading) {
-            Text("Transaction type:")
+            Text("Transactiontype".localized(using: currentLanguage))
                 .font(.title2)
                 .foregroundColor(themeManager.textColor.opacity(0.5))
                 .padding(.leading, -60)
             
             HStack(spacing: 12) {
                 ForEach(TransactionType.allCases) { type in
-                    Text(type.rawValue.capitalized)
+                    Text(type.rawValue.capitalized.localized(using: currentLanguage))
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
                         .background(
@@ -175,7 +184,7 @@ private extension AddTransaction {
     //add button section
     var addButton: some View {
         CustomButton(
-            title: "Add",
+            title: "Add".localized(using: currentLanguage),
             action: {
                 // Validate amount
                 validateAmount(amount)
@@ -188,7 +197,8 @@ private extension AddTransaction {
                         date: date,
                         type: selectedType,
                         selectedCategoryName: selectedCategory,
-                        imageData: imageData
+                        imageData: imageData,
+                        userId: userId
                     )
                     dismiss()
                 }

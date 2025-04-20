@@ -76,7 +76,7 @@ struct MainTabView: View {
             }.ignoresSafeArea(.keyboard)
         }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction(userId: $userId)
+            AddTransaction(userId: .constant(uid ?? ""))
         }
     }
 }
