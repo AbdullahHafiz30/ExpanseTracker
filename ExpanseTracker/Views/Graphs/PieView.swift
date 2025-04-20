@@ -10,12 +10,31 @@ import Charts
 
 struct PieView: View {
     
-    @ObservedObject var viewModel = DummyDataView()
+    @ObservedObject var viewModel = DummyDataViewModel()
+    @Binding var allSelect : Bool
+    @Binding var selectedType: CategoryType?
+    @Binding var selectedTab: DateTab
+    @Binding var selectedMonth: Int
+    @Binding var selectedYear: Int
     
+    
+//    getDataByTab(selectedTab: selectedTab, selectedYear: selectedYear, selectedMonth: selectedMonth)
+    
+    
+//    getTestDataByMonthYear(selectedMonth: selectedMonth, selectedYear: selectedYear)
+    
+//    getTestData(selectedType: selectedType)
+    
+//    getTestDataByYear(selectedYear: selectedYear)
     
     var body: some View {
         VStack {
-            Chart(viewModel.getTestData()) { data in
+            Chart(viewModel.getData(
+                allSelect: allSelect,
+                selectedTab: selectedTab,
+                selectedType: selectedType,
+                selectedMonth: selectedMonth,
+                selectedYear: selectedYear)) { data in
                 SectorMark(
                     angle: .value(
                         data.text,
@@ -23,7 +42,7 @@ struct PieView: View {
                     )
                 ).foregroundStyle(
                     by: .value(
-                        Text(verbatim: ""),
+                        Text(verbatim: data.text),
                         data.text
                     )
                 )
