@@ -2,7 +2,9 @@
 import SwiftUI
 import PhotosUI
 import CoreData
+
 struct AddTransaction: View {
+    
     //MARK: - Variables
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
@@ -11,13 +13,22 @@ struct AddTransaction: View {
     @State private var description: String = ""
     @State private var date = Date()
     @State private var showDatePicker = false
+    @StateObject private var categoryVM: CategoryViewModel
     @State private var selectedCategory = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
-    
     @State private var selectedType: TransactionType = .income
+    @Binding var userId: String
+    
+    init(userId: Binding<String>) {
+            self._userId = userId
+            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+        }
+    
+    
+    //MARK: - View
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
@@ -26,9 +37,8 @@ struct AddTransaction: View {
                     ZStack{
                         themeManager.backgroundColor
                             .ignoresSafeArea()
-                        // Show the 3 sections of the page
+                        // Show the 2 sections of the page
                         VStack(alignment: .leading) {
-                            headerSection
                             priceSection
                             formSection
                             
@@ -36,39 +46,21 @@ struct AddTransaction: View {
                         
                     }
                 }
+            }.toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CustomBackward(title: "Add transaction") {
+                        dismiss()
+                    }
+                }
             }
-            // Load the image
-//            .onChange(of: imageData) { _, newItem in
-//                loadImage(from: newItem)
-//            }
 
         }.navigationBarBackButtonHidden(true)
         
     }
 }
 
+//MARK: - View extension
 private extension AddTransaction {
-    //MARK: - View
-    // Header section
-    var headerSection: some View {
-        HStack {
-            Button(action: {
-                dismiss()
-            }) {
-                Image(systemName: "arrow.left")
-                    .foregroundColor(themeManager.textColor)
-                    .font(.system(size: 25))
-            }
-            .padding()
-            
-            Text("Add transaction")
-                .bold()
-                .font(.largeTitle)
-                .foregroundColor(themeManager.textColor)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top,10)
-    }
     // Price section
     var priceSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -100,6 +92,8 @@ private extension AddTransaction {
             .padding(.leading)
         }
     }
+    
+    
     // Form section
     var formSection: some View {
         ZStack {
@@ -117,7 +111,7 @@ private extension AddTransaction {
                         // Categories
                         DropDownMenu(
                             title: "Category",
-                            options: ["Food", "Transport", "Shopping", "Bills"],
+                            options:categoryVM.categories.map { $0.name ?? "" },
                             selectedOption: $selectedCategory
                         )
                         .environmentObject(themeManager)
@@ -202,19 +196,7 @@ private extension AddTransaction {
         )
         .padding(.top, 10)
     }
-    // Load image function
-//    func loadImage(from item: Data?) {
-//        Task {
-//            guard let item = item else { return }
-//            do {
-//                if let data = try await item.loadTransferable(type: Data.self) {
-//                    imageData = data
-//                }
-//            } catch {
-//                print("Failed to load image data: \(error)")
-//            }
-//        }
-//    }
+
     // Validate error mesg for amount
     func validateAmount(_ text: String) {
         if isValidNumber(text) {
@@ -225,7 +207,7 @@ private extension AddTransaction {
     }
     // Validate function
     func isValidNumber(_ text: String) -> Bool {
-        let numberPattern = "^[0-9]+$"
+        let numberPattern = #"^[0-9.,]+$"#
         return text.range(of: numberPattern, options: .regularExpression) != nil
     }
     

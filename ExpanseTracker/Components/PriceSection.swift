@@ -15,6 +15,7 @@ import SwiftUI
 func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManager: ThemeManager) -> some View {
     return VStack(alignment: .leading, spacing: 10) {
         
+        // MARK: - Price section label
         Text("How much?")
             .font(.system(size: 33))
             .foregroundColor(themeManager.textColor.opacity(0.2))
@@ -22,6 +23,8 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
             .padding(.leading)
         
         HStack {
+            
+            // MARK: - Price section currency icon and formatted amount
             Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
                 .resizable()
                 .frame(width: 50, height: 50)
@@ -40,5 +43,6 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
     }
     .padding()
 }
+
 
 

@@ -5,7 +5,7 @@
 //  Created by Rayaheen Mseri on 17/10/1446 AH.
 //
 
-import SwiftUI
+import Foundation
 
 extension Array {
     func chunked(into size: Int) -> [[Element]] {

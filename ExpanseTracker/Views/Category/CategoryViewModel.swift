@@ -14,16 +14,22 @@ class CategoryViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var searchText: String = ""
     @Published var selectedType: CategoryType? = nil
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
+    @Published var userId: String
+
     
     private let context = PersistanceController.shared.context
     
-    init() {
+    
+    init(userId: String) {
+        self.userId = userId
         loadCategories()
     }
     
     // MARK: - Load All Categories
     func loadCategories() {
         let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         do {
             let entities = try context.fetch(request)

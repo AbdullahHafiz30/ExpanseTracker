@@ -37,7 +37,7 @@ struct SetBudget: View {
                     }
                     .padding(.bottom, 20)
                     .onChange(of: budget) { _, newValue in
-                        validateAmount(newValue)
+                        validateAmount(text: newValue)
                     }
                 
                 if let error = budgetError {
@@ -49,7 +49,7 @@ struct SetBudget: View {
                 }
                 // MARK: - Save budget amount button
                 CustomButton(title: "Save", action: {
-                    validateAmount(budget)
+                    validateAmount(text: budget)
                     
                     if budgetError != nil {
                         return
@@ -57,13 +57,7 @@ struct SetBudget: View {
                     
                     if let amount = Double(budget) {
                         if budgetAmount == 0 {
-                            let newBudget = Budget(
-                                id: UUID().uuidString,
-                                amount: amount,
-                                startDate: convertDateToString(date: Date()),
-                                endDate: convertDateToString(date:Date().addingTimeInterval(30 * 24 * 60 * 60)))
-                            
-                            budgetViewModel.saveBudgetToCoreData(budget: newBudget, userId: userId, repeated: true)
+                            createBudget(repeated: true)
                             isPresented = false
                         } else {
                             showRepeatAlert = true
@@ -78,25 +72,14 @@ struct SetBudget: View {
         }
         .alert("Do you want to set this budget as repeated?", isPresented: $showRepeatAlert) {
             Button("yes") {
-                let newBudget = Budget(
-                    id: UUID().uuidString,
-                    amount: Double(budget),
-                    startDate: convertDateToString(date: Date()),
-                    endDate: convertDateToString(date:Date().addingTimeInterval(30 * 24 * 60 * 60)))
-                
-                budgetViewModel.saveBudgetToCoreData(budget: newBudget, userId: userId, repeated: true)
-                
+               
+                createBudget(repeated: true)
                 isPresented = false
             }
             
             Button("no") {
-                let newBudget = Budget(
-                    id: UUID().uuidString,
-                    amount: Double(budget),
-                    startDate: convertDateToString(date: Date()),
-                    endDate: convertDateToString(date:Date().addingTimeInterval(30 * 24 * 60 * 60)))
                 
-                budgetViewModel.saveBudgetToCoreData(budget: newBudget, userId: userId, repeated: false)
+                createBudget(repeated: false)
                 isPresented = false
             }
             .frame(height: 250)
@@ -120,17 +103,29 @@ struct SetBudget: View {
     }
     
     //validate error mesg for amount
-    func validateAmount(_ text: String) {
-        if isValidNumber(text) {
+    func validateAmount(text: String) {
+        if isValidNumber(text: text) {
             budgetError = nil
         } else {
             budgetError = "Budget must be a number only."
         }
     }
+    
     //validate function
-    func isValidNumber(_ text: String) -> Bool {
+    func isValidNumber(text: String) -> Bool {
         let numberPattern = "^[0-9]+$"
         return text.range(of: numberPattern, options: .regularExpression) != nil
+    }
+    
+    func createBudget(repeated: Bool){
+        // Create new budget object
+        let newBudget = Budget(
+            id: UUID().uuidString,
+            amount: Double(budget),
+            startDate: convertDateToString(date: Date()),
+            endDate: convertDateToString(date:Date().addingTimeInterval(30 * 24 * 60 * 60)))
+        
+        budgetViewModel.saveBudgetToCoreData(budget: newBudget, userId: userId, repeated: repeated)
     }
 }
 

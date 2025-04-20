@@ -9,7 +9,10 @@ import SwiftUI
 import PhotosUI
 import CoreData
 
+/// ViewModel responsible for editing a transaction entity.
 final class EditTransactionViewModel: ObservableObject {
+    
+    // MARK: - Published Variable
     @Published var editedTitle: String = ""
     @Published var editedDescription: String = ""
     @Published var editedAmount: Double = 0.0
@@ -19,59 +22,59 @@ final class EditTransactionViewModel: ObservableObject {
     @Published var selectedImage: PhotosPickerItem? = nil
     @Published var imageData: Data?
 
-    func initialize(from transaction: TransacionsEntity) {
+    // MARK: - Initialization from Existing Entity
+    
+    // Initializes the editable fields from an existing transaction.
+    /// - Parameter transaction: The Core Data TransacionsEntity to edit.
+    func initialize(transaction: TransacionsEntity) {
         editedTitle = transaction.title ?? ""
         editedDescription = transaction.desc ?? ""
         editedAmount = transaction.amount
 
+        // Format and parse the saved date
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "dd MMM yyyy"
         if let dateString = transaction.date, let parsedDate = formatter.date(from: dateString) {
             editedDate = parsedDate
-        } else {
-            editedDate = Date()
         }
-
+        
         editedCategoryName = transaction.category?.name ?? ""
         editedType = TransactionType(rawValue: transaction.transactionType ?? "") ?? .income
 
+        // Convert base64 image string back to Data
         if let base64String = transaction.image,
            let data = Data(base64Encoded: base64String) {
             imageData = data
         }
     }
 
-    func loadImage(from item: PhotosPickerItem?) async {
-        guard let item = item else { return }
-        do {
-            if let data = try await item.loadTransferable(type: Data.self) {
-                await MainActor.run {
-                    self.imageData = data
-                }
-            }
-        } catch {
-            print("Failed to load image data: \(error)")
-        }
-    }
-
-    func editTransaction(_ transaction: TransacionsEntity, in viewContext: NSManagedObjectContext, dismiss: @escaping () -> Void) {
+    // MARK: - Edit Transaction
+    
+    /// Applies the edited values to the given transaction and saves the changes.
+        /// - Parameters:
+        ///   - transaction: The Core Data entity to edit.
+        ///   - viewContext: The current Core Data managed object context.
+        ///   - dismiss: A closure to dismiss the editing view after saving.
+    func editTransaction(_ transaction: TransacionsEntity, viewContext: NSManagedObjectContext, dismiss: @escaping () -> Void) {
         transaction.title = editedTitle
         transaction.desc = editedDescription
         transaction.amount = editedAmount
-
+        
+        // Format and assign the edited date as a string
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "dd MMM yyyy"
         transaction.date = formatter.string(from: editedDate)
 
         transaction.transactionType = editedType.rawValue
 
-        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "name == %@", editedCategoryName)
-
+        // Convert and assign image data if available
         if let imageData = imageData {
             transaction.image = imageData.base64EncodedString()
         }
 
+        // Fetch the CategoryEntity that matches the edited category name
+        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", editedCategoryName)
         do {
             let results = try viewContext.fetch(fetchRequest)
             if let matchedCategory = results.first {
@@ -80,8 +83,10 @@ final class EditTransactionViewModel: ObservableObject {
         } catch {
             print("Error fetching category: \(error.localizedDescription)")
         }
-
+        
+        // Save context and dismiss view
         PersistanceController.shared.saveContext()
         dismiss()
     }
+
 }

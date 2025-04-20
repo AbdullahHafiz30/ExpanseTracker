@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpPage: View {
+    
     //MARK: - Variables
     @State private var username: String = ""
     @State private var email: String = ""
@@ -20,11 +21,11 @@ struct SignUpPage: View {
     @State private var isPasswordSecure: Bool = true
     @State private var isConPasswordSecure: Bool = true
     @State private var isLoading = false
-    @State private var errorMessage: String?
     @ObservedObject var auth: AuthViewModel
     @StateObject private var alertManager = AlertManager.shared
+    
+    //MARK: - View
     var body: some View {
-        //MARK: - View
         NavigationStack{
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
@@ -128,7 +129,7 @@ struct SignUpPage: View {
                             )
                             .disabled(isLoading)
                             
-                            // Navigation to sign up
+                            // Navigation to log in
                             HStack{
                                 Text("Already have an account?")
                                     .foregroundColor(themeManager.textColor)
@@ -153,10 +154,6 @@ struct SignUpPage: View {
                 message: Text(alertManager.alertState.message),
                 dismissButton: .default(Text("OK"))
         )}
-        //cover the whole page with the sign up page
-        .fullScreenCover(isPresented: $isLoggedIn) {
-            LogInPage(auth:auth)
-        }
         //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
@@ -170,6 +167,13 @@ struct SignUpPage: View {
                         EmptyView()
                     }
                 )
+        NavigationLink(
+            destination: LogInPage(auth:auth),
+                    isActive: $isLoggedIn,
+                    label: {
+                        EmptyView()
+                    }
+        )
     }
 }
 

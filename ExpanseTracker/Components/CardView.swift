@@ -7,22 +7,26 @@
 
 import SwiftUI
 
+/// Custom card that shows the `net balance` and `income/expense trend `
 struct CardView: View {
     
+    // MARK: - Variable
     var income: Double
     var expense: Double
     
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
+        
         ZStack {
+            
             // Background card with rounded corners
             RoundedRectangle(cornerRadius: 15)
                 .fill(.gray.opacity(0.15))
             
             VStack(spacing: 0) {
                 
-                // Top section: balance and trend icon
+                //MARK: - Top section: balance and trend icon
                 HStack(spacing: 12) {
                     
                     Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
@@ -40,7 +44,7 @@ struct CardView: View {
                 }
                 .padding(.bottom, 25)
                 
-                // Bottom section: income and expense breakdown
+                // MARK: - Bottom section: income and expense breakdown
                 HStack(spacing: 0) {
                     ForEach(TransactionType.allCases, id: \.rawValue) { type in
                         // Define the system image and tint color for each type

@@ -23,4 +23,13 @@ struct Category: Identifiable,Hashable {
         self.categoryType = categoryType
         self.budgetLimit = budgetLimit
     }
+    
+    init(from entity: CategoryEntity) {
+        self.id = entity.id
+        self.name = entity.name
+        self.color = entity.color
+        self.icon = entity.icon
+        self.categoryType = CategoryType(rawValue: entity.categoryType ?? "")
+        self.budgetLimit = entity.budgetLimit
+    }
 }

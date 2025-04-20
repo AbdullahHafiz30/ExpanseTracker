@@ -1,46 +1,41 @@
 //
-//  EditCategory.swift
-//  ExpensesMonthlyProjrct
+//  Category.swift
+//  ExpanseTracker
 //
-//  Created by Rayaheen Mseri on 12/10/1446 AH.
+//  Created by Rayaheen Mseri on 19/10/1446 AH.
 //
 
 import SwiftUI
 
-struct EditCategory: View {
+struct CategoryFunctionallity: View {
     // MARK: - Variables
-    @State var viewModel = IconModel()
-    @StateObject var categoryViewModel = CategoryViewModel()
+    @State var iconViewModel = IconModel()
+    @StateObject var categoryViewModel = CategoryFunctionallityViewModel()
     @State private var color: Color = .black
     @State private var limit: Double = 1
+    @State private var userBudget: Double = 0
     @State private var selectedIcon: String = "star"
     @State private var categoryName: String = ""
     @State private var showIcons: Bool = false
     @State private var showColorPicker: Bool = false
     @State var categoryType: CategoryType = .other
-    var id: String
     @EnvironmentObject var themeManager: ThemeManager
     @Namespace var animation
+    var id: String
     @State private var showNameAlert: Bool = false
-    var userId: String
+    @Binding var userId: String
+    @Environment(\.dismiss) var dismiss
+    @StateObject var budgetViewModel = BudgetViewModel()
+    @StateObject private var alertManager = AlertManager.shared
+    @Binding var type: String
     // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack {
                 // Title
-                ZStack {
-                    // Background Layer
-                    Rectangle()
-                        .fill(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? color.opacity(0.3) : color.opacity(0.1))
-                        .frame(width: 220, height: 10)
-                        .cornerRadius(5)
-                        .offset(y: 10)
-                    
-                    // Foreground Layer
-                    Text("Edit Category")
-                        .foregroundColor(themeManager.isDarkMode ? .white : .black)
-                        .font(.largeTitle)
-                }
+                CustomBackward(title: type == "Add" ? "Add Category" : "Edit Category", tapEvent: {dismiss()})
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
                 VStack(alignment: .leading, spacing: 30) {
                     // Category Name and Icon
                     HStack {
@@ -133,16 +128,25 @@ struct EditCategory: View {
                     }
                     .padding(.horizontal)
                     
+                    HStack{
+                        Text("Budget Limit")
+                        
+                        Spacer()
+                        
+                        Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                        Text(String(format: "%.0f", userBudget * (limit / 100)))
+                    }
+                    .padding(.horizontal)
                     
-                    Text("Budget Limit")
-                        .padding(.horizontal)
                     // Category Limit Slider
                     HStack (spacing: 20){
                         
                         Slider(value: $limit, in: 1...100)
-                            .tint(themeManager.isDarkMode && color == .black ? .white.opacity(0.3) : color)
+                            .tint(themeManager.isDarkMode && color == .black ? .blue.opacity(0.3) : color)
                         
-                        Text("\(Int(limit))%")
+                        Text("\(String(format: "%.0f",limit))%")
                     }
                     .padding(.horizontal)
                     
@@ -150,27 +154,52 @@ struct EditCategory: View {
                 .padding(.top)
                 
                 Spacer()
-                // MARK: - Save edited catrgory information button
-                CustomButton(title: "Save", action: {
+                // MARK: - Add category button
+                CustomButton(title: type == "Add" ? "Add" : "Save", action: {
                     guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                        showNameAlert = true
+                        AlertManager.shared.showAlert(title: "Error", message: "Category name is required!")
                         return
                     }
                     
+                    // Create category object
                     let category = Category(
-                        id: id,
+                        id: type == "Add" ? UUID().uuidString : id,
                         name: categoryName,
                         color: UIColor(color).toHexString(),
                         icon: selectedIcon,
                         categoryType: categoryType,
-                        budgetLimit: limit
+                        budgetLimit: userBudget * (limit / 100)
                     )
                     
-                    categoryViewModel.saveEditedCategory(category: category, userId: userId)
+                    let (isExist, message) = categoryViewModel.checkCategoryExist(category: category, userId: userId, userBudget: userBudget)
+                    
+                    if isExist {
+                        AlertManager.shared.showAlert(title: "Error", message: message)
+                    } else {
+                        if type == "Add" {
+                            categoryViewModel.saveCategoryToCoreData(category: category, userId: userId)
+                        }
+                        
+                        categoryViewModel.saveEditedCategory(category: category, userId: userId)
+                        
+                        dismiss()
+                    }
                 })
                 
             }
+            .navigationBarBackButtonHidden(true)
             .padding(.horizontal)
+            .onAppear{
+                // Fetch the Current Month Budget from Core Date using user id
+                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+                // Assign its properties to local state variables
+                userBudget = budget?.amount ?? 0.0
+                
+                if type != "Add" {
+                    getCategory()
+                }
+                
+            }
             .sheet(isPresented: $showIcons) {
                 IconPicker(selectedIcon: $selectedIcon, color: $color)
             }
@@ -178,44 +207,57 @@ struct EditCategory: View {
                 ColorsPicker(selectedColor: $color)
                 
             }
-        }
-        .onAppear {
-            // MARK: - Get user information from core
-            if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
-                categoryName = category.name ?? ""
-                selectedIcon = category.icon ?? ""
-                color = colorFromHexString(category.color ?? "")
-                categoryType = category.categoryType ?? .other
-                limit = category.budgetLimit ?? 0.0
-            } else {
-                print("Category not found.")
+            .alert(isPresented: $alertManager.alertState.isPresented) {
+                Alert(
+                    title: Text(alertManager.alertState.title),
+                    message: Text(alertManager.alertState.message),
+                    dismissButton: .default(Text("OK")))
             }
-            
-        }
-        .alert("Category name is required", isPresented: $showNameAlert) {
-            Button("OK", role: .cancel) { }
         }
     }
-}
+    
 // MARK: - Functions
+    func getCategory(){
+        // MARK: - Get user information from core
+        // Fetch the category from Core Date using (category id , user id)
+        if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
+            
+            // If found assign its properties to local state variables
+            categoryName = category.name ?? ""
+            selectedIcon = category.icon ?? ""
+            color = colorFromHexString(category.color ?? "")
+            categoryType = category.categoryType ?? .other
+            limit = ((category.budgetLimit ?? 1.0) / userBudget) * 100
+        } else {
+            print("Category not found.")
+        }
+        
+    }
+}
+
 func colorFromHexString(_ hex: String) -> Color {
+    // Remove whitespace, newlines, and make the string uppercase
     var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     
+    // Remove the "#" symbol at the beginning if it exists
     if hexFormatted.hasPrefix("#") {
         hexFormatted.remove(at: hexFormatted.startIndex)
     }
     
+    // Check if the cleaned string is not exactly 6 characters
     if hexFormatted.count != 6 {
         return Color.gray // default fallback
     }
     
+    // Create a scanner instance that will read from the hexFormatted string and tries to convert the hex string into an integer and store it in rgbValue
     var rgbValue: UInt64 = 0
     Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
     
+    // Extract the red, green, and blue components from the hex value
     let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
     let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
     let blue = Double(rgbValue & 0x0000FF) / 255.0
     
+    // Return a SwiftUI Color with the RGB values
     return Color(red: red, green: green, blue: blue)
 }
-

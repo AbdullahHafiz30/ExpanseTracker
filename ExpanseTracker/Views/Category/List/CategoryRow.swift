@@ -30,16 +30,16 @@ struct CategoryRow: View {
                 Text(category.name ?? "")
                     .font(.headline)
                     .foregroundColor(.black)
-                Text(LocalizedStringKey(category.categoryType?.rawValue ?? ""))
-                    .font(.caption)
-                    .foregroundColor(.gray)
+//                Text(LocalizedStringKey(category.categoryType?.rawValue ?? ""))
+//                    .font(.caption)
+//                    .foregroundColor(.gray)
             }
 
             Spacer()
 
             // Chevron Arrow
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+//            Image(systemName: "chevron.right")
+//                .foregroundColor(.gray)
         }
         //.padding()
         .background(

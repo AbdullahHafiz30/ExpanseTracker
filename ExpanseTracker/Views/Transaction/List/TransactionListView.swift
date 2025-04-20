@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  TransactionListView.swift
 //  ExpanseTracker
 //
 //  Created by Tahani Ayman on 11/10/1446 AH.
@@ -8,21 +8,12 @@
 import SwiftUI
 
 /// The main home screen view that displays transaction data, filters, and navigation.
-struct HomeView: View {
+
+struct TransactionListView: View {
     
-    @State private var startDate: Date = TimeFilter.monthly.startDate(from: Date())
-    @State private var endDate: Date = Date()
-    
-    @State private var selectedType: TransactionType = .income  // Currently selected transaction type (income/expense)
-    
-    @Namespace private var animation // Namespace for matchedGeometryEffect animations
-    
-    @StateObject private var viewModel = HomeViewModel() // ViewModel containing transaction data
-    
-    @State private var searchText: String = ""
-    @State private var selectedTab: TimeFilter = .monthly
-    
+    // MARK: - Variable
     @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel = TransactionViewModel()
     
     @FetchRequest(
         entity: TransacionsEntity.entity(),
@@ -32,70 +23,66 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
+               
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
                     
                     Section {
                         
-                        Text("\(startDate.formatted(as: "dd - MMM yy")) **to** \(endDate.formatted(as: "dd - MMM yy"))")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                            .hSpacing(.leading)
-
-                        
-                        // Income/Expense summary card
-                        CardView(
-                            income: viewModel.total(for: .income, from: startDate, to: endDate),
-                            expense: viewModel.total(for: .expense, from: startDate, to: endDate)
-                        )
-                        
-                        //Segmented control to switch between Income/Expense
-                        Picker("Type", selection: $selectedType) {
-                            ForEach(TransactionType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
+                        Text("\(viewModel.startDate.formatted(as: "dd - MMM yy")) **To** \(viewModel.endDate.formatted(as: "dd - MMM yy"))")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                                .hSpacing(.leading)
+                            
+                            
+                            // Income/Expense summary card
+                            CardView(
+                                income: viewModel.total(.income, transactions: transacions),
+                                expense: viewModel.total(.expense, transactions: transacions)
+                            )
+                            
+                            //Segmented control to switch between Income/Expense
+                            Picker("Type", selection: $viewModel.selectedType) {
+                                ForEach(TransactionType.allCases, id: \.self) { type in
+                                    Text(type.rawValue).tag(type)
+                                }
                             }
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding(.bottom, 10)
-
-                        // List of filtered transactions
-                        ForEach(transacions) { transaction in
-                            NavigationLink {
-                                DetailsHomeView(transaction: transaction)
-                            } label: {
-                                TransactionCardView(transaction: transaction)
+                            .pickerStyle(SegmentedPickerStyle())
+                            .padding(.bottom, 10)
+                            
+                            // List of filtered transactions
+                            
+                            ForEach(viewModel.filteredTransactions(transacions), id: \.self) { transaction in
+                                NavigationLink {
+                                    DetailsHomeView(transaction: transaction)
+                                } label: {
+                                    TransactionCardView(transaction: transaction)
+                                    
+                                    Button(action: {
+                                        viewModel.deleteTransaction(transaction, viewContext: viewContext)
+                                    }) {
+                                        Image(systemName: "trash")
+                                            .foregroundColor(.red)
+                                    }
+                                }
+                                
                             }
-                            .buttonStyle(.plain)
-                        }
 
-                    } header: {
-                        // Sticky header with greeting and search/filter bar
-                        HeaderView(
-                            searchText: $searchText,
-                            selectedTab: $selectedTab
-                        )
+                        } header: {
+                            // Sticky header with greeting and search/filter bar
+                            HeaderView(
+                                searchText: $viewModel.searchText,
+                                selectedTab: $viewModel.selectedTab
+                            )
+                        }
                     }
                 }
                 .padding(15)
-            }
+            
             
         }
-//        .onChange(of: selectedTab) {
-//            startDate = selectedTab.startDate(from: Date())
-//            endDate = Date()
-//        }
+        .onChange(of: viewModel.selectedTab) {
+            viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
+            viewModel.endDate = Date()
+        }
     }
-    
-//    private var filteredTransactions: [TransacionsEntity] {
-//        transacions.filter { transaction in
-//            let matchesSearch = searchText.isEmpty ||
-//            ((transaction.title?.localizedCaseInsensitiveContains(searchText)) != nil) ||
-//            ((transaction.description.localizedCaseInsensitiveContains(searchText)) != nil)
-//
-//            let matchesType = transaction.transactionType == selectedType.rawValue
-//            let matchesDate = transaction.date ?? Date() >= startDate && transaction.date ?? Date() <= endDate
-//
-//            return matchesSearch && matchesType && matchesDate
-//        }
-//    }
-
 }

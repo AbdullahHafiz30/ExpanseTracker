@@ -13,6 +13,8 @@ struct MainTabView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
     @ObservedObject var auth: AuthViewModel
+    @State private var userId: String = ""
+    
     // Get UID from user default
         var uid: String? {
            UIDManager.loadUID()
@@ -20,7 +22,7 @@ struct MainTabView: View {
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                HomeView()
+                TransactionListView()
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
@@ -68,13 +70,13 @@ struct MainTabView: View {
                                 .font(.system(size: 30))
                         }
                     }
-                    .offset(y: 0)
+                    .offset(y: -5)
                     Spacer()
                 }
-            }
+            }.ignoresSafeArea(.keyboard)
         }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction()
+            AddTransaction(userId: $userId)
         }
     }
 }

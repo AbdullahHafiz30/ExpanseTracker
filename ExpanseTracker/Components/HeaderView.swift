@@ -15,12 +15,13 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
         VStack(alignment: .leading, spacing: 5) {
             
             HStack{
-                // Welcome title
+                // MARK: - Welcome title
                 Text("Welcome!")
                     .font(.title.bold())
                 
                 Spacer()
                 
+                // MARK: - Time Filter Picker
                 Menu{
                     Picker("Select Tab", selection: selectedTab) {
                         ForEach(TimeFilter.allCases, id: \.self) { tab in
@@ -34,7 +35,7 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
                 }
             }
             
-            // Custom search and filter UI
+            // MARK: - Custom search
             SearchBar(
                 searchText: searchText
             )
@@ -55,7 +56,6 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
 }
 
 /// A computed property to get the device's current safe area insets.
-/// Useful for layout adjustments, especially at the top of the screen.
 var safeArea: UIEdgeInsets {
     if let windowScene = (UIApplication.shared.connectedScenes.first as? UIWindowScene) {
         return windowScene.keyWindow?.safeAreaInsets ?? .zero

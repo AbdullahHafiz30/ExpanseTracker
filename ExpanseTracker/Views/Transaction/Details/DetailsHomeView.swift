@@ -10,45 +10,31 @@ import SwiftUI
 /// A SwiftUI view that displays detailed information about a specific transaction.
 struct DetailsHomeView: View {
     
+    // MARK: - Variable
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
     
     let transaction: TransacionsEntity
     
-    @State private var imageData: Data?
-    
-    var formattedTransactionDate: String {
-        guard let dateString = transaction.date else {
-            return "No Date Provided"
-        }
-        
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "dd MMM yyyy" 
-        
-        if let date = inputFormatter.date(from: dateString) {
-            return date.formatted(date: .abbreviated, time: .omitted)
-        }
-        
-        return "No Date Provided"
-    }
-    
     var body: some View {
+        
         ScrollView {
+            
             VStack(alignment: .leading) {
                 
                 // Amount
                 PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
                 
-                VStack(alignment: .leading, spacing: 15) {
+                VStack(alignment: .leading, spacing: 25) {
                     
                     // Title
                     CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
                     
                     // Category
-                    CustomText(text: transaction.category?.name ?? "No Category", placeholder: "Category:")
+                    CustomText(text: transaction.category?.name ?? "No Category Selected", placeholder: "Category:")
                     
                     // Date
-                    CustomText(text: formattedTransactionDate, placeholder: "Date:")
+                    CustomText(text: transaction.date ?? "No Date Set", placeholder: "Date:")
                     
                     // Description
                     CustomText(text: transaction.desc ?? "No Description", placeholder: "Description:")
@@ -58,17 +44,25 @@ struct DetailsHomeView: View {
                         themeManager: themeManager,
                         selectedType: TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
                     )
-
+                    
                     // Receipt Image
-                    if let base64String = transaction.image {
-                        if let imageData = Data(base64Encoded: base64String),
-                           let uiImage = UIImage(data: imageData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 100)
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 7)
+                            .stroke(themeManager.textColor, lineWidth: 1)
+                            .frame(height: 350)
+                        
+                        if let base64String = transaction.image {
+                            if let imageData = Data(base64Encoded: base64String),
+                               let uiImage = UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 300, height: 300)
+                                    .clipShape(RoundedRectangle(cornerRadius: 7))
+                            }
                         }
                     }
+                    
                     
                     Spacer()
                 }
