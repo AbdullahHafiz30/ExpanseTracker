@@ -32,7 +32,6 @@ struct CategoryTypeButton: View {
                 }
             )
                 .foregroundColor(isSelected ? .white : .black)
-                .shadow(radius: isSelected ? 3 : 0)
         }
     }
 }

@@ -105,6 +105,9 @@ struct Profile: View {
                                 
                                 Toggle("", isOn: $themeManager.isDarkMode)
                                     .tint(themeManager.isDarkMode ? .white.opacity(0.3) : .black)
+                                    .onChange(of: themeManager.isDarkMode) { _, isOn in
+                                            UserDefaults.standard.set(isOn, forKey: "isDarkMode")
+                                        }
                                 
                             }
                             Divider()
