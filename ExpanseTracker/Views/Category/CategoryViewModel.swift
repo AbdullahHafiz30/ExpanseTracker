@@ -14,8 +14,11 @@ class CategoryViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var searchText: String = ""
     @Published var selectedType: CategoryType? = nil
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
+
     
     private let context = PersistanceController.shared.context
+    
     
     init() {
         loadCategories()

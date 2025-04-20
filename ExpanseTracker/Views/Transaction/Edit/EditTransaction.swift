@@ -11,6 +11,7 @@ import CoreData
 
 struct EditTransactionView: View {
     
+    // MARK: - Variable
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var themeManager: ThemeManager

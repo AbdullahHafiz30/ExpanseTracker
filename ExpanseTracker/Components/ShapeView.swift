@@ -21,7 +21,7 @@ struct ShapeView: View {
                 
                 // Calculate usage and remaining as a percentage
                 let usagePercentage = usedWaterAmount / maxWaterAmount
-                let remainingPercentage = 1 - usagePercentage
+                let usedPercentage = 1 - usagePercentage
                 
                 ZStack {
                     // Background Circle with shadow
@@ -41,7 +41,7 @@ struct ShapeView: View {
                             WaveShape(
                                 waveHeight: 20, // How high the wave rises/falls
                                 waveWidth: width / 3, // fit approximately 3 full waves across the shape’s width
-                                fillPercentage: remainingPercentage,
+                                fillPercentage: usedPercentage,
                                 width: width,
                                 height: height
                             )
@@ -85,7 +85,7 @@ struct WaveShape: Shape {
         var path = Path() // Initialize an empty path object to begin drawing the wave shape
         
         // Calculate how high the water level should be
-        let waterHeight = (1 - fillPercentage) * height
+        let waterHeight = (fillPercentage) * height
         
         // Start at the left edge at the water height
         path.move(to: CGPoint(x:0 , y: waterHeight))

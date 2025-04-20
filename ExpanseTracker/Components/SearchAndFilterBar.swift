@@ -13,6 +13,7 @@ struct SearchBar: View {
     @Binding var searchText: String
     
     var body: some View {
+        
         HStack {
             // Magnifying glass icon to indicate search functionality
             Image(systemName: "magnifyingglass")

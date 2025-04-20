@@ -7,13 +7,21 @@
 
 import Foundation
 
+/// A struct for formatting numbers.
 struct NumberFormatterManager {
     
+    /// Shared instance for global access.
     static let shared = NumberFormatterManager()
     
+    /// Private initializer to prevent external instantiation.
     private init() {}
-    
-    /// Returns a decimal formatted string (e.g., "1,234.56")
+
+    /// Formats a double into a string.
+    /// - Parameters:
+    ///   - value: The double value to format.
+    ///   - minDigits: Minimum number of digits after the decimal point.
+    ///   - maxDigits: Maximum number of digits after the decimal point.
+    /// - Returns: A formatted string, or an empty string if fails.
     func decimalString(from value: Double, minDigits: Int = 2, maxDigits: Int = 2) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -22,6 +30,7 @@ struct NumberFormatterManager {
         return formatter.string(from: NSNumber(value: value)) ?? ""
     }
     
+    /// A reusable instance with decimal style and two fraction digits.
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -30,4 +39,5 @@ struct NumberFormatterManager {
         return formatter
     }()
 }
+
 

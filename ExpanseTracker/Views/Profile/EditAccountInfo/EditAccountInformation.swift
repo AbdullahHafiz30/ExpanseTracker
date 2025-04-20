@@ -166,7 +166,8 @@ struct EditAccountInformation: View {
             }
             .onAppear {
                 loadUserData()
-            } .alert(isPresented: $alertManager.alertState.isPresented) {
+            }
+            .alert(isPresented: $alertManager.alertState.isPresented) {
                 Alert(
                     title: Text(alertManager.alertState.title),
                     message: Text(alertManager.alertState.message),
