@@ -28,6 +28,7 @@ struct ListOfSpecificCategoryView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
+<<<<<<< Updated upstream
             // Section header showing the selected category name
 //            Text("Transactions for Category: \(categoryName)")
 //                .font(.title2)
@@ -35,6 +36,9 @@ struct ListOfSpecificCategoryView: View {
 //                .padding(.horizontal)
             CustomBackward(title:"\(categoryName)", tapEvent: {dismiss()})
                 .frame(maxWidth: .infinity, alignment: .leading)
+=======
+
+>>>>>>> Stashed changes
             
             if transactions.isEmpty {
                 // Display message when no transactions are found

@@ -10,7 +10,7 @@ struct CategoryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                addButton
+               // addButton
                 searchBarView
                 categoryTypeFilter
                 categoryList
