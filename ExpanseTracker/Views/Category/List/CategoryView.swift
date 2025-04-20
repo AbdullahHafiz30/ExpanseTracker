@@ -5,6 +5,7 @@ struct CategoryView: View {
     @StateObject private var viewModel = CategoryViewModel()
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
+    @Namespace private var animation 
     @Binding var userId: String
 
     var body: some View {
@@ -23,17 +24,10 @@ struct CategoryView: View {
                         .foregroundColor(themeManager.textColor)
                         .padding(.top, 20)
                         .padding(.trailing, 20)
-                    
-                        
                 }
                 
-                // Custom search bar
                 searchBarView
-
-                // Category type filter buttons
                 categoryTypeFilter
-
-                // List of categories
                 categoryList
             }
             .navigationTitle("Categories")
@@ -42,13 +36,11 @@ struct CategoryView: View {
                 viewModel.loadCategories()
             }
             .toolbar {
-                // Plus button to add new category
                 ToolbarItem(placement: .navigationBarTrailing) {
                     addButton
                 }
             }
             .fullScreenCover(isPresented: $showingAddCategory) {
-                // Full-screen cover for adding new category
                 CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
                     .environmentObject(viewModel)
                     .onDisappear {
@@ -57,7 +49,7 @@ struct CategoryView: View {
             }
             .background(Color.white)
         }
-        .preferredColorScheme(.light) // Force light mode
+        .preferredColorScheme(.light)
     }
 
     // MARK: - Search Bar View
@@ -69,25 +61,12 @@ struct CategoryView: View {
 
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(["All"] + CategoryType.allCases.map { $0.rawValue }, id: \.self) { type in
-                    CategoryTypeButton(
-                        title: LocalizedStringKey(type),
-                        isSelected: selectedType == type,
-                        action: {
-                            selectedType = type
-                            if let categoryType = CategoryType(rawValue: type) {
-                                viewModel.selectedType = categoryType
-                            } else {
-                                viewModel.selectedType = nil
-                            }
-                        }
-                    )
-                }
-            }
-            .padding(.horizontal)
-        }
+        CategoryTypeFilterView(
+            types: ["All"] + CategoryType.allCases.map { $0.rawValue },
+            selectedType: $selectedType,
+            selectedCategoryType: $viewModel.selectedType,
+            animation: animation
+        )
     }
 
     // MARK: - Category List
@@ -95,7 +74,6 @@ struct CategoryView: View {
         List {
             ForEach(viewModel.filteredCategories) { category in
                 NavigationLink {
-                    // Avoid optional inside destination by fallback to EmptyView
                     ListOfSpecificCategoryView(categoryName: category.name ?? "")
                 } label: {
                     CategoryRow(category: category)
@@ -141,12 +119,42 @@ struct CategoryView: View {
     }
 }
 
+// MARK: - Inline View to Handle Category Type Filter
+private struct CategoryTypeFilterView: View {
+    let types: [String]
+    @Binding var selectedType: String
+    @Binding var selectedCategoryType: CategoryType?
+    var animation: Namespace.ID
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                ForEach(types, id: \.self) { type in
+                    CategoryTypeButton(
+                        title: LocalizedStringKey(type),
+                        isSelected: selectedType == type,
+                        animation: animation,
+                        action: {
+                            withAnimation(.spring()) {
+                                selectedType = type
+                                if let categoryType = CategoryType(rawValue: type) {
+                                    selectedCategoryType = categoryType
+                                } else {
+                                    selectedCategoryType = nil
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+}
+
 struct CategoryView_Previews: PreviewProvider {
     static var previews: some View {
         CategoryView(userId: .constant("preview-user-id"))
-            .environmentObject(ThemeManager()) // Provide necessary environment object
+            .environmentObject(ThemeManager())
     }
-    
-    
-    
 }
