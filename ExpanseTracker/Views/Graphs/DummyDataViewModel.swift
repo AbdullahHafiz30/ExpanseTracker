@@ -358,13 +358,15 @@ class DummyDataViewModel: ObservableObject {
     func getFinalArray(_ allSelect: Bool, filtData: [Transaction], filteredData: [Transaction]) -> [Test] {
         var test : [Test] = []
         if allSelect == true {
+            let totalAmount = filtData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filtData {
-                test.append(Test(text: (transaction.category?.categoryType?.rawValue ?? ""), number: transaction.amount ?? 0.0))
+                test.append(Test(text: (transaction.category?.categoryType?.rawValue ?? ""), number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
             }
             return test
         } else {
+            let totalAmount = filteredData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filteredData {
-                test.append(Test(text: transaction.category?.name ?? "", number: transaction.amount ?? 0.0))
+                test.append(Test(text: transaction.category?.name ?? "", number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
             }
             return test
         }
@@ -387,7 +389,7 @@ class DummyDataViewModel: ObservableObject {
                     $0.transactionType == .expense && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
-                let filteredData = combineSameCategory(catData)
+                let filteredData = combineSameCategory(data)
                 
                 let filtData = combineSameType(filteredData)
                 
@@ -400,7 +402,7 @@ class DummyDataViewModel: ObservableObject {
                     $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
-                let filteredData = combineSameCategory(catData)
+                let filteredData = combineSameCategory(data)
                 
                 let filtData = combineSameType(filteredData)
                 
@@ -416,12 +418,14 @@ class DummyDataViewModel: ObservableObject {
 struct Test: Identifiable {
     let text: String
     let number: Double
+    let percentage: Double
     
     let id = UUID()
     
-    init(text: String, number: Double) {
+    init(text: String, number: Double, percentage: Double) {
         self.text = text
         self.number = number
+        self.percentage = percentage
     }
 }
 

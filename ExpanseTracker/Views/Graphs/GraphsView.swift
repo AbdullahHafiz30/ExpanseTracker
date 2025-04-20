@@ -39,8 +39,8 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(0)
-                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1)
+                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(0).padding()
+                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1).padding()
                     LineView().tag(2)
                 })
                 .tabViewStyle(PageTabViewStyle())
