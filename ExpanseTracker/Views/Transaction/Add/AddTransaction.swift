@@ -13,13 +13,20 @@ struct AddTransaction: View {
     @State private var description: String = ""
     @State private var date = Date()
     @State private var showDatePicker = false
-    @StateObject private var categoryVM = CategoryViewModel()
+    @StateObject private var categoryVM: CategoryViewModel
     @State private var selectedCategory = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var imageData: Data?
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
     @State private var selectedType: TransactionType = .income
+    @Binding var userId: String
+    
+    init(userId: Binding<String>) {
+            self._userId = userId
+            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+        }
+    
     
     //MARK: - View
     var body: some View {
