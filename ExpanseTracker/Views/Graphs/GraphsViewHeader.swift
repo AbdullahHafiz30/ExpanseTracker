@@ -16,11 +16,13 @@ enum DateTab: String, CaseIterable, Identifiable {
 }
 
 struct GraphsViewHeader: View {
+    
+    @Binding var allSelect: Bool
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
     @Binding var selectedType: CategoryType?
-
+    
     private let yearRange = 2020...2060
     private let monthSymbols: [String] = {
         let formatter = DateFormatter()
@@ -28,7 +30,7 @@ struct GraphsViewHeader: View {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.monthSymbols
     }()
-
+    
     var body: some View {
         HStack(spacing: 12) {
             // Month Picker
@@ -43,7 +45,7 @@ struct GraphsViewHeader: View {
                     DateLabelView(text: monthSymbols[selectedMonth])
                 }
             }
-
+            
             // Year Picker
             Menu {
                 Picker("Year", selection: $selectedYear) {
@@ -75,7 +77,13 @@ struct GraphsViewHeader: View {
                 Picker("Category Type", selection: Binding(
                     get: { selectedType?.rawValue ?? "All" },
                     set: { newValue in
-                        selectedType = CategoryType(rawValue: newValue)
+                        if newValue == "All" {
+                            allSelect = true
+                            selectedType = nil
+                        } else {
+                            allSelect = false
+                            selectedType = CategoryType(rawValue: newValue)
+                        }
                     })
                 ) {
                     Text("All").tag("All")

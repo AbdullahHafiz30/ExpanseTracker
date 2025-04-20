@@ -12,7 +12,7 @@ struct Transaction: Identifiable, Hashable {
     let id: String?
     let title: String?
     let description: String?
-    let amount: Double?
+    var amount: Double?
     let date: Date?
     let transactionType: TransactionType?
     let category: Category?
