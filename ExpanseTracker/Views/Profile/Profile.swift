@@ -27,6 +27,8 @@ struct Profile: View {
     let notificationToggleKey = "notificationsEnabled"
     @State private var notificationsEnabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
     @State private var showSettingsAlert = false
+    @State private var isDeleting: Bool = false
+    
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -231,22 +233,6 @@ struct Profile: View {
                     .padding()
                 }
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
-                    //delete from firebase
-                    AuthViewModel().deleteUserAccount(email: userEmail, password: userPassword){ result in
-                        switch result {
-                        case .success(let message):
-                            print(message)
-                            backHome = true
-                        case .failure(let error):
-                            print("Error deleting user: \(error.localizedDescription)")
-                        }
-                    }
-                    //delete from core helper
-                    CoreDataHelper().deleteUser(userId: userId)
-                } , secondaryButton: .cancel())
-            }
             .onAppear{
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
@@ -296,10 +282,40 @@ struct Profile: View {
                     }
                 }
             }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
+                    isDeleting = true
+                    //delete from firebase
+                    auth.deleteUserAccount(email: userEmail, password: userPassword){ result in
+                        switch result {
+                        case .success(let message):
+                            print(message)
+                            //delete from core helper
+                            CoreDataHelper().deleteUser(userId: userId)
+                            DispatchQueue.main.async {
+                                isDeleting = false
+                                backHome = true
+                            }
+                        case .failure(let error):
+                            print("Error deleting user: \(error.localizedDescription)")
+                            DispatchQueue.main.async {
+                                isDeleting = false
+                            }
+                        }
+                    }
+                    
+                } , secondaryButton: .cancel())
+            }
+            if isDeleting {
+                    ProgressView("Deleting...")
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
+                }
             
         } //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
-        }
-    }
+        }    }
 }
