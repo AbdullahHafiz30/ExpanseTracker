@@ -10,43 +10,64 @@ struct CategoryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-               // addButton
+                HStack {
+                    Text("Categories")
+                        .foregroundColor(themeManager.textColor)
+                        .font(.custom("Poppins-Bold", size: 36))
+                        .fontWeight(.bold)
+                        .padding(.top , 20)
+                        .padding(.leading , 20)
+                    
+                    Spacer()
+                    addButton
+                        .foregroundColor(themeManager.textColor)
+                        .padding(.top, 20)
+                        .padding(.trailing, 20)
+                    
+                        
+                }
+                
+                // Custom search bar
                 searchBarView
+
+                // Category type filter buttons
                 categoryTypeFilter
+
+                // List of categories
                 categoryList
             }
             .navigationTitle("Categories")
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
-                            viewModel.loadCategories()
-                        }
+                viewModel.loadCategories()
+            }
             .toolbar {
+                // Plus button to add new category
                 ToolbarItem(placement: .navigationBarTrailing) {
                     addButton
                 }
             }
             .fullScreenCover(isPresented: $showingAddCategory) {
-               // AddCategory(userId : $userId)
+                // Full-screen cover for adding new category
                 CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
                     .environmentObject(viewModel)
                     .onDisappear {
-                                            viewModel.loadCategories()
-                                        }
+                        viewModel.loadCategories()
+                    }
             }
             .background(Color.white)
         }
-        .preferredColorScheme(.light)
+        .preferredColorScheme(.light) // Force light mode
     }
 
+    // MARK: - Search Bar View
     private var searchBarView: some View {
         SearchBar(searchText: $viewModel.searchText)
-            .padding(.horizontal)
-            .padding(.top)
             .background(Color.white)
             .cornerRadius(12)
-            //.shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 3)
     }
 
+    // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -69,14 +90,13 @@ struct CategoryView: View {
         }
     }
 
+    // MARK: - Category List
     private var categoryList: some View {
         List {
             ForEach(viewModel.filteredCategories) { category in
-                // NavigationLink to move to ListOfSpecificCategoryView when tapping on a category
                 NavigationLink {
-                    if let categoryName = category.name {
-                        ListOfSpecificCategoryView(categoryName: categoryName)
-                    }
+                    // Avoid optional inside destination by fallback to EmptyView
+                    ListOfSpecificCategoryView(categoryName: category.name ?? "")
                 } label: {
                     CategoryRow(category: category)
                         .environmentObject(themeManager)
@@ -84,7 +104,6 @@ struct CategoryView: View {
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         if let id = category.id {
-                        
                             viewModel.deleteCategory(withId: id)
                         }
                     } label: {
@@ -108,7 +127,7 @@ struct CategoryView: View {
         .padding(.bottom, 20)
     }
 
-
+    // MARK: - Add Button
     private var addButton: some View {
         Button {
             showingAddCategory = true
@@ -120,4 +139,14 @@ struct CategoryView: View {
                 .shadow(radius: 5)
         }
     }
+}
+
+struct CategoryView_Previews: PreviewProvider {
+    static var previews: some View {
+        CategoryView(userId: .constant("preview-user-id"))
+            .environmentObject(ThemeManager()) // Provide necessary environment object
+    }
+    
+    
+    
 }
