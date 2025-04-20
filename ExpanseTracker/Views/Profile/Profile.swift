@@ -30,7 +30,7 @@ struct Profile: View {
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     @State private var selectedLanguageIndex: Int = 0
     @Environment(\.presentationMode) var presentationMode
-
+    @State private var isDeleting: Bool = false
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -135,6 +135,9 @@ struct Profile: View {
                                 
                                 Toggle("", isOn: $themeManager.isDarkMode)
                                     .tint(themeManager.isDarkMode ? .white.opacity(0.3) : .black)
+                                    .onChange(of: themeManager.isDarkMode) { _, isOn in
+                                        UserDefaults.standard.set(isOn, forKey: "isDarkMode")
+                                    }
                                 
                             }
                             Divider()
@@ -154,27 +157,27 @@ struct Profile: View {
                                     Text("")
                                 }
                                 .tint(themeManager.isDarkMode ? .white.opacity(0.3) : .black)
-                                        .onChange(of: notificationsEnabled) { _, isOn in
-                                            print(isOn)
-                                            UserDefaults.standard.set(isOn, forKey: notificationToggleKey)
-                                            print(UserDefaults.standard.bool(forKey: "notificationsEnabled"))
-                                            if isOn {
-                                                NotificationManager.shared.requestPermission { granted in
-                                                    if granted {
-                                                        NotificationManager.shared.scheduleNotification(
-                                                            title: "It's a new month 😍!",
-                                                            body: "What is your plan for this month? Has your budget changed 💸😉?"
-                                                        )
-                                                    } else {
-                                                        notificationsEnabled = false
-                                                        UserDefaults.standard.set(false, forKey: notificationToggleKey)
-                                                        showSettingsAlert = true
-                                                    }
-                                                }
+                                .onChange(of: notificationsEnabled) { _, isOn in
+                                    print(isOn)
+                                    UserDefaults.standard.set(isOn, forKey: notificationToggleKey)
+                                    print(UserDefaults.standard.bool(forKey: "notificationsEnabled"))
+                                    if isOn {
+                                        NotificationManager.shared.requestPermission { granted in
+                                            if granted {
+                                                NotificationManager.shared.scheduleNotification(
+                                                    title: "It's a new month 😍!",
+                                                    body: "What is your plan for this month? Has your budget changed 💸😉?"
+                                                )
                                             } else {
-                                                NotificationManager.shared.removeAllPendingNotifications()
+                                                notificationsEnabled = false
+                                                UserDefaults.standard.set(false, forKey: notificationToggleKey)
+                                                showSettingsAlert = true
                                             }
                                         }
+                                    } else {
+                                        NotificationManager.shared.removeAllPendingNotifications()
+                                    }
+                                }
                             }
                             Divider()
                                 .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
@@ -283,7 +286,7 @@ struct Profile: View {
                 
                 // Set the badge count of the app icon to 0
                 UNUserNotificationCenter.current().setBadgeCount(0) { error in
-                 if let error = error {
+                    if let error = error {
                         print("Error setting badge: \(error)")
                     }
                 }
@@ -353,7 +356,37 @@ struct Profile: View {
                 }
                 presentationMode.wrappedValue.dismiss()
             }
-            
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
+                    isDeleting = true
+                    //delete from firebase
+                    auth.deleteUserAccount(email: userEmail, password: userPassword){ result in
+                        switch result {
+                        case .success(let message):
+                            print(message)
+                            //delete from core helper
+                            CoreDataHelper().deleteUser(userId: userId)
+                            DispatchQueue.main.async {
+                                isDeleting = false
+                                backHome = true
+                            }
+                        case .failure(let error):
+                            print("Error deleting user: \(error.localizedDescription)")
+                            DispatchQueue.main.async {
+                                isDeleting = false
+                            }
+                        }
+                    }
+                    
+                } , secondaryButton: .cancel())
+            }
+            if isDeleting {
+                ProgressView("Deleting...")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+            }
         } //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
@@ -361,3 +394,5 @@ struct Profile: View {
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }
+
+

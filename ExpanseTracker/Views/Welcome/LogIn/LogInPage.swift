@@ -14,6 +14,7 @@ struct LogInPage: View {
     @State private var isLoggedIn = false
     @State private var backHome = false
     @State private var goToHome = false
+    @State private var signedUp = false
     @State private var isLoading = false
     @EnvironmentObject var themeManager: ThemeManager
     @ObservedObject var auth: AuthViewModel
@@ -88,12 +89,14 @@ struct LogInPage: View {
                         CustomButton(
                             title: "Login",
                             action: {
-                                isLoading = true
-                                // Firebase login
-                                auth.logIn(email: email, password: password) { success, message in
-                                    isLoading = false
-                                    if success {
-                                        goToHome = true
+                                DispatchQueue.main.async {
+                                    isLoading = true
+                                    // Firebase login
+                                    auth.logIn(email: email, password: password) { success, message in
+                                        isLoading = false
+                                        if success {
+                                            goToHome = true
+                                        }
                                     }
                                 }
                             }
@@ -125,10 +128,7 @@ struct LogInPage: View {
                 message: Text(alertManager.alertState.message),
                 dismissButton: .default(Text("OK")))
         }
-        // Cover the whole page with the sign up page
-        .fullScreenCover(isPresented: $isLoggedIn) {
-            SignUpPage(auth:auth)
-        }
+      
         // Cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
@@ -141,6 +141,13 @@ struct LogInPage: View {
                         EmptyView()
                     }
                 )
+        NavigationLink(
+            destination: SignUpPage(auth:auth),
+                    isActive: $isLoggedIn,
+                    label: {
+                        EmptyView()
+                    }
+        )
         
     }
 }
