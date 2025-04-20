@@ -2,11 +2,16 @@ import SwiftUI
 
 struct CategoryView: View {
     @EnvironmentObject var themeManager: ThemeManager
-    @StateObject private var viewModel = CategoryViewModel()
+    @StateObject private var viewModel: CategoryViewModel
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
     @Namespace private var animation 
     @Binding var userId: String
+    
+    init(userId: Binding<String>) {
+         self._userId = userId
+         _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+     }
 
     var body: some View {
         NavigationStack {
@@ -29,6 +34,9 @@ struct CategoryView: View {
                 searchBarView
                 categoryTypeFilter
                 categoryList
+            }.onChange(of: userId) { newUserId in
+                viewModel.userId = newUserId
+                viewModel.loadCategories()
             }
             .navigationTitle("Categories")
             .navigationBarTitleDisplayMode(.large)
