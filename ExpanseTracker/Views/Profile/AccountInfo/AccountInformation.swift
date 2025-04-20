@@ -20,6 +20,7 @@ struct AccountInformation: View {
     @State private var imageURL: URL? = nil
     @State private var imageData: Data? = nil
     @State private var isPasswordSecure: Bool = true
+    var currentLanguage : String
     // MARK: - UI Design
     var body: some View {
         NavigationStack{
@@ -42,12 +43,11 @@ struct AccountInformation: View {
                             .foregroundColor(themeManager.isDarkMode ? .white :.black.opacity(0.7))
                     }
                 }
-                .padding(.top,25)
+                .padding(.vertical,40)
                 .padding()
-                Spacer()
                 
                 Group{
-                    Text("Name")
+                    Text("Name".localized(using: currentLanguage))
                         .font(.system(size: 22, weight: .medium, design: .default))
                     Text(name)
                         .foregroundColor(.secondary)
@@ -55,7 +55,7 @@ struct AccountInformation: View {
                     Divider()
                         .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     
-                    Text("Email")
+                    Text("Email".localized(using: currentLanguage))
                         .font(.system(size: 22, weight: .medium, design: .default))
                     Text(verbatim: email)
                         .foregroundColor(.secondary)
@@ -63,25 +63,25 @@ struct AccountInformation: View {
                     Divider()
                         .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                     
-                    Text("Password")
-                        .font(.system(size: 22, weight: .medium, design: .default))
-                    
-                    HStack{
-                        Text(isPasswordSecure ? "**********" : password)
-                            .foregroundColor(.secondary)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            isPasswordSecure.toggle()
-                        }) {
-                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
-                                .foregroundColor(.gray)
-                                .padding(.trailing, 16)
-                        }
-                    }
-                    Divider()
-                        .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
+//                    Text("Password")
+//                        .font(.system(size: 22, weight: .medium, design: .default))
+//                    
+//                    HStack{
+//                        Text(isPasswordSecure ? "**********" : password)
+//                            .foregroundColor(.secondary)
+//                        
+//                        Spacer()
+//                        
+//                        Button(action: {
+//                            isPasswordSecure.toggle()
+//                        }) {
+//                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+//                                .foregroundColor(.gray)
+//                                .padding(.trailing, 16)
+//                        }
+//                    }
+//                    Divider()
+//                        .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)
@@ -90,8 +90,8 @@ struct AccountInformation: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: EditAccountInformation(userId: $userId)){
-                    Text("Edit")
+                NavigationLink(destination: EditAccountInformation(userId: $userId, currentLanguage: currentLanguage)){
+                    Text("Edit".localized(using: currentLanguage))
                         .frame(width: 170, height: 50)
                         .background(
                             Rectangle()
@@ -107,41 +107,43 @@ struct AccountInformation: View {
             }.onAppear{
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
-                let userInfo =  CoreDataHelper().fetchUserFromCoreData(uid: userId)
-                // Assign its properties to local state variables
-                name = userInfo?.name ?? ""
-                email = userInfo?.email ?? ""
-                password = userInfo?.password ?? ""
-                
-                if let imageFilename = userInfo?.image {
-                    print("Saved image filename: \(imageFilename)")
-                    // Retrieves the URL for the app document directory using FileManager
-                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    // Append the file name to the documentsDirectory
-                    let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+                DispatchQueue.main.async {
+                    let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                        name = user?.name ?? "Guest"
+                        email = user?.email ?? ""
+                        password = user?.password ?? ""
                     
-                    print("Full file path: \(fileURL.path)")
-                    
-                    // Check if the file exists 
-                    if FileManager.default.fileExists(atPath: fileURL.path),
-                       let data = try? Data(contentsOf: fileURL) {
-                        self.imageData = data
-                        self.imageURL = fileURL
-                        print("Image data loaded from documents")
-                    } else {
-                        print("❌ File not found in documents")
+                    if let imageFilename = user?.image {
+                        print("Saved image filename: \(imageFilename)")
+                        // Retrieves the URL for the app document directory using FileManager
+                        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                        // Append the file name to the documentsDirectory
+                        let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+                        
+                        print("Full file path: \(fileURL.path)")
+                        
+                        // Check if the file exists 
+                        if FileManager.default.fileExists(atPath: fileURL.path),
+                           let data = try? Data(contentsOf: fileURL) {
+                            self.imageData = data
+                            self.imageURL = fileURL
+                            print("Image data loaded from documents")
+                        } else {
+                            print("❌ File not found in documents")
+                        }
                     }
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    CustomBackward(title:"Account Information"){
+                ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
+                    CustomBackward(title:"AccountInformation".localized(using: currentLanguage)){
                         dismiss()
                     }
                 }
             }
             .navigationBarBackButtonHidden(true)
         }
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         
     }
 }

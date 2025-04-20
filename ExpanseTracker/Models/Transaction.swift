@@ -28,5 +28,22 @@ struct Transaction: Identifiable, Hashable {
         self.category = category
         self.receiptImage = receiptImage
     }
+   
+    init(from entity: TransacionsEntity) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        self.id = entity.id ?? ""
+        self.title = entity.title ?? ""
+        self.description = entity.description
+        self.receiptImage = entity.image ?? ""
+        self.date = formatter.date(from: entity.date ?? "")
+        self.amount = entity.amount
+        self.transactionType = TransactionType(rawValue: entity.transactionType ?? "")
+        if let categoryEntity = entity.category {
+            self.category = Category(from: categoryEntity)
+        } else {
+            self.category = nil
+        }
+    }
 }
 

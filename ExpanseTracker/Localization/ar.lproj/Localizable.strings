@@ -1,0 +1,45 @@
+/* 
+  Localizable.strings
+  ExpanseTracker
+
+  Created by Rayaheen Mseri on 22/10/1446 AH.
+  
+*/
+"Save" = "حفظ";
+"edit_transaction" = "Edit Transaction";
+"welcome" = "Welcome!";
+"howMuch" = "السعر؟";
+"Budget" = "الميزانية";
+"YourSpend" = "الإنفاق";
+"AccountInformation" = "معلومات الحساب";
+"Notifications" = "التنبيهات";
+"Language" = "اللغة";
+"Logout" = "تسجيل الخروج";
+"DeleteAccount" = "حذف الحساب";
+"Hello" = "مرحباً, %@";
+"LightMode" = "المظهر الفاتح";
+"DarkMode" = "المظهر الداكن";
+"Name" = "الاسم";
+"Email" = "الايميل";
+"Edit" = "تعديل";
+"AddCategory" = "اضافة تصنيف";
+"EditCategory" = "تعديل التصنيف";
+"CategoryName" = "اسم التصنيف";
+"CategoryIcon" = "ايقونة التصنيف";
+"CategoryColor" = "لون التصنيف";
+"CategoryType" = "نوع التصنيف";
+"BudgetLimit" = "حد الميزاينة";
+"Add" = "اضافة";
+"Essential" = "مهم";
+"Entertainment" = "ترفية";
+"Emergency" = "طارئ";
+"Other" = "اخرى";
+"SetBudget" = "حدد الميزانية";
+"EditAccountInformation" = "تعديل معلومات الحساب";
+"Addtransaction" = "اضافة معاملة";
+"Title" = "العنوان";
+"Category" = "التصنيف";
+"Description" = "الوصف";
+"Transactiontype" = "نوع المعاملة:";
+"Income" = "ايرادات";
+"Expense" = "مصروفات";

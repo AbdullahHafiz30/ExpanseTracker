@@ -28,12 +28,13 @@ struct CategoryFunctionallity: View {
     @StateObject var budgetViewModel = BudgetViewModel()
     @StateObject private var alertManager = AlertManager.shared
     @Binding var type: String
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack {
                 // Title
-                CustomBackward(title: type == "Add" ? "Add Category" : "Edit Category", tapEvent: {dismiss()})
+                CustomBackward(title: type == "Add" ? "AddCategory".localized(using: currentLanguage) : "EditCategory".localized(using: currentLanguage), tapEvent: {dismiss()})
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 VStack(alignment: .leading, spacing: 30) {
@@ -53,14 +54,14 @@ struct CategoryFunctionallity: View {
                         }
                         .padding(5)
                         
-                        CustomTextField(placeholder: "Category Name", text: $categoryName,isSecure: .constant(false))
+                        CustomTextField(placeholder: "CategoryName".localized(using: currentLanguage), text: $categoryName,isSecure: .constant(false))
                         
                         
                     }
                     
                     // Category Icon Selection
                     HStack {
-                        Text("Category Icon")
+                        Text("CategoryIcon".localized(using: currentLanguage))
                         Spacer()
                         Image(systemName: selectedIcon)
                             .resizable()
@@ -74,7 +75,7 @@ struct CategoryFunctionallity: View {
                     
                     // Color Picker
                     HStack{
-                        Text("Category Color")
+                        Text("CategoryColor".localized(using: currentLanguage))
                         Spacer()
                         
                         ZStack{
@@ -93,7 +94,7 @@ struct CategoryFunctionallity: View {
                     }
                     
                     
-                    Text("Category Type")
+                    Text("CategoryType".localized(using: currentLanguage))
                         .padding(.horizontal)
                     
                     VStack(spacing: 10) {
@@ -101,7 +102,7 @@ struct CategoryFunctionallity: View {
                         ForEach(Array(CategoryType.allCases.chunked(into: 2)), id: \.self) { rowItems in
                             HStack(spacing: 5) {
                                 ForEach(rowItems, id: \.self) { type in
-                                    Text(LocalizedStringKey(type.rawValue))
+                                    Text(type.rawValue.localized(using: currentLanguage))
                                         .font(.callout)
                                         .padding(.vertical, 8)
                                         .frame(maxWidth: .infinity)
@@ -129,14 +130,24 @@ struct CategoryFunctionallity: View {
                     .padding(.horizontal)
                     
                     HStack{
-                        Text("Budget Limit")
+                        Text("BudgetLimit".localized(using: currentLanguage))
                         
                         Spacer()
                         
-                        Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                        Text(String(format: "%.0f", userBudget * (limit / 100)))
+                        if currentLanguage == "en" {
+                            Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                       
+                        Text(String(format: "%.0f", floor(userBudget * (limit / 100))))
+                        
+                        if currentLanguage == "ar" {
+                            Image(themeManager.isDarkMode ?  "riyalW":"riyalB")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                       
                     }
                     .padding(.horizontal)
                     
@@ -155,7 +166,13 @@ struct CategoryFunctionallity: View {
                 
                 Spacer()
                 // MARK: - Add category button
-                CustomButton(title: type == "Add" ? "Add" : "Save", action: {
+                CustomButton(title: type == "Add" ? "Add".localized(using: currentLanguage) : "Save".localized(using: currentLanguage), action: {
+                    
+                    guard userBudget != 0.0 else {
+                        AlertManager.shared.showAlert(title: "Error", message: "You need to set your budget first!")
+                        return
+                    }
+                    
                     guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                         AlertManager.shared.showAlert(title: "Error", message: "Category name is required!")
                         return
@@ -168,7 +185,7 @@ struct CategoryFunctionallity: View {
                         color: UIColor(color).toHexString(),
                         icon: selectedIcon,
                         categoryType: categoryType,
-                        budgetLimit: userBudget * (limit / 100)
+                        budgetLimit: floor(userBudget * (limit / 100))
                     )
                     
                     let (isExist, message) = categoryViewModel.checkCategoryExist(category: category, userId: userId, userBudget: userBudget)
@@ -196,7 +213,21 @@ struct CategoryFunctionallity: View {
                 userBudget = budget?.amount ?? 0.0
                 
                 if type != "Add" {
-                    getCategory()
+                   if let categoryDate = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
+                        
+                        // If found assign its properties to local state variables
+                        categoryName = categoryDate.name ?? ""
+                        selectedIcon = categoryDate.icon ?? ""
+                        color = UIColor().colorFromHexString(categoryDate.color ?? "")
+                        categoryType = categoryDate.categoryType ?? .other
+                        if userBudget != 0 {
+                            limit = ((categoryDate.budgetLimit ?? 1.0) / userBudget) * 100
+                        } else {
+                            limit = 0
+                        }
+                    } else {
+                        print("Category not found.")
+                    }
                 }
                 
             }
@@ -214,50 +245,8 @@ struct CategoryFunctionallity: View {
                     dismissButton: .default(Text("OK")))
             }
         }
-    }
-    
-// MARK: - Functions
-    func getCategory(){
-        // MARK: - Get user information from core
-        // Fetch the category from Core Date using (category id , user id)
-        if let category = categoryViewModel.fetchCategoryFromCoreDataWithId(categoryId: id, userId: userId) {
-            
-            // If found assign its properties to local state variables
-            categoryName = category.name ?? ""
-            selectedIcon = category.icon ?? ""
-            color = colorFromHexString(category.color ?? "")
-            categoryType = category.categoryType ?? .other
-            limit = ((category.budgetLimit ?? 1.0) / userBudget) * 100
-        } else {
-            print("Category not found.")
-        }
-        
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }
 
-func colorFromHexString(_ hex: String) -> Color {
-    // Remove whitespace, newlines, and make the string uppercase
-    var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-    
-    // Remove the "#" symbol at the beginning if it exists
-    if hexFormatted.hasPrefix("#") {
-        hexFormatted.remove(at: hexFormatted.startIndex)
-    }
-    
-    // Check if the cleaned string is not exactly 6 characters
-    if hexFormatted.count != 6 {
-        return Color.gray // default fallback
-    }
-    
-    // Create a scanner instance that will read from the hexFormatted string and tries to convert the hex string into an integer and store it in rgbValue
-    var rgbValue: UInt64 = 0
-    Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
-    
-    // Extract the red, green, and blue components from the hex value
-    let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
-    let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
-    let blue = Double(rgbValue & 0x0000FF) / 255.0
-    
-    // Return a SwiftUI Color with the RGB values
-    return Color(red: red, green: green, blue: blue)
-}
+

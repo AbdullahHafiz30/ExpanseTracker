@@ -43,7 +43,7 @@ struct EditTransactionView: View {
                     // Category
                     DropDownMenu(
                         title: "Category",
-                        options: ["Food", "Transport", "Shopping", "Bills"],
+                        options: categories.compactMap{$0.name},
                         selectedOption: $viewModel.editedCategoryName
                     )
                     

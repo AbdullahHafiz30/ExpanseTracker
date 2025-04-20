@@ -74,7 +74,7 @@ struct MainTabView: View {
             }
         }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction()
+            AddTransaction(userId: .constant(uid ?? ""))
         }
     }
 }
