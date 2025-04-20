@@ -50,7 +50,7 @@ struct GraphsViewHeader: View {
             Menu {
                 Picker("Year", selection: $selectedYear) {
                     ForEach(yearRange, id: \.self) { year in
-                        Text("\(year)").tag(year)
+                        Text(String(format : "%d", year)).tag(year)
                     }
                 }
             } label: {
