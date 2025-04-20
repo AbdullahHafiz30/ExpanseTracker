@@ -17,16 +17,6 @@ struct PieView: View {
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
     
-    
-//    getDataByTab(selectedTab: selectedTab, selectedYear: selectedYear, selectedMonth: selectedMonth)
-    
-    
-//    getTestDataByMonthYear(selectedMonth: selectedMonth, selectedYear: selectedYear)
-    
-//    getTestData(selectedType: selectedType)
-    
-//    getTestDataByYear(selectedYear: selectedYear)
-    
     var body: some View {
         VStack {
             Chart(viewModel.getData(
