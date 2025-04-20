@@ -122,7 +122,6 @@ struct CategoryView: View {
                 .foregroundColor(.white)
                 .padding(12)
                 .background(Circle().fill(Color.black))
-                .shadow(radius: 5)
         }
     }
 }

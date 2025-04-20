@@ -37,14 +37,19 @@ struct AddTransaction: View {
                     ZStack{
                         themeManager.backgroundColor
                             .ignoresSafeArea()
-                        // Show the 3 sections of the page
+                        // Show the 2 sections of the page
                         VStack(alignment: .leading) {
-                            headerSection
                             priceSection
                             formSection
                             
                         }
                         
+                    }
+                }
+            }.toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CustomBackward(title: "Add transaction") {
+                        dismiss()
                     }
                 }
             }
@@ -56,26 +61,6 @@ struct AddTransaction: View {
 
 //MARK: - View extension
 private extension AddTransaction {
-    // Header section
-    var headerSection: some View {
-        HStack {
-            Button(action: {
-                dismiss()
-            }) {
-                Image(systemName: "arrow.left")
-                    .foregroundColor(themeManager.textColor)
-                    .font(.system(size: 25))
-            }
-            .padding()
-            
-            Text("Add transaction")
-                .bold()
-                .font(.largeTitle)
-                .foregroundColor(themeManager.textColor)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top,10)
-    }
     // Price section
     var priceSection: some View {
         VStack(alignment: .leading, spacing: 10) {
