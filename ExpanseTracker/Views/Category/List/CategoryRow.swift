@@ -18,8 +18,10 @@ struct CategoryRow: View {
             // Icon with colored circle
             ZStack {
                 Circle()
-                    .fill(UIColor().colorFromHexString(category.color ?? "").opacity(0.2))
+                    .fill(UIColor().colorFromHexString(category.color ?? "")
+                            .opacity(themeManager.isDarkMode ? 0.3 : 0.2))
                     .frame(width: 50, height: 50)
+
                 Image(systemName: category.icon ?? "")
                     .foregroundColor(UIColor().colorFromHexString(category.color ?? ""))
                     .font(.system(size: 20, weight: .medium))
@@ -29,24 +31,15 @@ struct CategoryRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(category.name ?? "")
                     .font(.headline)
-                    .foregroundColor(.black)
-//                Text(LocalizedStringKey(category.categoryType?.rawValue ?? ""))
-//                    .font(.caption)
-//                    .foregroundColor(.gray)
+                    .foregroundColor(themeManager.textColor) 
             }
 
             Spacer()
-
-            // Chevron Arrow
-//            Image(systemName: "chevron.right")
-//                .foregroundColor(.gray)
         }
-        //.padding()
+        .padding()
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white)
-              //  .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+                .fill(themeManager.isDarkMode ? Color(.systemGray6).opacity(0.2) : Color.white)
         )
     }
 }
-
