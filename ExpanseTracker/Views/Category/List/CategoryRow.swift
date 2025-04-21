@@ -18,10 +18,10 @@ struct CategoryRow: View {
             // Icon with colored circle
             ZStack {
                 Circle()
-                    .fill(Color(colorFromHexString(category.color ?? "")).opacity(0.2))
+                    .fill(UIColor().colorFromHexString(category.color ?? "").opacity(0.2))
                     .frame(width: 50, height: 50)
                 Image(systemName: category.icon ?? "")
-                    .foregroundColor(Color(colorFromHexString(category.color ?? "")))
+                    .foregroundColor(UIColor().colorFromHexString(category.color ?? ""))
                     .font(.system(size: 20, weight: .medium))
             }
 

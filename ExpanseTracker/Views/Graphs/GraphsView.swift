@@ -1,9 +1,9 @@
-////
-////  PieChartView.swift
-////  ExpanseTracker
-////
-////  Created by Abdullah Hafiz on 15/10/1446 AH.
-////
+//
+//  PieChartView.swift
+//  ExpanseTracker
+//
+//  Created by Abdullah Hafiz on 15/10/1446 AH.
+//
 
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct GraphsView: View {
     
     
-    
+    @State private var allSelect : Bool = true
     @State private var selectedTab: DateTab = .monthly
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
@@ -21,6 +21,7 @@ struct GraphsView: View {
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
+                allSelect: $allSelect,
                 selectedTab: $selectedTab,
                 selectedMonth: $selectedMonth,
                 selectedYear: $selectedYear,
@@ -29,17 +30,17 @@ struct GraphsView: View {
             
             VStack {
                 Picker(selection: $tabSelectedValue, label: Text("")) {
-                    Text("A").tag(0)
-                    Text("B").tag(1)
-                    Text("C").tag(2)
+                    Text("Pie").tag(0)
+                    Text("Bar").tag(1)
+                    Text("Line").tag(2)
                     
                 }.pickerStyle(SegmentedPickerStyle())
                     .padding()
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    PieView().tag(0)
-                    BarView().tag(1)
+                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(0).padding()
+                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1).padding()
                     LineView().tag(2)
                 })
                 .tabViewStyle(PageTabViewStyle())

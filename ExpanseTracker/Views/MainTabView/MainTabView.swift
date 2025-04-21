@@ -13,6 +13,8 @@ struct MainTabView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showAddTransactionView: Bool = false
     @ObservedObject var auth: AuthViewModel
+    @State private var userId: String = ""
+    
     // Get UID from user default
         var uid: String? {
            UIDManager.loadUID()
@@ -71,7 +73,7 @@ struct MainTabView: View {
                     .offset(y: -5)
                     Spacer()
                 }
-            }
+            }.ignoresSafeArea(.keyboard)
         }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
             AddTransaction(userId: .constant(uid ?? ""))

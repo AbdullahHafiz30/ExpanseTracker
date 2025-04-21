@@ -24,6 +24,8 @@ struct EditAccountInformation: View {
     @Binding var userId: String
     @State private var isPasswordSecure: Bool = true
     @StateObject private var alertManager = AlertManager.shared
+    @StateObject var editViewModel = EditAccountInformationViewModel()
+    var currentLanguage : String
     // MARK: - UI Design
     var body: some View {
         NavigationStack{
@@ -61,40 +63,40 @@ struct EditAccountInformation: View {
                         }
                     
                 }
-                .padding(.top,10)
+                .padding(.vertical,20)
                 .padding()
                 
                 Group{
-                    Text("Name")
+                    Text("Name".localized(using: currentLanguage))
                         .font(.system(size: 22, weight: .medium, design: .default))
                     
                     CustomTextField(placeholder: "", text: $userName, isSecure: .constant(false))
                     
-                    Text("Email")
+                    Text("Email".localized(using: currentLanguage))
                         .font(.system(size: 22, weight: .medium, design: .default))
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
                         .disabled(true)
                     
                     
-                    Text("Password")
-                        .font(.system(size: 22, weight: .medium, design: .default))
-                    
-                    ZStack(alignment: .trailing) {
-                        CustomTextField(
-                            placeholder: "123456789",
-                            text: $userPassword,
-                            isSecure: $isPasswordSecure
-                        )
-                        .disabled(true)
-                        
-                        Button(action: {
-                            isPasswordSecure.toggle()
-                        }) {
-                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
-                                .foregroundColor(.gray)
-                                .padding(.trailing, 16)
-                        }
-                    }
+//                    Text("Password")
+//                        .font(.system(size: 22, weight: .medium, design: .default))
+//                    
+//                    ZStack(alignment: .trailing) {
+//                        CustomTextField(
+//                            placeholder: "123456789",
+//                            text: $userPassword,
+//                            isSecure: $isPasswordSecure
+//                        )
+//                        .disabled(true)
+//                        
+//                        Button(action: {
+//                            isPasswordSecure.toggle()
+//                        }) {
+//                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+//                                .foregroundColor(.gray)
+//                                .padding(.trailing, 16)
+//                        }
+//                    }
                     
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
@@ -103,7 +105,7 @@ struct EditAccountInformation: View {
                 
                 Spacer()
                 // MARK: - Save edited account information button
-                CustomButton(title: "Save", action: {
+                CustomButton(title: "Save".localized(using: currentLanguage), action: {
                     guard !userName.trimmingCharacters(in: .whitespaces).isEmpty else {
                         let message = "Name is required"
                         AlertManager.shared.showAlert(title: "Error", message: message)
@@ -131,8 +133,8 @@ struct EditAccountInformation: View {
                 
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    CustomBackward(title:"Edit Account Information"){
+                ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
+                    CustomBackward(title:"EditAccountInformation".localized(using: currentLanguage)){
                         dismiss()
                     }
                 }
@@ -165,7 +167,13 @@ struct EditAccountInformation: View {
                 }
             }
             .onAppear {
-                loadUserData()
+                let userData = editViewModel.loadUserData(userId: userId)
+                
+                userName = userData.0
+                userEmail = userData.1
+                userPassword = userData.2
+                self.imageData = userData.3
+                self.imageURL = userData.4
             }
             .alert(isPresented: $alertManager.alertState.isPresented) {
                 Alert(
@@ -175,37 +183,6 @@ struct EditAccountInformation: View {
             }
             .navigationBarBackButtonHidden(true)
         }
-    }
-    
-    // MARK: - Functions
-    private func loadUserData() {
-        // Fetch the user from Core Date using user id
-        let userInfo = CoreDataHelper().fetchUserFromCoreData(uid: userId)
-        
-        // Assign its properties to local state variables
-        userName = userInfo?.name ?? ""
-        userEmail = userInfo?.email ?? ""
-        userPassword = userInfo?.password ?? ""
-        
-        if let imageFilename = userInfo?.image {
-            print("Saved image filename: \(imageFilename)")
-            
-            // Retrieves the URL for the app document directory using FileManager
-            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            // Append the file name to the documentsDirectory
-            let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
-            
-            print("Full file path: \(fileURL.path)")
-            
-            // Check if the file exists 
-            if FileManager.default.fileExists(atPath: fileURL.path),
-               let data = try? Data(contentsOf: fileURL) {
-                self.imageData = data
-                self.imageURL = fileURL
-                print("Image data loaded from documents")
-            } else {
-                print("File not found in documents")
-            }
-        }
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }

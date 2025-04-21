@@ -1,0 +1,45 @@
+/* 
+  Localizable.strings
+  ExpanseTracker
+
+  Created by Rayaheen Mseri on 22/10/1446 AH.
+  
+*/
+"Save" = "Save";
+"edit_transaction" = "Edit Transaction";
+"welcome" = "Welcome!";
+"howMuch" = "How much?";
+"Budget" = "Budget";
+"YourSpend" = "Your Spend";
+"AccountInformation" = "Account Information";
+"Notifications" = "Notifications";
+"Language" = "Language";
+"Logout" = "Logout";
+"DeleteAccount" = "Delete Account";
+"Hello" = "Hello, %@";
+"LightMode" = "Light Mode";
+"DarkMode" = "Dark Mode";
+"Name" = "Name";
+"Email" = "Email";
+"Edit" = "Edit";
+"AddCategory" = "Add Category";
+"EditCategory" = "Edit Category";
+"CategoryName" = "Category Name";
+"CategoryIcon" = "Category Icon";
+"CategoryColor" = "Category Color";
+"CategoryType" = "Category Type";
+"BudgetLimit" = "Budget Limit";
+"Add" = "Add";
+"Essential" = "Essential";
+"Entertainment" = "Entertainment";
+"Emergency" = "Emergency";
+"Other" = "Other";
+"SetBudget" = "Set Budget";
+"EditAccountInformation" = "Edit Account Information";
+"Add transaction" = "Add transaction";
+"Title" = "Title";
+"Category" = "Category";
+"Description" = "Description";
+"Transactiontype" = "Transaction type:";
+"Income" = "Income";
+"Expense" = "Expense";

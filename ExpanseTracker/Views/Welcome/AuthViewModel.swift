@@ -190,8 +190,7 @@ class AuthViewModel:ObservableObject {
         db.collection("users").document(uid).setData([
             "uid": uid,
             "name": name,
-            "email": email,
-            "password": password
+            "email": email
         ])  { error in
             if let error = error {
                 print("Error saving user data: \(error.localizedDescription)")
@@ -221,11 +220,10 @@ class AuthViewModel:ObservableObject {
             
             let name = data["name"] as? String ?? ""
             let email = data["email"] as? String ?? ""
-            let password = data["password"] as? String ?? ""
             let user = User(
                 name: name,
                 email: email,
-                password: password,
+                password: nil,
                 image: nil,
                 transactions: [],
                 budgets: [],
@@ -271,12 +269,16 @@ class AuthViewModel:ObservableObject {
                     if let error = error {
                         completion(.failure(error))
                     } else {
+                        // Clear uid from user default
+                        UIDManager.clearUID()
+                        self.isAuthenticated = false
                         completion(.success(" User successfully deleted from Firebase and Firestore."))
                     }
                 }
             }
         }
     }
+
     
     // MARK: - Validation Helpers
     

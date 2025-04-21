@@ -17,11 +17,12 @@ struct SetBudget: View {
     @Binding var budgetAmount: Double
     @State private var showRepeatAlert = false
     @State private var budgetError: String?
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     // MARK: - UI Design
     var body: some View {
         NavigationStack {
             VStack{
-                Text("Set Budget")
+                Text("SetBudget".localized(using: currentLanguage))
                     .font(.title)
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -37,7 +38,7 @@ struct SetBudget: View {
                     }
                     .padding(.bottom, 20)
                     .onChange(of: budget) { _, newValue in
-                        validateAmount(text: newValue)
+                        budgetError = budgetViewModel.validateAmount(text: newValue)
                     }
                 
                 if let error = budgetError {
@@ -48,16 +49,16 @@ struct SetBudget: View {
                         .padding(.bottom, 10)
                 }
                 // MARK: - Save budget amount button
-                CustomButton(title: "Save", action: {
-                    validateAmount(text: budget)
+                CustomButton(title: "Save".localized(using: currentLanguage), action: {
+                    budgetError = budgetViewModel.validateAmount(text: budget)
                     
                     if budgetError != nil {
                         return
                     }
                     
-                    if let amount = Double(budget) {
+                    if Double(budget) != nil {
                         if budgetAmount == 0 {
-                            createBudget(repeated: true)
+                            budgetViewModel.createBudget(repeated: true, userId: userId, budget: budget)
                             isPresented = false
                         } else {
                             showRepeatAlert = true
@@ -73,13 +74,13 @@ struct SetBudget: View {
         .alert("Do you want to set this budget as repeated?", isPresented: $showRepeatAlert) {
             Button("yes") {
                
-                createBudget(repeated: true)
+                budgetViewModel.createBudget(repeated: true, userId: userId, budget: budget)
                 isPresented = false
             }
             
             Button("no") {
                 
-                createBudget(repeated: false)
+                budgetViewModel.createBudget(repeated: false, userId: userId, budget: budget)
                 isPresented = false
             }
             .frame(height: 250)
@@ -91,41 +92,7 @@ struct SetBudget: View {
             )
             .padding()
         }
-    }
-    
-    // MARK: - functions
-    func convertDateToString(date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        return formatter.string(from: date)
-        
-    }
-    
-    //validate error mesg for amount
-    func validateAmount(text: String) {
-        if isValidNumber(text: text) {
-            budgetError = nil
-        } else {
-            budgetError = "Budget must be a number only."
-        }
-    }
-    
-    //validate function
-    func isValidNumber(text: String) -> Bool {
-        let numberPattern = "^[0-9]+$"
-        return text.range(of: numberPattern, options: .regularExpression) != nil
-    }
-    
-    func createBudget(repeated: Bool){
-        // Create new budget object
-        let newBudget = Budget(
-            id: UUID().uuidString,
-            amount: Double(budget),
-            startDate: convertDateToString(date: Date()),
-            endDate: convertDateToString(date:Date().addingTimeInterval(30 * 24 * 60 * 60)))
-        
-        budgetViewModel.saveBudgetToCoreData(budget: newBudget, userId: userId, repeated: repeated)
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }
 

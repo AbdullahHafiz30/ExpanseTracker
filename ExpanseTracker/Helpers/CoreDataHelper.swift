@@ -60,7 +60,7 @@ struct CoreDataHelper {
                     email: result.email ?? "",
                     password: result.password ?? "",
                     image: result.imageURL ?? "",
-                    transactions: Array(result.transaction as? Set<Transaction> ?? []),
+                    transactions: Array((result.transaction as? Set<TransacionsEntity>)?.map { Transaction(from: $0) } ?? []),
                     budgets: Array((result.budget as? Set<BudgetEntity>)?.map { Budget(from: $0) } ?? []), // Cast result.budget to a Set<BudgetEntity> and use map function to iterate over each BudgetEntity in the set and transform it into a Budget
                     // Explicitly convert the result of the map operation into an array
                     categories: Array((result.category as? Set<CategoryEntity>)?.map { Category(from: $0) } ?? [])
@@ -109,9 +109,8 @@ struct CoreDataHelper {
         }
     }
     
-    /// Save an image to the Documents directory
-    /// - Parameter image: The `UIImage` to be saved.
-    /// - Returns: The filename of the saved image, or `nil` if the save fails.
+    /// Deletes a user from Core Data by their user ID
+    /// - Parameter userId: The ID of the user to be deleted from Core Data
     func deleteUser(userId: String) {
         // Create a fetch request to find the user by id
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
@@ -133,7 +132,9 @@ struct CoreDataHelper {
         }
     }
     
-    // Save the image of the user profile
+    /// Save an image to the Documents directory
+    /// - Parameter image: The `UIImage` to be saved.
+    /// - Returns: The filename of the saved image, or `nil` if the save fails.
     func saveImageToDocuments(_ image: UIImage) -> String? {
         // Generates a unique filename for the image using a UUID
         let filename = UUID().uuidString + ".jpg"

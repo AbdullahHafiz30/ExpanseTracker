@@ -154,10 +154,6 @@ struct SignUpPage: View {
                 message: Text(alertManager.alertState.message),
                 dismissButton: .default(Text("OK"))
         )}
-        //cover the whole page with the log in page
-        .fullScreenCover(isPresented: $isLoggedIn) {
-            LogInPage(auth:auth)
-        }
         //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
@@ -171,6 +167,13 @@ struct SignUpPage: View {
                         EmptyView()
                     }
                 )
+        NavigationLink(
+            destination: LogInPage(auth:auth),
+                    isActive: $isLoggedIn,
+                    label: {
+                        EmptyView()
+                    }
+        )
     }
 }
 

@@ -12,6 +12,15 @@ import Combine
 class CategoryFunctionallityViewModel: ObservableObject {
     private let context = PersistanceController.shared.context
     
+    /// Saves a new category to Core Data and associates it with a specific user.
+    ///
+    /// This method creates a new `CategoryEntity` using the details provided in the `Category` model,
+    /// then links it to the corresponding `UserEntity` based on the given `userId`.
+    /// The category is added to the user's list of categories using the Core Data relationship.
+    ///
+    /// - Parameters:
+    ///   - category: A `Category` model instance containing the data to be saved.
+    ///   - userId: The unique identifier of the user to whom the category should be associated.
     func saveCategoryToCoreData(category: Category, userId: String) {
         print("save category to core data")
         
@@ -49,6 +58,22 @@ class CategoryFunctionallityViewModel: ObservableObject {
         }
     }
     
+    /// Checks if a category with the same name or color already exists for a user,
+    /// and validates the total budget limit.
+    ///
+    /// This method loops through all existing categories for the given user and checks:
+    /// - If there's another category with the same name.
+    /// - If there's another category with the same color.
+    /// - If the new category's budget is zero.
+    /// - If the total budget (including the new one) exceeds the user's allowed budget.
+    ///
+    /// - Parameters:
+    ///   - category: The `Category` object being checked.
+    ///   - userId: The ID of the user who owns the categories.
+    ///   - userBudget: The total budget limit allowed for the user.
+    /// - Returns: A tuple `(Bool, String)`:
+    ///   - `true` and a message if a conflict or validation error occurs.
+    ///   - `false` and empty string if all checks pass.
     func checkCategoryExist(category: Category, userId: String, userBudget: Double) -> (Bool , String) {
         print("Check if category exist")
         // Create a fetch request to find the user by id
@@ -105,7 +130,18 @@ class CategoryFunctionallityViewModel: ObservableObject {
         return (false, "")
     }
     
-    
+    /// Fetches a specific category from Core Data using its ID and the user's ID.
+    ///
+    /// This method performs the following:
+    /// - Retrieves the user by `userId`.
+    /// - Checks if the user has any associated categories.
+    /// - Searches the user's categories for a category with the given `categoryId`.
+    /// - If found, converts it into a `Category` model object.
+    ///
+    /// - Parameters:
+    ///   - categoryId: The ID of the category to fetch.
+    ///   - userId: The ID of the user who owns the category.
+    /// - Returns: A `Category` object if found, otherwise `nil`.
     func fetchCategoryFromCoreDataWithId(categoryId: String, userId: String) -> Category? {
         print("Fetching category with id: \(categoryId)")
         
@@ -149,6 +185,17 @@ class CategoryFunctionallityViewModel: ObservableObject {
         }
     }
     
+    /// Updates an existing category in Core Data for a specific user.
+    ///
+    /// This method:
+    /// - Retrieves the user using `userId`.
+    /// - Searches the user's categories for a category matching the `category.id`.
+    /// - Updates the matching `CategoryEntity` with the new values from the provided `Category` model.
+    /// - Saves the updated data back to Core Data.
+    ///
+    /// - Parameters:
+    ///   - category: A `Category` model containing the updated data.
+    ///   - userId: The ID of the user who owns the category.
     func saveEditedCategory(category: Category, userId: String) {
         // Create a fetch request to find the user by id
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
@@ -182,5 +229,4 @@ class CategoryFunctionallityViewModel: ObservableObject {
             print("❌ Failed to save context: \(error)")
         }
     }
-    
 }

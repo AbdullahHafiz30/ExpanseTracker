@@ -21,17 +21,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct YourApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var themeManager = ThemeManager()
-    
+    @StateObject var localizableManager = LanguageManager()
     // Add persistence controller
     let persistenceController = PersistanceController.shared
 
     var body: some Scene {
         WindowGroup {
             WelcomePage()
+                .environmentObject(localizableManager)
                 .environmentObject(themeManager)
                 .environmentObject(AlertManager.shared)
                 .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
                 .environment(\.managedObjectContext, PersistanceController.shared.context)
+                
         }
     }
 }
