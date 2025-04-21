@@ -361,7 +361,6 @@ struct Profile: View {
                                 }
                             }
                         }
-                    }
                     
                 } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
             }
