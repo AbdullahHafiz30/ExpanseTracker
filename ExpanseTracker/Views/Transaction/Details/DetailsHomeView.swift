@@ -22,30 +22,29 @@ struct DetailsHomeView: View {
             
             VStack(alignment: .leading) {
                 
-                // Amount
+                // MARK: - Amount Section
                 PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
                 
                 VStack(alignment: .leading, spacing: 25) {
                     
-                    // Title
+                    // MARK: - Title
                     CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
                     
-                    // Category
+                    // MARK: - Category
                     CustomText(text: transaction.category?.name ?? "No Category Selected", placeholder: "Category:")
                     
-                    // Date
+                    // MARK: - Date
                     CustomText(text: transaction.date ?? "No Date Set", placeholder: "Date:")
                     
-                    // Description
+                    // MARK: - Description
                     CustomText(text: transaction.desc ?? "No Description", placeholder: "Description:")
                     
-                    // Transaction Type
+                    // MARK: - Transaction Type
                     SelectedTransactionType(
                         themeManager: themeManager,
                         selectedType: TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
                     )
-                    
-                    // Receipt Image
+                    // MARK: - Receipt Image
                     ZStack{
                         RoundedRectangle(cornerRadius: 7)
                             .stroke(themeManager.textColor, lineWidth: 1)
@@ -62,7 +61,6 @@ struct DetailsHomeView: View {
                             }
                         }
                     }
-                    
                     
                     Spacer()
                 }

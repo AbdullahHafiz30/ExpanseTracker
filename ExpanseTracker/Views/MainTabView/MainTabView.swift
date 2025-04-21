@@ -20,7 +20,7 @@ struct MainTabView: View {
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                TransactionListView()
+                TransactionListView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
@@ -74,7 +74,7 @@ struct MainTabView: View {
             }
         }.navigationBarBackButtonHidden(true)
         .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction()
+            AddTransaction(userId: .constant(uid ?? ""))
         }
     }
 }

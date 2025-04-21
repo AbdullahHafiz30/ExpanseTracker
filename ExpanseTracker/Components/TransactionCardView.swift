@@ -10,8 +10,7 @@ import SwiftUI
 /// A card-style view that displays information about a single transaction.
 struct TransactionCardView: View {
     
-    @ObservedObject var transaction: TransacionsEntity
-    
+    @StateObject var transaction: TransacionsEntity
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
@@ -56,7 +55,6 @@ struct TransactionCardView: View {
                         .foregroundStyle(.blue)
                         .frame(width: 15, height: 15)
                         .padding(.leading, 100)
-                    
                 }
 
                 HStack{

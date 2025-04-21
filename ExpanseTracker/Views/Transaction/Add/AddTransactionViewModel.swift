@@ -28,8 +28,10 @@ class AddTransactionViewModel: ObservableObject {
          date: Date,
          type: TransactionType,
          selectedCategoryName: String,
-         imageData: Data?
+         imageData: Data?,
+         userId: String
      ) {
+
          let newTransaction = TransacionsEntity(context: context)
          newTransaction.id = UUID().uuidString
          newTransaction.title = title
@@ -46,13 +48,23 @@ class AddTransactionViewModel: ObservableObject {
              newTransaction.image = imageData.base64EncodedString()
          }
 
+         // Create a fetch request to find the user by id
+         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+         // Filter the results
+         userRequest.predicate = NSPredicate(format: "id == %@", userId)
+         
          let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
          fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
 
          do {
-             let results = try context.fetch(fetchRequest)
-             if let matchedCategory = results.first {
-                 newTransaction.category = matchedCategory
+             if let existingUserEntity = try context.fetch(userRequest).first {
+                 let results = try context.fetch(fetchRequest)
+                 if let matchedCategory = results.first {
+                     newTransaction.category = matchedCategory
+                 }
+                 
+                 existingUserEntity.addToTransaction(newTransaction)
+                 PersistanceController.shared.saveContext()
              }
          } catch {
              print("Error fetching category: \(error.localizedDescription)")
@@ -66,4 +78,3 @@ class AddTransactionViewModel: ObservableObject {
          }
      }
  }
-

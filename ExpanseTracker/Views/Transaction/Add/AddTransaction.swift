@@ -19,7 +19,7 @@ struct AddTransaction: View {
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
     @State private var selectedType: TransactionType = .income
-    
+    @Binding var userId: String
     //MARK: - View
     var body: some View {
         NavigationStack {
@@ -197,7 +197,8 @@ private extension AddTransaction {
                         date: date,
                         type: selectedType,
                         selectedCategoryName: selectedCategory,
-                        imageData: imageData
+                        imageData: imageData,
+                        userId: userId
                     )
                     dismiss()
                 }
