@@ -46,6 +46,7 @@ struct GraphsView: View {
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
                 .padding()
+                
             }
             
             Text("Selected: \(selectedTab == .monthly ? "\(Calendar.current.monthSymbols[selectedMonth]) \(selectedYear)" : "\(selectedYear)")")

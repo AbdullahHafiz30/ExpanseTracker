@@ -275,6 +275,7 @@ struct Profile: View {
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""
                         userPassword = user?.password ?? ""
+                        print("userpassword \(userPassword)")
                     }
                 }
                 // Fetch the Current Month Budget from Core Date using user id
@@ -344,23 +345,22 @@ struct Profile: View {
                 Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
                     isDeleting = true
                     //delete from firebase
-                    auth.deleteUserAccount(email: userEmail, password: userPassword){ result in
-                        switch result {
-                        case .success(let message):
-                            print(message)
-                            //delete from core helper
-                            CoreDataHelper().deleteUser(userId: userId)
+                        auth.deleteUserAccount(email: userEmail, password: userPassword) { result in
                             DispatchQueue.main.async {
-                                isDeleting = false
-                                backHome = true
-                            }
-                        case .failure(let error):
-                            print("Error deleting user: \(error.localizedDescription)")
-                            DispatchQueue.main.async {
-                                isDeleting = false
+                                switch result {
+                                case .success:
+                                    // Delete from CoreData
+                                    CoreDataHelper().deleteUser(userId: userId,password: userPassword)
+                                    // Reset app state
+                                    isDeleting = false
+                                    backHome = true
+                                    
+                                case .failure(_):
+                                    isDeleting = false
+                                    AlertManager.shared.showAlert(title: "Error", message: "Account deletion failed!")
+                                }
                             }
                         }
-                    }
                     
                 } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
             }

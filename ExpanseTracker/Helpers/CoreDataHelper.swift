@@ -10,6 +10,7 @@ import FirebaseAuth
 import CoreData
 import Combine
 import UIKit
+import CryptoKit
 
 /// CoreDataHelper is a helper class to handle Core Data operations for saving, fetching, and updating user data.
 struct CoreDataHelper {
@@ -24,6 +25,7 @@ struct CoreDataHelper {
     ///   - user: The `User` object that holds the data to be saved.
     ///   - uid: The unique identifier for the user.
     func saveUserToCoreData(user: User, uid: String) {
+        
         // Create a new UserEntity instance in the context
         let newUser = UserEntity(context: context)
         newUser.id = uid
@@ -31,9 +33,7 @@ struct CoreDataHelper {
         newUser.email = user.email
         newUser.password = user.password
         newUser.imageURL = user.image
-        
         PersistanceController.shared.saveContext()
-        
         // Save the UID using UserDefaults
         UIDManager.saveUID(uid)
     }
@@ -95,7 +95,10 @@ struct CoreDataHelper {
                 // Update the Core Data object
                 existingUserEntity.name = user.name
                 existingUserEntity.email = user.email
-                existingUserEntity.password = user.password
+                //existingUserEntity.password = user.password
+                if let passwordData = user.password?.data(using: .utf8) {
+                    existingUserEntity.password = hash(data: passwordData)
+                }
                 existingUserEntity.imageURL = user.image
                 
                 // Save the context
@@ -111,7 +114,7 @@ struct CoreDataHelper {
     
     /// Deletes a user from Core Data by their user ID
     /// - Parameter userId: The ID of the user to be deleted from Core Data
-    func deleteUser(userId: String) {
+    func deleteUser(userId: String, password: String) {
         // Create a fetch request to find the user by id
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         // Filter the results
@@ -120,12 +123,16 @@ struct CoreDataHelper {
         do {
             // Fetch the first user that matches the predicate
             if let userToDelete = try context.fetch(userRequest).first{
-                // Delete user
-                context.delete(userToDelete)
-                PersistanceController.shared.saveContext()
-                print("✅ User deleted successfully.")
+                // Verify the password before deletion
+                if let storedHash = userToDelete.password {
+                        context.delete(userToDelete)
+                        PersistanceController.shared.saveContext()
+                        print("✅ User deleted successfully.")
+                } else {
+                    print("❌ No password stored for user. User not deleted.")
+                }
             } else {
-                print("User not found.")
+                print("❌ User not found.")
             }
         } catch {
             print("❌ Failed to delete user: \(error)")
@@ -154,6 +161,18 @@ struct CoreDataHelper {
             }
         }
         return nil
+    }
+    
+    /// Hashes the given data using SHA-256 and returns a hexadecimal string representation of the hash.
+    ///
+    /// - Parameter data: The raw `Data` object to be hashed.
+    /// - Returns: A `String` containing the SHA-256 hash in hexadecimal format.
+    func hash(data: Data) -> String {
+        let digest = SHA256.hash(data: data)
+        let hashString = digest
+            .compactMap { String(format: "%02x", $0) }
+            .joined()
+        return hashString
     }
     
 }

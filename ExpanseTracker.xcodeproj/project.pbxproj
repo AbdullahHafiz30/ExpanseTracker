@@ -16,9 +16,22 @@
 		77B55ADF2D954B5000AE0374 /* ExpanseTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpanseTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9F712E152DB6292000D643C4 /* Exceptions for "ExpanseTracker" folder in "ExpanseTracker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 77B55ADE2D954B5000AE0374 /* ExpanseTracker */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		77B55AE12D954B5000AE0374 /* ExpanseTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9F712E152DB6292000D643C4 /* Exceptions for "ExpanseTracker" folder in "ExpanseTracker" target */,
+			);
 			path = ExpanseTracker;
 			sourceTree = "<group>";
 		};
@@ -282,6 +295,9 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ExpanseTracker/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Need camera access for the receipts.\"";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Need photo library access to select receipts.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +328,9 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ExpanseTracker/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Need camera access for the receipts.\"";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Need photo library access to select receipts.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
