@@ -36,7 +36,7 @@ struct MainTabView: View {
                 
                 Spacer()
                 
-                GraphsView()
+                GraphsView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "chart.bar.xaxis.ascending")
                         Text("Stats".localized(using: currentLanguage))

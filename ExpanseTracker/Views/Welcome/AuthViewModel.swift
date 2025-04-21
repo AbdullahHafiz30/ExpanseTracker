@@ -51,9 +51,15 @@ class AuthViewModel:ObservableObject {
             completion(false, "Invalid email")
             return
         }
-        
+        // Hash password
+        var hashPass = ""
+        if var passwordData = password.data(using: .utf8) {
+            hashPass = self.coreDataService.hash(data: passwordData)
+        } else {
+            print("❌ Failed to hash password.")
+        }
         isLoading = true
-        Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
+        Auth.auth().signIn(withEmail: email, password: hashPass) { [weak self] result, error in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -128,10 +134,16 @@ class AuthViewModel:ObservableObject {
             completion(false, "Weak password")
             return
         }
-        
+        // Hash password
+        var hashPass = ""
+        if var passwordData = password.data(using: .utf8) {
+            hashPass = self.coreDataService.hash(data: passwordData)
+        } else {
+            print("❌ Failed to hash password.")
+        }
         isLoading = true
         // Create user
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
+        Auth.auth().createUser(withEmail: email, password: hashPass) { [weak self] result, error in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -168,7 +180,7 @@ class AuthViewModel:ObservableObject {
     private func handleSuccessfulLogin(uid: String, completion: @escaping (Bool, String?) -> Void) {
         UIDManager.saveUID(uid)
         
-        fetchUserFromFirestore(uid: uid) { success in
+        fetchUserFromFirestore(uid: uid, password:"") { success in
             DispatchQueue.main.async {
                 if success {
                     self.isAuthenticated = true
@@ -196,13 +208,14 @@ class AuthViewModel:ObservableObject {
                 print("Error saving user data: \(error.localizedDescription)")
             } else {
                 print("User data saved to Firestore. Fetching to save in Core Data...")
-                self.fetchUserFromFirestore(uid: uid, completion: { _ in })
+                self.fetchUserFromFirestore(uid: uid, password:password, completion: { _ in })
             }
         }
     }
     
     /// Fetches user data from Firestore to store locally in Core Data.
-    func fetchUserFromFirestore(uid: String, completion: @escaping (Bool) -> Void) {
+    func fetchUserFromFirestore(uid: String, password:String, completion: @escaping (Bool) -> Void) {
+        var hashPass = ""
         let db = Firestore.firestore()
         db.collection("users").document(uid).getDocument { document, error in
             if let error = error {
@@ -218,20 +231,28 @@ class AuthViewModel:ObservableObject {
                 return
             }
             
+            if var passwordData = password.data(using: .utf8) {
+                hashPass = self.coreDataService.hash(data: passwordData)
+            } else {
+                print("❌ Failed to hash password.")
+            }
+            
             let name = data["name"] as? String ?? ""
             let email = data["email"] as? String ?? ""
             let user = User(
                 name: name,
                 email: email,
-                password: nil,
+                password: hashPass,
                 image: nil,
                 transactions: [],
                 budgets: [],
                 categories: []
             )
-            // Save to core data
-            self.coreDataService.saveUserToCoreData(user: user, uid: uid)
-            print("saved to the core data successfully .\(user)")
+            // Save to core data if user isnt already in core data
+            if self.coreDataService.fetchUserFromCoreData(uid: uid) == nil {
+                self.coreDataService.saveUserToCoreData(user: user, uid: uid)
+                print("saved to the core data successfully .\(user)")
+            }
             completion(true)
         }
     }

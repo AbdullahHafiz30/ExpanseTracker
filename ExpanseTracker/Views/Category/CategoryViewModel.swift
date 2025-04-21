@@ -40,7 +40,7 @@ class CategoryViewModel: ObservableObject {
                     color: entity.color ?? "",
                     icon: entity.icon ?? "",
                     categoryType: CategoryType(rawValue: entity.categoryType ?? "") ?? .other,
-                    budgetLimit: entity.budgetLimit ?? 0.0
+                    budgetLimit: entity.budgetLimit
                 )
             }
         } catch {
@@ -130,7 +130,7 @@ class CategoryViewModel: ObservableObject {
                     color: result.color ?? "",
                     icon: result.icon ?? "",
                     categoryType: CategoryType(rawValue: result.categoryType ?? "") ?? .other,
-                    budgetLimit: result.budgetLimit ?? 0.0
+                    budgetLimit: result.budgetLimit
                 )
             }
         } catch {

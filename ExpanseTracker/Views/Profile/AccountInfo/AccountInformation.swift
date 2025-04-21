@@ -20,6 +20,7 @@ struct AccountInformation: View {
     @State private var imageURL: URL? = nil
     @State private var imageData: Data? = nil
     @State private var isPasswordSecure: Bool = true
+    var coreViewModel = CoreDataHelper()
     var currentLanguage : String
     // MARK: - UI Design
     var body: some View {
@@ -62,26 +63,7 @@ struct AccountInformation: View {
                     
                     Divider()
                         .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
-                    
-//                    Text("Password")
-//                        .font(.system(size: 22, weight: .medium, design: .default))
-//                    
-//                    HStack{
-//                        Text(isPasswordSecure ? "**********" : password)
-//                            .foregroundColor(.secondary)
-//                        
-//                        Spacer()
-//                        
-//                        Button(action: {
-//                            isPasswordSecure.toggle()
-//                        }) {
-//                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
-//                                .foregroundColor(.gray)
-//                                .padding(.trailing, 16)
-//                        }
-//                    }
-//                    Divider()
-//                        .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
+
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)
@@ -107,11 +89,13 @@ struct AccountInformation: View {
             }.onAppear{
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
-                DispatchQueue.main.async {
-                    let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
+                    DispatchQueue.main.async {
                         name = user?.name ?? "Guest"
                         email = user?.email ?? ""
                         password = user?.password ?? ""
+                    }
                     
                     if let imageFilename = user?.image {
                         print("Saved image filename: \(imageFilename)")
@@ -133,6 +117,7 @@ struct AccountInformation: View {
                         }
                     }
                 }
+
             }
             .toolbar {
                 ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {

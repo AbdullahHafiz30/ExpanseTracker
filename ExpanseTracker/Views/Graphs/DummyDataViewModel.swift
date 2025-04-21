@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import CoreData
 
 class DummyDataViewModel: ObservableObject {
     
-    
+    private let context = PersistanceController.shared.context
     @Published var dummyData: [Transaction] = [
         Transaction(
             id: "1",
@@ -265,6 +266,40 @@ class DummyDataViewModel: ObservableObject {
                 budgetLimit: 900.00
             ),
             receiptImage: ""
+        ),
+        Transaction(
+            id: "16",
+            title: "ER Visit",
+            description: "Emergency room charges",
+            amount: 950.00,
+            date: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 8))!,
+            transactionType: .expense,
+            category: Category(
+                id: "5",
+                name: "Health",
+                color: "#FF3B30",
+                icon: "cross.case.fill",
+                categoryType: .emergency,
+                budgetLimit: 1200.00
+            ),
+            receiptImage: ""
+        ),
+        Transaction(
+            id: "17",
+            title: "Investment Return",
+            description: "Dividend from stocks",
+            amount: 1250.00,
+            date: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 15))!,
+            transactionType: .expense,
+            category: Category(
+                id: "10",
+                name: "Stocks",
+                color: "#007AFF",
+                icon: "chart.bar.xaxis",
+                categoryType: .other,
+                budgetLimit: 0.00
+            ),
+            receiptImage: ""
         )
     ]
     
@@ -378,19 +413,19 @@ class DummyDataViewModel: ObservableObject {
         selectedTab: DateTab,
         selectedType: CategoryType?,
         selectedMonth: Int,
-        selectedYear: Int) -> [Test] {
+        selectedYear: Int,
+        userId: String) -> [Test] {
             
             let cal = Calendar.current
-            
-            let catData = getType(array: dummyData, selectedType: selectedType)
-            
+
+            let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)
+
             if DateTab.yearly == selectedTab {
                 let data = catData.filter {
                     $0.transactionType == .expense && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
                 let filteredData = combineSameCategory(data)
-                
                 let filtData = combineSameType(filteredData)
                 
                 let test = getFinalArray(allSelect, filtData: filtData, filteredData: filteredData)
@@ -399,18 +434,49 @@ class DummyDataViewModel: ObservableObject {
                 
             } else {
                 let data = catData.filter {
-                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear
+                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
                 let filteredData = combineSameCategory(data)
-                
                 let filtData = combineSameType(filteredData)
-                
                 let test = getFinalArray(allSelect, filtData: filtData, filteredData: filteredData)
                 
                 return test
             }
         }
+    
+    func getUserTransactions(userId: String) -> [Transaction] {
+ 
+        let transaction = [] as [Transaction]
+        // Fetch user
+        let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
+        userRequest.predicate = NSPredicate(format: "id == %@", userId)
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        
+        do {
+            if let user = try context.fetch(userRequest).first,
+               let transactions = user.transaction?.allObjects as? [TransacionsEntity] {
+
+                return transactions.map {
+                    Transaction(
+                        id: $0.id ?? UUID().uuidString,
+                        title: $0.title ?? "",
+                        description: $0.desc,
+                        amount: $0.amount,
+                        date: formatter.date(from: $0.date ?? ""),
+                        transactionType: TransactionType(rawValue: $0.transactionType ?? ""),
+                        category: $0.category.map{ Category(from: $0) },
+                        receiptImage: $0.image ?? ""
+                    )
+                }
+            }
+        } catch {
+            print("Error fetching user: \(error)")
+        }
+        return transaction
+    }
 }
 
 
@@ -427,5 +493,6 @@ struct Test: Identifiable {
         self.number = number
         self.percentage = percentage
     }
+    
 }
 

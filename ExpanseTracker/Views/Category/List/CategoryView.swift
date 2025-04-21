@@ -5,40 +5,42 @@ struct CategoryView: View {
     @StateObject private var viewModel: CategoryViewModel
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
-    @Namespace private var animation 
+    @Namespace private var animation
     @Binding var userId: String
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
+
     init(userId: Binding<String>) {
-         self._userId = userId
-         _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
-     }
+        self._userId = userId
+        _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+    }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
                 HStack {
-                    Text("Categories")
-                        .foregroundColor(themeManager.textColor)
+                    Text("Categories".localized(using: currentLanguage))
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
                         .font(.custom("Poppins-Bold", size: 36))
                         .fontWeight(.bold)
                         .padding(.top , 20)
                         .padding(.leading , 20)
-                    
+
                     Spacer()
                     addButton
-                        .foregroundColor(themeManager.textColor)
                         .padding(.top, 20)
                         .padding(.trailing, 20)
                 }
-                
+
                 searchBarView
                 categoryTypeFilter
                 categoryList
-            }.onChange(of: userId) { newUserId in
+                
+            }.onChange(of: userId) { _ , newUserId in
                 viewModel.userId = newUserId
                 viewModel.loadCategories()
             }
-            .navigationTitle("Categories")
+            .navigationTitle("Categories".localized(using: currentLanguage))
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 viewModel.loadCategories()
@@ -55,22 +57,23 @@ struct CategoryView: View {
                         viewModel.loadCategories()
                     }
             }
-            .background(Color.white)
+            .background(colorScheme == .dark ? Color.black : Color.white) // Dynamic background
         }
-        .preferredColorScheme(.light)
     }
 
     // MARK: - Search Bar View
     private var searchBarView: some View {
-        SearchBar(searchText: $viewModel.searchText)
-            .background(Color.white)
-            .cornerRadius(12)
+        CategorySearchBar(searchText: $viewModel.searchText)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(colorScheme == .dark ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
+            )
     }
 
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
-            types: ["All"] + CategoryType.allCases.map { $0.rawValue },
+            types: ["All"] + CategoryType.allCases.map { $0.rawValue.localized(using: currentLanguage) },
             selectedType: $selectedType,
             selectedCategoryType: $viewModel.selectedType,
             animation: animation
@@ -93,7 +96,7 @@ struct CategoryView: View {
                             viewModel.deleteCategory(withId: id)
                         }
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label("Delete".localized(using: currentLanguage), systemImage: "trash")
                     }
                 }
                 .swipeActions(edge: .leading) {
@@ -101,11 +104,11 @@ struct CategoryView: View {
                         NavigationLink {
                             CategoryFunctionallity(id: id, userId: $userId, type: .constant("Edit"))
                         } label: {
-                            Label("Edit", systemImage: "pencil")
+                            Label("Edit".localized(using: currentLanguage), systemImage: "pencil")
                         }
                     }
                 }
-                .listRowBackground(Color.white)
+                .listRowBackground(colorScheme == .dark ? Color.black : Color.white) // Adaptive list row
                 .listRowSeparator(.hidden)
             }
         }
@@ -119,19 +122,21 @@ struct CategoryView: View {
             showingAddCategory = true
         } label: {
             Image(systemName: "plus")
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? .black : .white) // Adaptive icon color
                 .padding(12)
-                .background(Circle().fill(Color.black))
+                .background(Circle().fill(colorScheme == .dark ? Color.white : Color.accentColor)) // Adaptive circle color
         }
     }
 }
 
-// MARK: - Inline View to Handle Category Type Filter
+// MARK: - Category Type Filter View (Horizontal scroll)
 private struct CategoryTypeFilterView: View {
     let types: [String]
     @Binding var selectedType: String
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -152,16 +157,13 @@ private struct CategoryTypeFilterView: View {
                             }
                         }
                     )
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(colorScheme == .dark ? Color.white.opacity(0.6) : Color.black.opacity(0.05)) // Adaptive background
+                    )
                 }
             }
             .padding(.horizontal)
         }
-    }
-}
-
-struct CategoryView_Previews: PreviewProvider {
-    static var previews: some View {
-        CategoryView(userId: .constant("preview-user-id"))
-            .environmentObject(ThemeManager())
     }
 }
