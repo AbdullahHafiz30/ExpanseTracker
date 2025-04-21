@@ -47,7 +47,7 @@ struct AddTransaction: View {
                 }
             }.toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    CustomBackward(title: "Addtransaction".localized(using: currentLanguage)) {
+                    CustomBackward(title: "AddTransaction".localized(using: currentLanguage)) {
          dismiss()
                     }
                 }

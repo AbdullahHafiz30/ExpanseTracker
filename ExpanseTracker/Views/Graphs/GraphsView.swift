@@ -17,7 +17,7 @@ struct GraphsView: View {
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
-
+    @Binding var userId: String
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -39,8 +39,8 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(0).padding()
-                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1).padding()
+                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(0).padding()
+                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(1).padding()
                     LineView().tag(2)
                 })
                 .background(Color.gray.opacity(0.1))

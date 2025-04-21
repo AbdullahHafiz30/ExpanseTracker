@@ -14,7 +14,7 @@ struct MainTabView: View {
     @State private var showAddTransactionView: Bool = false
     @ObservedObject var auth: AuthViewModel
     @State private var userId: String = ""
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     // Get UID from user default
         var uid: String? {
            UIDManager.loadUID()
@@ -25,27 +25,27 @@ struct MainTabView: View {
                 TransactionListView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "house")
-                        Text("Home")
+                        Text("Home".localized(using: currentLanguage))
                     }.tag(0)
                 
                 CategoryView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "doc.on.doc")
-                        Text("Categories")
+                        Text("Categories".localized(using: currentLanguage))
                     }.tag(1)
                 
                 Spacer()
                 
-                GraphsView()
+                GraphsView(userId: .constant(uid ?? ""))
                     .tabItem {
                         Image(systemName: "chart.bar.xaxis.ascending")
-                        Text("Stats")
+                        Text("Stats".localized(using: currentLanguage))
                     }.tag(2)
 
                 Profile(userId: .constant(uid ?? "") ,auth:auth)
                     .tabItem {
                         Image(systemName: "person.crop.circle")
-                        Text("Profile")
+                        Text("Profile".localized(using: currentLanguage))
                     }.tag(3)
             }
             .padding(.horizontal,10)
@@ -78,5 +78,6 @@ struct MainTabView: View {
         .fullScreenCover(isPresented: $showAddTransactionView) {
             AddTransaction(userId: .constant(uid ?? ""))
         }
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }

@@ -16,7 +16,7 @@ struct BarView: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
-    
+    @Binding var userId: String
     var body: some View {
         
         VStack {
@@ -25,7 +25,8 @@ struct BarView: View {
                 selectedTab: selectedTab,
                 selectedType: selectedType,
                 selectedMonth: selectedMonth,
-                selectedYear: selectedYear)) {
+                selectedYear: selectedYear,
+                userId: userId)) {
                 BarMark(
                     x: .value("category", $0.text),
                     y: .value("expense", $0.number)

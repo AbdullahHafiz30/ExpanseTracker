@@ -13,6 +13,8 @@ import SwiftUI
 struct SearchBar: View {
     
     @Binding var searchText: String
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     
     var body: some View {
         HStack {
@@ -21,7 +23,8 @@ struct SearchBar: View {
                 .foregroundColor(.gray)
             
             // MARK: - Search Input Field
-            TextField("Search for a transaction...", text: $searchText)
+            // TextField for user input
+            TextField("SearchFor".localized(using: currentLanguage), text: $searchText)
                 .font(.footnote)
                 .foregroundColor(.primary)
         }

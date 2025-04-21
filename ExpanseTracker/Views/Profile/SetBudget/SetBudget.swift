@@ -64,21 +64,21 @@ struct SetBudget: View {
                             showRepeatAlert = true
                         }
                     } else {
-                        budgetError = "Invalid number format."
+                        budgetError = "InvalidNumberFormat".localized(using: currentLanguage)
                     }
                 })
                 .padding(.bottom, 20)
             }
             .padding()
         }
-        .alert("Do you want to set this budget as repeated?", isPresented: $showRepeatAlert) {
-            Button("yes") {
+        .alert("BudgetAsRepeated".localized(using: currentLanguage), isPresented: $showRepeatAlert) {
+            Button("yes".localized(using: currentLanguage)) {
                
                 budgetViewModel.createBudget(repeated: true, userId: userId, budget: budget)
                 isPresented = false
             }
             
-            Button("no") {
+            Button("no".localized(using: currentLanguage)) {
                 
                 budgetViewModel.createBudget(repeated: false, userId: userId, budget: budget)
                 isPresented = false

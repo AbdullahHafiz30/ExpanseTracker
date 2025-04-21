@@ -165,8 +165,8 @@ struct Profile: View {
                                         NotificationManager.shared.requestPermission { granted in
                                             if granted {
                                                 NotificationManager.shared.scheduleNotification(
-                                                    title: "It's a new month 😍!",
-                                                    body: "What is your plan for this month? Has your budget changed 💸😉?"
+                                                    title: "NewMonth".localized(using: currentLanguage),
+                                                    body: "MonthPaln".localized(using: currentLanguage)
                                                 )
                                             } else {
                                                 notificationsEnabled = false
@@ -269,7 +269,7 @@ struct Profile: View {
             .onAppear{
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .userInitiated).async {
                     let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
                     DispatchQueue.main.async {
                         userName = user?.name ?? "Guest"
@@ -313,32 +313,16 @@ struct Profile: View {
             }
             .alert(isPresented: $showSettingsAlert) {
                 Alert(
-                    title: Text("Notifications Disabled"),
-                    message: Text("To receive reminders, please enable notifications in Settings."),
-                    primaryButton: .default(Text("Open Settings")) {
+                    title: Text("NotificationsDisabled".localized(using: currentLanguage)),
+                    message: Text("NotificationSettings".localized(using: currentLanguage)),
+                    primaryButton: .default(Text("OpenSettings".localized(using: currentLanguage))) {
                         if let appSettings = URL(string: UIApplication.openSettingsURLString),
                            UIApplication.shared.canOpenURL(appSettings) {
                             UIApplication.shared.open(appSettings)
                         }
                     },
-                    secondaryButton: .cancel(Text("Cancel"))
+                    secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage)))
                 )
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
-                    //delete from firebase
-                    AuthViewModel().deleteUserAccount(email: userEmail, password: userPassword){ result in
-                        switch result {
-                        case .success(let message):
-                            print(message)
-                            //delete from core helper
-                            CoreDataHelper().deleteUser(userId: userId)
-                            backHome = true
-                        case .failure(let error):
-                            print("Error deleting user: \(error.localizedDescription)")
-                        }
-                    }
-                } , secondaryButton: .cancel())
             }
             .onChange(of: isPresented) { oldValue, newValue in
                 if !newValue {
@@ -357,7 +341,7 @@ struct Profile: View {
                 presentationMode.wrappedValue.dismiss()
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Are you sure?"), message: Text("Deleting your account will erase all your data."), primaryButton: .destructive(Text("Delete")) {
+                Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
                     isDeleting = true
                     //delete from firebase
                     auth.deleteUserAccount(email: userEmail, password: userPassword){ result in
@@ -378,10 +362,10 @@ struct Profile: View {
                         }
                     }
                     
-                } , secondaryButton: .cancel())
+                } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
             }
             if isDeleting {
-                ProgressView("Deleting...")
+                ProgressView("Deleting".localized(using: currentLanguage))
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
@@ -391,7 +375,6 @@ struct Profile: View {
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
         }
-        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }
 

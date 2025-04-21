@@ -11,7 +11,7 @@ import Combine
 
 class CategoryFunctionallityViewModel: ObservableObject {
     private let context = PersistanceController.shared.context
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     /// Saves a new category to Core Data and associates it with a specific user.
     ///
     /// This method creates a new `CategoryEntity` using the details provided in the `Category` model,
@@ -101,23 +101,23 @@ class CategoryFunctionallityViewModel: ObservableObject {
                     
                     if existingCategory.name == category.name {
                         print("Category already exist")
-                        return (true, "Category already exist")
+                        return (true, "CategoryExist".localized(using: currentLanguage))
                     }
                     
                     if existingCategory.color == category.color {
                         print("Color already exist")
-                        return (true, "Color already exist")
+                        return (true, "ColorExist".localized(using: currentLanguage))
                     }
                     
                     if category.budgetLimit == 0.0 {
                         print("Budget limit cannot be zero")
-                        return (true, "Budget limit cannot be zero")
+                        return (true, "BudgetLimitZero".localized(using: currentLanguage))
                     }
                 }
                 
                 if budgetLimit > Int(userBudget) {
                     print("You have exceeded your budget limit")
-                    return (true, "You have exceeded your budget limit")
+                    return (true, "ExceededBudgetLimit".localized(using: currentLanguage))
                 }
                 return (false, "")
             }
