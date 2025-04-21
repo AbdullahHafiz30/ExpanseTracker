@@ -20,22 +20,54 @@ final class TransactionViewModel: ObservableObject {
     @Published var startDate: Date = TimeFilter.monthly.startDate(from: Date())
     @Published var endDate: Date = Date()
     @Published var transactions: [TransacionsEntity] = []
-
-
+    @Published var selectedFilter: TimeFilter = .daily
 
     // MARK: - Transaction Filtering Logic
         
     /// Filters the provided transactions based on the current search text and selected transaction type.
     /// - Parameter transactions: A list of all transactions.
     /// - Returns: A filtered array of TransacionsEntity matching the current filters.
-    func filteredTransactions(_ transactions: FetchedResults<TransacionsEntity>) -> [TransacionsEntity] {
-        transactions.filter { transaction in
+    
+    func filteredTransactions(_ transactions: FetchedResults<TransacionsEntity>, filter: TimeFilter) -> [TransacionsEntity] {
+        
+        let calendar = Calendar.current
+
+        return transactions.filter { transaction in
+            
+            // Match title search
             let matchesSearch = searchText.isEmpty || (transaction.title?.localizedCaseInsensitiveContains(searchText) ?? false)
+            
+            // Match type
             let matchesType = transaction.transactionType == selectedType.rawValue
-            return matchesSearch && matchesType
+            
+            // Match time filter
+            guard let dateString = transaction.date,
+                  let transactionDate = parseDate(from: dateString) else {
+                return false
+            }
+
+            let matchesDate: Bool
+            switch filter {
+            case .daily:
+                matchesDate = calendar.isDate(transactionDate, inSameDayAs: Date())
+            case .weekly:
+                matchesDate = calendar.isDate(transactionDate, equalTo: Date(), toGranularity: .weekOfYear)
+            case .monthly:
+                matchesDate = calendar.isDate(transactionDate, equalTo: Date(), toGranularity: .month)
+            case .yearly:
+                matchesDate = calendar.isDate(transactionDate, equalTo: Date(), toGranularity: .year)
+            }
+
+            return matchesSearch && matchesType && matchesDate
         }
     }
-    
+
+    private func parseDate(from string: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy" 
+        return formatter.date(from: string)
+    }
+
     // MARK: - Total Amount
         
         /// Calculates the total sum of amounts for a given transaction type.
@@ -64,21 +96,8 @@ final class TransactionViewModel: ObservableObject {
         }
     }
     
-//    func fetchTransactions() {
-//        let fetchRequest: NSFetchRequest<TransacionsEntity> = TransacionsEntity.fetchRequest()
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: true)]
-//            
-//            do {
-//                let batch = try context.fetch(fetchRequest)
-//                for transaction in batch {
-//                    print("Loaded transaction: \(transaction.date ?? "Unknown")")
-//                }
-//                transactions.append(contentsOf: batch)
-//            } catch {
-//                print("Error fetching transactions: \(error)")
-//            }
-//        }
 }
+
 
 
 
