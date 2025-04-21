@@ -31,6 +31,8 @@ struct Profile: View {
     @State private var selectedLanguageIndex: Int = 0
     @Environment(\.presentationMode) var presentationMode
     @State private var isDeleting: Bool = false
+    var coreViewModel = CoreDataHelper()
+    @State var user: User? = nil
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -110,7 +112,7 @@ struct Profile: View {
                     ScrollView{
                         Section {
                             HStack {
-                                NavigationLink(destination: AccountInformation(userId: $userId, currentLanguage: currentLanguage)) {
+                                NavigationLink(destination: AccountInformation(userId: $userId, user: user ?? nil , currentLanguage: currentLanguage)) {
                                     Image(systemName: "gearshape")
                                     Text("AccountInformation".localized(using: currentLanguage))
                                     
@@ -270,12 +272,11 @@ struct Profile: View {
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
                 DispatchQueue.global(qos: .userInitiated).async {
-                    let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                    user = coreViewModel.fetchUserFromCoreData(uid: userId)
                     DispatchQueue.main.async {
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""
                         userPassword = user?.password ?? ""
-                        print("userpassword \(userPassword)")
                     }
                 }
                 // Fetch the Current Month Budget from Core Date using user id
