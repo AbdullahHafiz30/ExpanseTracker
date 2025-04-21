@@ -158,10 +158,3 @@ private struct CategoryTypeFilterView: View {
         }
     }
 }
-
-struct CategoryView_Previews: PreviewProvider {
-    static var previews: some View {
-        CategoryView(userId: .constant("preview-user-id"))
-            .environmentObject(ThemeManager())
-    }
-}
