@@ -121,6 +121,7 @@ struct CategoryFunctionallity: View {
                                         .onTapGesture {
                                             withAnimation {
                                                 categoryType = type
+                                                print(categoryType)
                                             }
                                         }
                                 }
@@ -169,12 +170,12 @@ struct CategoryFunctionallity: View {
                 CustomButton(title: type == "Add" ? "Add".localized(using: currentLanguage) : "Save".localized(using: currentLanguage), action: {
                     
                     guard userBudget != 0.0 else {
-                        AlertManager.shared.showAlert(title: "Error", message: "You need to set your budget first!")
+                        AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: "SetYourBudget".localized(using: currentLanguage))
                         return
                     }
                     
                     guard !categoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                        AlertManager.shared.showAlert(title: "Error", message: "Category name is required!")
+                        AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: "CategoryNameRequired".localized(using: currentLanguage))
                         return
                     }
                     
@@ -191,7 +192,7 @@ struct CategoryFunctionallity: View {
                     let (isExist, message) = categoryViewModel.checkCategoryExist(category: category, userId: userId, userBudget: userBudget)
                     
                     if isExist {
-                        AlertManager.shared.showAlert(title: "Error", message: message)
+                        AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: message)
                     } else {
                         if type == "Add" {
                             categoryViewModel.saveCategoryToCoreData(category: category, userId: userId)
@@ -242,7 +243,7 @@ struct CategoryFunctionallity: View {
                 Alert(
                     title: Text(alertManager.alertState.title),
                     message: Text(alertManager.alertState.message),
-                    dismissButton: .default(Text("OK")))
+                    dismissButton: .default(Text("OK".localized(using: currentLanguage))))
             }
         }
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)

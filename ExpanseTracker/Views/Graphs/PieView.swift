@@ -16,6 +16,7 @@ struct PieView: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
+    @Binding var userId: String
     
     var body: some View {
         
@@ -24,8 +25,9 @@ struct PieView: View {
             selectedTab: selectedTab,
             selectedType: selectedType,
             selectedMonth: selectedMonth,
-            selectedYear: selectedYear)
-        
+            selectedYear: selectedYear,
+            userId: userId)
+   
         VStack {
             Chart(chartData) { data in
                 SectorMark(
@@ -43,7 +45,6 @@ struct PieView: View {
                 
                 
             }
-            
             VStack {
                 ForEach(chartData) { item in
                     Text(String(item.percentage))

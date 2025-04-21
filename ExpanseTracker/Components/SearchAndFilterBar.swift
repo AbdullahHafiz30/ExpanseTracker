@@ -11,6 +11,8 @@ import SwiftUI
 struct SearchBar: View {
     
     @Binding var searchText: String
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     
     var body: some View {
         
@@ -19,7 +21,7 @@ struct SearchBar: View {
             Image(systemName: "magnifyingglass")
             
             // TextField for user input
-            TextField("Search for a transaction...", text: $searchText)
+            TextField("SearchFor".localized(using: currentLanguage), text: $searchText)
                 .font(.footnote)
         }
         .padding(.horizontal)

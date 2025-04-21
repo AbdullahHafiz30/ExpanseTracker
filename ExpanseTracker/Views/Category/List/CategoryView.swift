@@ -7,6 +7,7 @@ struct CategoryView: View {
     @State private var selectedType: String = "All"
     @Namespace private var animation 
     @Binding var userId: String
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     init(userId: Binding<String>) {
          self._userId = userId
@@ -17,7 +18,7 @@ struct CategoryView: View {
         NavigationStack {
             VStack(spacing: 16) {
                 HStack {
-                    Text("Categories")
+                    Text("Categories".localized(using: currentLanguage))
                         .foregroundColor(themeManager.textColor)
                         .font(.custom("Poppins-Bold", size: 36))
                         .fontWeight(.bold)
@@ -34,11 +35,11 @@ struct CategoryView: View {
                 searchBarView
                 categoryTypeFilter
                 categoryList
-            }.onChange(of: userId) { newUserId in
+            }.onChange(of: userId) { _ , newUserId in
                 viewModel.userId = newUserId
                 viewModel.loadCategories()
             }
-            .navigationTitle("Categories")
+            .navigationTitle("Categories".localized(using: currentLanguage))
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 viewModel.loadCategories()
@@ -70,7 +71,7 @@ struct CategoryView: View {
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
-            types: ["All"] + CategoryType.allCases.map { $0.rawValue },
+            types: ["All"] + CategoryType.allCases.map { $0.rawValue.localized(using: currentLanguage) },
             selectedType: $selectedType,
             selectedCategoryType: $viewModel.selectedType,
             animation: animation
@@ -93,7 +94,7 @@ struct CategoryView: View {
                             viewModel.deleteCategory(withId: id)
                         }
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label("Delete".localized(using: currentLanguage), systemImage: "trash")
                     }
                 }
                 .swipeActions(edge: .leading) {
@@ -101,7 +102,7 @@ struct CategoryView: View {
                         NavigationLink {
                             CategoryFunctionallity(id: id, userId: $userId, type: .constant("Edit"))
                         } label: {
-                            Label("Edit", systemImage: "pencil")
+                            Label("Edit".localized(using: currentLanguage), systemImage: "pencil")
                         }
                     }
                 }
@@ -132,7 +133,8 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedType: String
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
-
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {

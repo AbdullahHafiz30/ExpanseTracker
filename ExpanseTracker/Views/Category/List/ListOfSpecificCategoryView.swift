@@ -15,7 +15,8 @@ struct ListOfSpecificCategoryView: View {
 
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
     @FetchRequest private var transactions: FetchedResults<TransacionsEntity>
-
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     // Custom initializer to apply the predicate based on the selected category name
     init(categoryName: String) {
         self.categoryName = categoryName
@@ -41,7 +42,7 @@ struct ListOfSpecificCategoryView: View {
             if transactions.isEmpty {
                 // Display message when no transactions are found
                 Spacer()
-                Text("No transactions available for this category.")
+                Text("NoTransaction".localized(using: currentLanguage))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .center)
                 Spacer()
@@ -88,11 +89,14 @@ struct ListOfSpecificCategoryView: View {
                         }
                         .padding(.vertical, 8)
                     }
+                    
                 }
+                .scrollContentBackground(.hidden)
                 .listStyle(.insetGrouped)
             }
         }
         .padding()
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         .navigationBarBackButtonHidden(true)
         //.navigationTitle("\(categoryName)")
         .navigationBarTitleDisplayMode(.inline)

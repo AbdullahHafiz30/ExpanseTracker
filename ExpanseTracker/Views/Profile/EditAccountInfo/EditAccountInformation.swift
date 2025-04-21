@@ -77,27 +77,6 @@ struct EditAccountInformation: View {
                     CustomTextField(placeholder: "", text: $userEmail, isSecure: .constant(false))
                         .disabled(true)
                     
-                    
-//                    Text("Password")
-//                        .font(.system(size: 22, weight: .medium, design: .default))
-//                    
-//                    ZStack(alignment: .trailing) {
-//                        CustomTextField(
-//                            placeholder: "123456789",
-//                            text: $userPassword,
-//                            isSecure: $isPasswordSecure
-//                        )
-//                        .disabled(true)
-//                        
-//                        Button(action: {
-//                            isPasswordSecure.toggle()
-//                        }) {
-//                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
-//                                .foregroundColor(.gray)
-//                                .padding(.trailing, 16)
-//                        }
-//                    }
-                    
                 }
                 .font(.system(size: 18, weight: .bold, design: .default))
                 .frame(maxWidth:.infinity ,alignment: .leading)
@@ -107,8 +86,8 @@ struct EditAccountInformation: View {
                 // MARK: - Save edited account information button
                 CustomButton(title: "Save".localized(using: currentLanguage), action: {
                     guard !userName.trimmingCharacters(in: .whitespaces).isEmpty else {
-                        let message = "Name is required"
-                        AlertManager.shared.showAlert(title: "Error", message: message)
+                        let message = "NameRequired".localized(using: currentLanguage)
+                        AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: message)
                         return
                     }
                     
@@ -179,7 +158,7 @@ struct EditAccountInformation: View {
                 Alert(
                     title: Text(alertManager.alertState.title),
                     message: Text(alertManager.alertState.message),
-                    dismissButton: .default(Text("OK")))
+                    dismissButton: .default(Text("OK".localized(using: currentLanguage))))
             }
             .navigationBarBackButtonHidden(true)
         }
