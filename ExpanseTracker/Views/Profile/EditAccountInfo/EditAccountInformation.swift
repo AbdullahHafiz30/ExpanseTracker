@@ -22,6 +22,7 @@ struct EditAccountInformation: View {
     @State private var selectedPhoto: PhotosPickerItem? = nil
     @State private var imageURL: URL? = nil
     @Binding var userId: String
+    @State var oldUserName: String = ""
     @State private var isPasswordSecure: Bool = true
     @StateObject private var alertManager = AlertManager.shared
     @StateObject var editViewModel = EditAccountInformationViewModel()
@@ -105,7 +106,7 @@ struct EditAccountInformation: View {
                     
                     CoreDataHelper().saveEditedUser(user: user)
                     dismiss()
-                })
+                }).disabled(!isUserModified)
                 .padding(.bottom, 20)
                 
                 Spacer()
@@ -149,6 +150,7 @@ struct EditAccountInformation: View {
                 let userData = editViewModel.loadUserData(userId: userId)
                 
                 userName = userData.0
+                oldUserName = userData.0
                 userEmail = userData.1
                 userPassword = userData.2
                 self.imageData = userData.3
@@ -163,5 +165,10 @@ struct EditAccountInformation: View {
             .navigationBarBackButtonHidden(true)
         }
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
+    }
+    var isUserModified: Bool {
+        print("=================\(userName != oldUserName)")
+        return userName != oldUserName
+        
     }
 }
