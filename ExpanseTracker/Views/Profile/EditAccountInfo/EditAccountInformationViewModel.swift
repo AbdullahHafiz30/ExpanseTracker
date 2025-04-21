@@ -10,7 +10,7 @@ import CoreData
 import Combine
 
 class EditAccountInformationViewModel: ObservableObject {
-    
+    var coreViewModel = CoreDataHelper()
     /// Loads the user data from Core Data and retrieves the associated profile image.
     ///
     /// This method fetches a user's name, email, password, and profile image data based on the provided user ID.
@@ -26,7 +26,7 @@ class EditAccountInformationViewModel: ObservableObject {
     ///   - `imageURL`: The URL of the saved profile image, or `nil` if no image is found.
     func loadUserData(userId: String) -> (String, String, String, Data, URL?){
         // Fetch the user from Core Date using user id
-        let userInfo = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+        let userInfo = coreViewModel.fetchUserFromCoreData(uid: userId)
         
         // Assign its properties to local state variables
         let userName = userInfo?.name ?? ""
