@@ -42,36 +42,24 @@ struct PieView: View {
                         data.text
                     )
                 )
-                
-                
-            }
+            }.chartLegend(.hidden)
+
             VStack {
                 ForEach(chartData) { item in
-                    Text(String(item.percentage))
+                    HStack {
+//                        Circle()
+//                            .fill(Color(hex: item.color))
+//                            .frame(width: 12, height: 12)
+                        
+                        Text(item.text)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        Text(String(format: "%.0f%%", item.percentage))
+                    }
                 }
             }
-            //                .chartLegend(position: .bottom) {
-            //                    ScrollView(.horizontal) {
-            //                        VStack {
-            //                            ForEach(viewModel.getData(
-            //                                allSelect: allSelect,
-            //                                selectedTab: selectedTab,
-            //                                selectedType: selectedType,
-            //                                selectedMonth: selectedMonth,
-            //                                selectedYear: selectedYear)) { data in
-            //                                VStack {
-            //                                    BasicChartSymbolShape.circle
-            //                                        .foregroundColor(colorFor(data.text: symbol))
-            //                                        .frame(width: 8, height: 8)
-            //                                    Text(symbol)
-            //                                        .foregroundColor(.gray)
-            //                                        .font(.caption)
-            //                                }
-            //                            }
-            //                        }
-            //                        .padding()
-            //                    }
-            //                }
         }
     }
 }

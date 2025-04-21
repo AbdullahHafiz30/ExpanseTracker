@@ -21,7 +21,9 @@ final class EditTransactionViewModel: ObservableObject {
     @Published var editedType: TransactionType = .income
     @Published var selectedImage: PhotosPickerItem? = nil
     @Published var imageData: Data?
-
+    @Published var categories: [CategoryEntity] = []
+    let context = PersistanceController.shared.context
+    
     // MARK: - Initialization from Existing Entity
     
     // Initializes the editable fields from an existing transaction.
@@ -47,6 +49,17 @@ final class EditTransactionViewModel: ObservableObject {
             imageData = data
         }
     }
+    
+    func fetchCategories() {
+        let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)]
+        
+        do {
+            categories = try context.fetch(request)
+        } catch {
+            print("Failed to fetch categories: \(error.localizedDescription)")
+        }
+    }
 
     // MARK: - Edit Transaction
     
@@ -55,38 +68,34 @@ final class EditTransactionViewModel: ObservableObject {
         ///   - transaction: The Core Data entity to edit.
         ///   - viewContext: The current Core Data managed object context.
         ///   - dismiss: A closure to dismiss the editing view after saving.
-    func editTransaction(_ transaction: TransacionsEntity, viewContext: NSManagedObjectContext, dismiss: @escaping () -> Void) {
-        transaction.title = editedTitle
-        transaction.desc = editedDescription
-        transaction.amount = editedAmount
-        
-        // Format and assign the edited date as a string
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        transaction.date = formatter.string(from: editedDate)
+    func editTransaction(_ entity: TransacionsEntity, updated: Transaction) {
+        entity.title = updated.title ?? ""
+        entity.desc = updated.description ?? ""
+        entity.amount = updated.amount ?? 0.0
 
-        transaction.transactionType = editedType.rawValue
-
-        // Convert and assign image data if available
-        if let imageData = imageData {
-            transaction.image = imageData.base64EncodedString()
+        if let date = updated.date {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd MMM yyyy"
+            entity.date = formatter.string(from: date)
         }
 
-        // Fetch the CategoryEntity that matches the edited category name
-        let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "name == %@", editedCategoryName)
-        do {
-            let results = try viewContext.fetch(fetchRequest)
-            if let matchedCategory = results.first {
-                transaction.category = matchedCategory
+        entity.transactionType = updated.transactionType?.rawValue ?? ""
+
+        if let image = updated.receiptImage {
+            entity.image = image
+        }
+
+        if let categoryName = updated.category?.name {
+            let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+            categoryRequest.predicate = NSPredicate(format: "name == %@", categoryName)
+
+            if let matchedCategory = try? context.fetch(categoryRequest).first {
+                entity.category = matchedCategory
             }
-        } catch {
-            print("Error fetching category: \(error.localizedDescription)")
         }
-        
-        // Save context and dismiss view
+
         PersistanceController.shared.saveContext()
-        dismiss()
+        print("Transaction updated.")
     }
 
 }
