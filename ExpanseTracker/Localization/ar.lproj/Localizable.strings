@@ -34,6 +34,7 @@
 "Entertainment" = "ترفية";
 "Emergency" = "طارئ";
 "Other" = "اخرى";
+"All" = "الكل";
 "SetBudget" = "حدد الميزانية";
 "EditAccountInformation" = "تعديل معلومات الحساب";
 "AddTransaction" = "اضافة معاملة";
@@ -43,6 +44,23 @@
 "Transactiontype" = "نوع المعاملة:";
 "Income" = "ايرادات";
 "Expense" = "مصروفات";
+
+
+"TitleD" = "العنوان:";
+"CategoryD" = "التصنيف:";
+"DateD" = "التاديخ:";
+"DescriptionD" = "الوصف:";
+"TransactionDetails" = "تفاصيل المعاملة";
+"HowMuch" = "كم الثمن؟";
+"EditTransaction" = "تعديل للمعاملة";
+"ReceiptImage" = "صورة الإيصال";
+"Welcome" = "مرحبا!";
+"Daily" = "يومي";
+"Weekly" = "أسبوعي";
+"Monthly" = "شهري";
+"Yearly" = "سنوي";
+
+
 "SetYourBudget" = "يجب عليك تحديد ميزانيتك أولاً!";
 "CategoryNameRequired" = "اسم التصنيف مطلوب!";
 "Error" = "خطأ";
@@ -66,9 +84,16 @@
 "DeleteAccountMessage" = "سيؤدي حذف حسابك إلى مسح جميع بياناتك.";
 "Delete" = "حذف";
 "Deleting" = "جاري الحذف...";
+
 "Home" = "الصفحة الرئيسية";
 "Categories" = "التصنيفات";
 "Stats" = "إحصائيات";
 "Profile" = "الملف الشخصي";
+
+
+
+
+
 "NoTransaction" = "لا توجد معاملات متاحة لهذه الفئة.";
 "SearchFor" = "ابحث عن ...";
+

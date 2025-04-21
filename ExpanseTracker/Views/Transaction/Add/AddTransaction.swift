@@ -25,7 +25,7 @@ struct AddTransaction: View {
     init(userId: Binding<String>) {
             self._userId = userId
             _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
-        }
+    }
     
     //MARK: - View
     var body: some View {
@@ -131,7 +131,7 @@ private extension AddTransaction {
                         CustomTextField(placeholder: "Description".localized(using: currentLanguage), text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         // Image picker
-                        ImagePickerField(imageData: $imageData, image: "")
+                        ImagePickerField(imageData: $imageData, image: "", currentLanguage: currentLanguage)
                             .environmentObject(themeManager)
                         // Type selector
                         transactionTypeSelector

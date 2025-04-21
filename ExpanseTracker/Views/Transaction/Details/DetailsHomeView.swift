@@ -15,6 +15,7 @@ struct DetailsHomeView: View {
     @Environment(\.dismiss) var dismiss
     
     let transaction: TransacionsEntity
+    var currentLanguage: String
     
     var body: some View {
         
@@ -23,26 +24,26 @@ struct DetailsHomeView: View {
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Section
-                PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
+                PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager, currentLanguage: currentLanguage)
                 
                 VStack(alignment: .leading, spacing: 25) {
                     
                     // MARK: - Title
-                    CustomText(text: transaction.title ?? "No Title", placeholder: "Title:")
+                    CustomText(text: transaction.title ?? "No Title", placeholder: "TitleD".localized(using: currentLanguage))
                     
                     // MARK: - Category
-                    CustomText(text: transaction.category?.name ?? "No Category Selected", placeholder: "Category:")
+                    CustomText(text: transaction.category?.name ?? "No Category Selected", placeholder: "CategoryD".localized(using: currentLanguage))
                     
                     // MARK: - Date
-                    CustomText(text: transaction.date ?? "No Date Set", placeholder: "Date:")
+                    CustomText(text: transaction.date ?? "No Date Set", placeholder: "DateD".localized(using: currentLanguage))
                     
                     // MARK: - Description
-                    CustomText(text: transaction.desc ?? "No Description", placeholder: "Description:")
+                    CustomText(text: transaction.desc ?? "No Description", placeholder: "DescriptionD".localized(using: currentLanguage))
                     
                     // MARK: - Transaction Type
                     SelectedTransactionType(
                         themeManager: themeManager,
-                        selectedType: TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
+                        selectedType: TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense, currentLanguage: currentLanguage
                     )
                     // MARK: - Receipt Image
                     ZStack{
@@ -71,12 +72,13 @@ struct DetailsHomeView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                CustomBackward(title: "Transaction Details") {
+            ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
+                CustomBackward(title: "TransactionDetails".localized(using: currentLanguage)) {
                     dismiss()
                 }
             }
         }
         .navigationBarBackButtonHidden(true)
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }

@@ -34,6 +34,7 @@
 "Entertainment" = "Entertainment";
 "Emergency" = "Emergency";
 "Other" = "Other";
+"All" = "All";
 "SetBudget" = "Set Budget";
 "EditAccountInformation" = "Edit Account Information";
 "AddTransaction" = "Add transaction";
@@ -43,6 +44,25 @@
 "Transactiontype" = "Transaction type:";
 "Income" = "Income";
 "Expense" = "Expense";
+
+
+
+"TitleD" = "Title:";
+"CategoryD" = "Category:";
+"DateD" = "Date:";
+"DescriptionD" = "Description:";
+"TransactionDetails" = "Transaction Details";
+"HowMuch" = "How much?";
+"EditTransaction" = "Edit Transaction";
+"ReceiptImage" = "Receipt Image";
+"Welcome" = "Welcome!";
+"Daily" = "Daily";
+"Weekly" = "Weekly";
+"Monthly" = "Monthly";
+"Yearly" = "Yearly";
+
+
+
 "SetYourBudget" = "You need to set your budget first!";
 "CategoryNameRequired" = "Category name is required!";
 "Error" = "Error";
@@ -66,9 +86,12 @@
 "DeleteAccountMessage" = "Deleting your account will erase all your data.";
 "Delete" = "Delete";
 "Deleting" = "Deleting...";
+
 "Home" = "Home";
 "Categories" = "Categories";
 "Stats" = "Stats";
 "Profile" = "Profile";
+
 "NoTransaction" = "No transactions available for this category.";
 "SearchFor" = "Search for ...";
+

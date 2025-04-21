@@ -30,6 +30,9 @@ struct EditTransactionView: View {
     
     // The Core Data transaction to be edited
     let transaction: TransacionsEntity
+    var currentLanguage: String
+    
+    @Binding var userId: String
     
     var body: some View {
         ScrollView {
@@ -39,21 +42,22 @@ struct EditTransactionView: View {
                 PriceSection(
                     amount: $viewModel.editedAmount,
                     readOnlyAmount: nil,
-                    themeManager: themeManager
+                    themeManager: themeManager,
+                    currentLanguage: currentLanguage
                 )
                 
                 VStack(alignment: .center, spacing: 25) {
                     
                     // MARK: - Title Input
                     CustomTextField(
-                        placeholder: "Title",
+                        placeholder: "Title".localized(using: currentLanguage),
                         text: $viewModel.editedTitle,
                         isSecure: $isSecure
                     )
                     
                     // MARK: - Category Dropdown
                     DropDownMenu(
-                        title: "Category",
+                        title: "Category".localized(using: currentLanguage),
                         options: viewModel.categories.compactMap { $0.name },
                         selectedOption: $viewModel.editedCategoryName
                     )
@@ -66,7 +70,7 @@ struct EditTransactionView: View {
                     
                     // MARK: - Description Input
                     CustomTextField(
-                        placeholder: "Description",
+                        placeholder: "Description".localized(using: currentLanguage),
                         text: $viewModel.editedDescription,
                         isSecure: $isSecure
                     )
@@ -74,17 +78,19 @@ struct EditTransactionView: View {
                     // MARK: - Transaction Type Selector
                     TransactionTypeSelector(
                         selectedType: $viewModel.editedType,
-                        themeManager: themeManager
+                        themeManager: themeManager,
+                        currentLanguage: currentLanguage
                     )
                     
                     // MARK: - Image Picker
                     ImagePickerField(
                         imageData: $viewModel.imageData,
-                        image: ""
+                        image: "",
+                        currentLanguage: currentLanguage
                     )
                     
                     // MARK: - Save Button
-                    CustomButton(title: "Save", action: {
+                    CustomButton(title: "Save".localized(using: currentLanguage), action: {
                         // Validate title
                         guard !viewModel.editedTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                             AlertManager.shared.showAlert(title: "Error", message: "Title is required!")
@@ -135,18 +141,18 @@ struct EditTransactionView: View {
         }
         // MARK: - Toolbar with Custom Back Button
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                CustomBackward(title: "Edit Transaction", tapEvent: {
+            ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
+                CustomBackward(title: "EditTransaction".localized(using: currentLanguage), tapEvent: {
                     dismiss()
                 })
             }
         }
         .navigationBarBackButtonHidden(true)
-        
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         // MARK: - Load Data on Appear
         .onAppear {
             viewModel.initialize(transaction: transaction)
-            viewModel.fetchCategories()
+            viewModel.fetchCategories(userId: userId)
         }
     }
 }

@@ -15,6 +15,7 @@ struct TransactionListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     @Binding var userId: String
     
@@ -48,13 +49,14 @@ struct TransactionListView: View {
                         // Summary Card
                         CardView(
                             income: viewModel.total(.income, transactions: transacions),
-                            expense: viewModel.total(.expense, transactions: transacions)
+                            expense: viewModel.total(.expense, transactions: transacions),
+                            currentLanguage: currentLanguage
                         )
                         
                         // Transaction Type Picker
                         Picker("Type", selection: $viewModel.selectedType) {
                             ForEach(TransactionType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
+                                Text(type.rawValue.localized(using: currentLanguage)).tag(type)
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())
@@ -69,7 +71,8 @@ struct TransactionListView: View {
                         // Sticky Header
                         HeaderView(
                             searchText: $viewModel.searchText,
-                            selectedTab: $viewModel.selectedFilter
+                            selectedTab: $viewModel.selectedFilter,
+                            currentLanguage: currentLanguage
                         )
                     }
                 }
@@ -86,12 +89,12 @@ struct TransactionListView: View {
     @ViewBuilder
     private func transactionRow(_ transaction: TransacionsEntity) -> some View {
         NavigationLink {
-            DetailsHomeView(transaction: transaction)
+            DetailsHomeView(transaction: transaction, currentLanguage: currentLanguage)
         } label: {
             SwipeAction(action: {
                 viewModel.deleteTransaction(transaction, viewContext: viewContext)
             }) {
-                TransactionCardView(transaction: transaction)
+                TransactionCardView(transaction: transaction, userId: $userId, currentLanguage: currentLanguage)
             }
         }
     }
