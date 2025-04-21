@@ -21,7 +21,6 @@ struct AccountInformation: View {
     @State private var imageData: Data? = nil
     @State private var isPasswordSecure: Bool = true
     var coreViewModel = CoreDataHelper()
-    @State var user: User? = nil
     var currentLanguage : String
     // MARK: - UI Design
     var body: some View {
@@ -90,29 +89,35 @@ struct AccountInformation: View {
             }.onAppear{
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
-                name = user?.name ?? "Guest"
-                email = user?.email ?? ""
-                password = user?.password ?? ""
-                
-                if let imageFilename = user?.image {
-                    print("Saved image filename: \(imageFilename)")
-                    // Retrieves the URL for the app document directory using FileManager
-                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    // Append the file name to the documentsDirectory
-                    let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
+                    DispatchQueue.main.async {
+                        name = user?.name ?? "Guest"
+                        email = user?.email ?? ""
+                        password = user?.password ?? ""
+                    }
                     
-                    print("Full file path: \(fileURL.path)")
-                    
-                    // Check if the file exists
-                    if FileManager.default.fileExists(atPath: fileURL.path),
-                       let data = try? Data(contentsOf: fileURL) {
-                        self.imageData = data
-                        self.imageURL = fileURL
-                        print("Image data loaded from documents")
-                    } else {
-                        print("❌ File not found in documents")
+                    if let imageFilename = user?.image {
+                        print("Saved image filename: \(imageFilename)")
+                        // Retrieves the URL for the app document directory using FileManager
+                        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                        // Append the file name to the documentsDirectory
+                        let fileURL = documentsDirectory.appendingPathComponent(imageFilename)
+                        
+                        print("Full file path: \(fileURL.path)")
+                        
+                        // Check if the file exists 
+                        if FileManager.default.fileExists(atPath: fileURL.path),
+                           let data = try? Data(contentsOf: fileURL) {
+                            self.imageData = data
+                            self.imageURL = fileURL
+                            print("Image data loaded from documents")
+                        } else {
+                            print("❌ File not found in documents")
+                        }
                     }
                 }
+
             }
             .toolbar {
                 ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {

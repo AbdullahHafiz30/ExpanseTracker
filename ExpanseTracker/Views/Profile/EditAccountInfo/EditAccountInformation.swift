@@ -23,6 +23,7 @@ struct EditAccountInformation: View {
     @State private var imageURL: URL? = nil
     @Binding var userId: String
     @State var oldUserName: String = ""
+    @State var oldImageURL: URL? = nil
     @State private var isPasswordSecure: Bool = true
     @StateObject private var alertManager = AlertManager.shared
     @StateObject var editViewModel = EditAccountInformationViewModel()
@@ -153,8 +154,9 @@ struct EditAccountInformation: View {
                 oldUserName = userData.0
                 userEmail = userData.1
                 userPassword = userData.2
-                self.imageData = userData.3
-                self.imageURL = userData.4
+                imageData = userData.3
+                imageURL = userData.4
+                oldImageURL = userData.4
             }
             .alert(isPresented: $alertManager.alertState.isPresented) {
                 Alert(
@@ -167,8 +169,7 @@ struct EditAccountInformation: View {
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
     var isUserModified: Bool {
-        print("=================\(userName != oldUserName)")
-        return userName != oldUserName
+        return userName != oldUserName || imageURL != oldImageURL
         
     }
 }

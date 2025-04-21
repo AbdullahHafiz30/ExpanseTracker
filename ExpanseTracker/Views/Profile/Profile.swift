@@ -32,7 +32,6 @@ struct Profile: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var isDeleting: Bool = false
     var coreViewModel = CoreDataHelper()
-    @State var user: User? = nil
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -112,7 +111,7 @@ struct Profile: View {
                     ScrollView{
                         Section {
                             HStack {
-                                NavigationLink(destination: AccountInformation(userId: $userId, user: user ?? nil , currentLanguage: currentLanguage)) {
+                                NavigationLink(destination: AccountInformation(userId: $userId, currentLanguage: currentLanguage)) {
                                     Image(systemName: "gearshape")
                                     Text("AccountInformation".localized(using: currentLanguage))
                                     
@@ -272,7 +271,7 @@ struct Profile: View {
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
                 DispatchQueue.global(qos: .userInitiated).async {
-                    user = coreViewModel.fetchUserFromCoreData(uid: userId)
+                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
                     DispatchQueue.main.async {
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""
