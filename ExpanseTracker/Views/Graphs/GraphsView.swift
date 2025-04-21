@@ -17,7 +17,9 @@ struct GraphsView: View {
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
-
+    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -25,7 +27,8 @@ struct GraphsView: View {
                 selectedTab: $selectedTab,
                 selectedMonth: $selectedMonth,
                 selectedYear: $selectedYear,
-                selectedType: $selectedCategoryType
+                selectedType: $selectedCategoryType,
+                currentLanguage: currentLanguage
             )
             
             VStack {

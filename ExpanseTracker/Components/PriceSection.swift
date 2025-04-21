@@ -13,11 +13,11 @@ import SwiftUI
 ///   - readOnlyAmount: An optional Double displayed when amount is nil.
 ///   - themeManager: The current ThemeManager controlling light/dark appearance.
 /// - Returns: A SwiftUI view showing the amount section.
-func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManager: ThemeManager) -> some View {
+func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManager: ThemeManager, currentLanguage: String) -> some View {
     return VStack(alignment: .leading, spacing: 10) {
         
         // MARK: - Section title
-        Text("How much?")
+        Text("HowMuch".localized(using: currentLanguage))
             .font(.system(size: 33))
             .foregroundColor(themeManager.textColor.opacity(0.2))
             .bold()

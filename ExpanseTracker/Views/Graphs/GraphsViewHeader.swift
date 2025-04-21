@@ -31,6 +31,8 @@ struct GraphsViewHeader: View {
         return formatter.monthSymbols
     }()
     
+    var currentLanguage: String
+    
     var body: some View {
         HStack(spacing: 12) {
             // Month Picker
@@ -63,7 +65,7 @@ struct GraphsViewHeader: View {
             Menu {
                 Picker("Select Mode", selection: $selectedTab) {
                     ForEach(DateTab.allCases) { tab in
-                        Text(tab.rawValue).tag(tab)
+                        Text(tab.rawValue.localized(using: currentLanguage)).tag(tab)
                     }
                 }
             } label: {
@@ -86,9 +88,9 @@ struct GraphsViewHeader: View {
                         }
                     })
                 ) {
-                    Text("All").tag("All")
+                    Text("All".localized(using: currentLanguage)).tag("All")
                     ForEach(CategoryType.allCases, id: \.self) { type in
-                        Text(type.rawValue).tag(type.rawValue)
+                        Text(type.rawValue.localized(using: currentLanguage)).tag(type.rawValue)
                     }
                 }
             } label: {

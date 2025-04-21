@@ -50,14 +50,17 @@ final class EditTransactionViewModel: ObservableObject {
         }
     }
     
-    func fetchCategories() {
+    func fetchCategories(userId: String) {
         let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)]
+        
+        // Filter categories where the related user.id matches the provided userId
+        request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         do {
             categories = try context.fetch(request)
         } catch {
-            print("Failed to fetch categories: \(error.localizedDescription)")
+            print("❌ Failed to fetch categories for user \(userId): \(error.localizedDescription)")
         }
     }
 
