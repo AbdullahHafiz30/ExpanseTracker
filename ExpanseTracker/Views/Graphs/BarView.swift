@@ -10,7 +10,7 @@ import Charts
 
 struct BarView: View {
     
-    @ObservedObject var viewModel = DummyDataViewModel()
+    @ObservedObject var viewModel = PieViewModel()
     @Binding var allSelect : Bool
     @Binding var selectedType: CategoryType?
     @Binding var selectedTab: DateTab

@@ -17,12 +17,7 @@ struct GraphsView: View {
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
-<<<<<<< Updated upstream
     @Binding var userId: String
-=======
-    
-
->>>>>>> Stashed changes
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -44,15 +39,9 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-<<<<<<< Updated upstream
                     PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(0).padding()
                     BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(1).padding()
                     LineView().tag(2)
-=======
-                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(0).padding()
-                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1).padding()
-                    LineView().tag(2).padding()
->>>>>>> Stashed changes
                 })
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color.gray.opacity(0.1))

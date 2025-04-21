@@ -1,25 +1,17 @@
 //
-//  DummyDataViewModel.swift
+//  PieViewModel.swift
 //  ExpanseTracker
 //
 //  Created by Abdullah Hafiz on 15/04/2025.
 //
 
-<<<<<<< Updated upstream
-import Foundation
+import SwiftUI
 import CoreData
 
-class DummyDataViewModel: ObservableObject {
+class PieViewModel: ObservableObject {
     
     private let context = PersistanceController.shared.context
-=======
-import SwiftUI
 
-class DummyDataViewModel: ObservableObject {
-    
-    
-    
->>>>>>> Stashed changes
     @Published var dummyData: [Transaction] = [
         Transaction(
             id: "1",
