@@ -43,7 +43,6 @@ struct GraphsView: View {
                     BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear).tag(1).padding()
                     LineView().tag(2)
                 })
-                .tabViewStyle(PageTabViewStyle())
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
                 .padding()

@@ -265,6 +265,40 @@ class DummyDataViewModel: ObservableObject {
                 budgetLimit: 900.00
             ),
             receiptImage: ""
+        ),
+        Transaction(
+            id: "16",
+            title: "ER Visit",
+            description: "Emergency room charges",
+            amount: 950.00,
+            date: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 8))!,
+            transactionType: .expense,
+            category: Category(
+                id: "5",
+                name: "Health",
+                color: "#FF3B30",
+                icon: "cross.case.fill",
+                categoryType: .emergency,
+                budgetLimit: 1200.00
+            ),
+            receiptImage: ""
+        ),
+        Transaction(
+            id: "17",
+            title: "Investment Return",
+            description: "Dividend from stocks",
+            amount: 1250.00,
+            date: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 15))!,
+            transactionType: .expense,
+            category: Category(
+                id: "10",
+                name: "Stocks",
+                color: "#007AFF",
+                icon: "chart.bar.xaxis",
+                categoryType: .other,
+                budgetLimit: 0.00
+            ),
+            receiptImage: ""
         )
     ]
     
