@@ -29,6 +29,7 @@ struct PieView: View {
             userId: userId)
    
         VStack {
+            
             Chart(chartData) { data in
                 SectorMark(
                     angle: .value(
@@ -36,20 +37,15 @@ struct PieView: View {
                         data.number
                     ),
                     innerRadius: .ratio(0.6)
-                ).foregroundStyle(
-                    by: .value(
-                        Text(verbatim: data.text),
-                        data.text
-                    )
-                )
+                ).foregroundStyle(UIColor().colorFromHexString(data.color))
             }.chartLegend(.hidden)
 
             VStack {
                 ForEach(chartData) { item in
                     HStack {
-//                        Circle()
-//                            .fill(Color(hex: item.color))
-//                            .frame(width: 12, height: 12)
+                        Circle()
+                            .fill(UIColor().colorFromHexString(item.color))
+                            .frame(width: 18, height: 18)
                         
                         Text(item.text)
                             .font(.body)

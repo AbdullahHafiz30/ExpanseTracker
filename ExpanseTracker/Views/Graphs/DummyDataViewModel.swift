@@ -5,12 +5,21 @@
 //  Created by Abdullah Hafiz on 15/04/2025.
 //
 
+<<<<<<< Updated upstream
 import Foundation
 import CoreData
 
 class DummyDataViewModel: ObservableObject {
     
     private let context = PersistanceController.shared.context
+=======
+import SwiftUI
+
+class DummyDataViewModel: ObservableObject {
+    
+    
+    
+>>>>>>> Stashed changes
     @Published var dummyData: [Transaction] = [
         Transaction(
             id: "1",
@@ -226,7 +235,7 @@ class DummyDataViewModel: ObservableObject {
             category: Category(
                 id: "9",
                 name: "Rent",
-                color: "#FF9500",
+                color: "#66D2CE",
                 icon: "house.fill",
                 categoryType: .essential,
                 budgetLimit: 3000.00
@@ -388,6 +397,21 @@ class DummyDataViewModel: ObservableObject {
         return myFilArray
     }
     
+    func getColor(transactionType: Transaction) -> String {
+        switch  transactionType.category?.categoryType{
+        case .essential:
+            return "#7ead9d"
+        case .emergency:
+            return "#db8d8e"
+        case .entertainment:
+            return "#ebc17d"
+        case .other:
+            return "#d1d1d1"
+        case .none:
+            return "#CCCCCC"
+        }
+    }
+    
     
     //MARK: - get category name (Main or sub categories)
     func getFinalArray(_ allSelect: Bool, filtData: [Transaction], filteredData: [Transaction]) -> [Test] {
@@ -395,13 +419,14 @@ class DummyDataViewModel: ObservableObject {
         if allSelect == true {
             let totalAmount = filtData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filtData {
-                test.append(Test(text: (transaction.category?.categoryType?.rawValue ?? ""), number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
+                let catColor = getColor(transactionType: transaction)
+                test.append(Test(text: (transaction.category?.categoryType?.rawValue ?? ""), color: catColor, number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
             }
             return test
         } else {
             let totalAmount = filteredData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filteredData {
-                test.append(Test(text: transaction.category?.name ?? "", number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
+                test.append(Test(text: transaction.category?.name ?? "", color: transaction.category?.color ?? "", number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
             }
             return test
         }
@@ -481,15 +506,17 @@ class DummyDataViewModel: ObservableObject {
 
 
 //MARK: - Charts Return Arcitechture
-struct Test: Identifiable {
+struct Test: Identifiable, ShapeStyle {
     let text: String
+    let color: String
     let number: Double
     let percentage: Double
     
     let id = UUID()
     
-    init(text: String, number: Double, percentage: Double) {
+    init(text: String, color: String, number: Double, percentage: Double) {
         self.text = text
+        self.color = color
         self.number = number
         self.percentage = percentage
     }
