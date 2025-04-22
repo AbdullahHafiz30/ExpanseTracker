@@ -26,7 +26,7 @@ struct DetailsHomeView: View {
                 // MARK: - Amount Section
                 PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager, currentLanguage: currentLanguage)
                 
-                VStack(alignment: .leading, spacing: 25) {
+                VStack(alignment: .leading, spacing: 30) {
                     
                     // MARK: - Title
                     CustomText(text: transaction.title ?? "No Title", placeholder: "TitleD".localized(using: currentLanguage))
@@ -67,8 +67,9 @@ struct DetailsHomeView: View {
                 }
                 .padding()
                 .background(.gray.opacity(0.15))
+                .ignoresSafeArea(edges: .bottom)
                 .cornerRadius(32)
-                .padding(.bottom, -35)
+                .padding(.bottom, -50)
             }
         }
         .toolbar {

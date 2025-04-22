@@ -36,17 +36,19 @@ struct EditTransactionView: View {
     
     var body: some View {
         ScrollView {
+            
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Input Section
-                PriceSection(
-                    amount: $viewModel.editedAmount,
-                    readOnlyAmount: nil,
-                    themeManager: themeManager,
-                    currentLanguage: currentLanguage
-                )
-                
-                VStack(alignment: .center, spacing: 25) {
+                VStack {
+                    PriceSection(
+                        amount: $viewModel.editedAmount,
+                        readOnlyAmount: nil,
+                        themeManager: themeManager,
+                        currentLanguage: currentLanguage
+                    )
+                }
+                VStack(alignment: .center, spacing: 30) {
                     
                     // MARK: - Title Input
                     CustomTextField(
@@ -136,7 +138,7 @@ struct EditTransactionView: View {
                 .background(.gray.opacity(0.15))
                 .ignoresSafeArea(edges: .bottom)
                 .cornerRadius(32)
-                .padding(.bottom, -35)
+                .padding(.bottom, -50)
             }
         }
         // MARK: - Toolbar with Custom Back Button
@@ -153,6 +155,7 @@ struct EditTransactionView: View {
         .onAppear {
             viewModel.initialize(transaction: transaction)
             viewModel.fetchCategories(userId: userId)
+            print(viewModel.categories)
         }
     }
 }

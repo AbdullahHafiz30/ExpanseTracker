@@ -9,58 +9,59 @@ struct CategoryView: View {
     @Binding var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
-
+    
     init(userId: Binding<String>) {
         self._userId = userId
         _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
     }
-
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                HStack {
-                    Text("Categories".localized(using: currentLanguage))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-                        .font(.custom("Poppins-Bold", size: 36))
-                        .fontWeight(.bold)
-                        .padding(.top , 20)
-                        .padding(.leading , 20)
-
-                    Spacer()
-                    addButton
-                        .padding(.top, 20)
-                        .padding(.trailing, 20)
-                }
-
-                searchBarView
-                categoryTypeFilter
-                categoryList
-                
-            }.onChange(of: userId) { _ , newUserId in
-                viewModel.userId = newUserId
-                viewModel.loadCategories()
-            }
-            .navigationTitle("Categories".localized(using: currentLanguage))
-            .navigationBarTitleDisplayMode(.large)
-            .onAppear {
-                viewModel.loadCategories()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    addButton
-                }
-            }
-            .fullScreenCover(isPresented: $showingAddCategory) {
-                CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
-                    .environmentObject(viewModel)
-                    .onDisappear {
-                        viewModel.loadCategories()
+        ZStack {
+            NavigationStack {
+                VStack(spacing: 16) {
+                    HStack {
+                        Text("Categories".localized(using: currentLanguage))
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .font(.custom("Poppins-Bold", size: 36))
+                            .fontWeight(.bold)
+                            .padding(.top , 20)
+                            .padding(.leading , 20)
+                        
+                        Spacer()
+                        addButton
+                            .padding(.top, 20)
+                            .padding(.trailing, 20)
                     }
+                    
+                    searchBarView
+                    categoryTypeFilter
+                    categoryList
+                    
+                }.onChange(of: userId) { _ , newUserId in
+                    viewModel.userId = newUserId
+                    viewModel.loadCategories()
+                }
+                .navigationTitle("Categories".localized(using: currentLanguage))
+                .navigationBarTitleDisplayMode(.large)
+                .onAppear {
+                    viewModel.loadCategories()
+                }
+                .fullScreenCover(isPresented: $showingAddCategory) {
+                    CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
+                        .environmentObject(viewModel)
+                        .onDisappear {
+                            viewModel.loadCategories()
+                        }
+                }
+                .background(colorScheme == .dark ? Color.black : Color.white) // Dynamic background
             }
-            .background(colorScheme == .dark ? Color.black : Color.white) // Dynamic background
+        }.toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                addButton
+            }
         }
     }
-
+    
     // MARK: - Search Bar View
     private var searchBarView: some View {
         CategorySearchBar(searchText: $viewModel.searchText)
@@ -69,7 +70,7 @@ struct CategoryView: View {
                     .fill(colorScheme == .dark ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
             )
     }
-
+    
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
@@ -79,7 +80,7 @@ struct CategoryView: View {
             animation: animation
         )
     }
-
+    
     // MARK: - Category List
     private var categoryList: some View {
         List {
@@ -115,7 +116,7 @@ struct CategoryView: View {
         .listStyle(.plain)
         .padding(.bottom, 20)
     }
-
+    
     // MARK: - Add Button
     private var addButton: some View {
         Button {
@@ -137,7 +138,7 @@ private struct CategoryTypeFilterView: View {
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     @Environment(\.colorScheme) var colorScheme
-
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {

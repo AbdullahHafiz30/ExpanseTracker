@@ -18,22 +18,21 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
         
         // MARK: - Section title
         Text("HowMuch".localized(using: currentLanguage))
-            .font(.system(size: 33))
+            .font(.largeTitle)
             .foregroundColor(themeManager.textColor.opacity(0.2))
             .bold()
-            .padding(.leading)
         
         HStack {
             // MARK: - Currency icon (switches based on theme)
             Image(themeManager.isDarkMode ? "riyalW" : "riyalB")
                 .resizable()
-                .frame(width: 50, height: 50)
+                .frame(width: 60, height: 60)
             
             // MARK: - Editable or read-only amount field
             if let amountBinding = amount {
                 // Editable text field for amount input
-                TextField("Amount", value: amountBinding, formatter: NumberFormatterManager.shared.formatter)
-                    .font(.system(size: 33))
+                TextField("0", value: amountBinding, formatter: NumberFormatterManager.shared.formatter)
+                    .font(.system(size: 50))
                     .keyboardType(.decimalPad)
                     .foregroundColor(themeManager.textColor)
             } else {
@@ -44,6 +43,6 @@ func PriceSection(amount: Binding<Double>?, readOnlyAmount: Double?, themeManage
             }
         }
     }
-    .padding()
+    .padding(.leading)
 }
 

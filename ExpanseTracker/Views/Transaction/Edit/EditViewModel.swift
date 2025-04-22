@@ -87,7 +87,7 @@ final class EditTransactionViewModel: ObservableObject {
         if let image = updated.receiptImage {
             entity.image = image
         }
-
+        
         if let categoryName = updated.category?.name {
             let categoryRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
             categoryRequest.predicate = NSPredicate(format: "name == %@", categoryName)

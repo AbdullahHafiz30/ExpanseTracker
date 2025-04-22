@@ -76,7 +76,7 @@ struct CardView: View {
                             }
                             
                             // Push content for income to the left if needed
-                            if type == .income {
+                            if type == .expense {
                                 Spacer(minLength: 10)
                             }
                         }

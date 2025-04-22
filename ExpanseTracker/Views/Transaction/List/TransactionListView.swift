@@ -29,6 +29,7 @@ struct TransactionListView: View {
         let request: NSFetchRequest<TransacionsEntity> = TransacionsEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)]
         request.predicate = NSPredicate(format: "user.id == %@", userId.wrappedValue)
+        request.fetchBatchSize = 20
         
         _transacions = FetchRequest(fetchRequest: request)
     }
@@ -63,7 +64,7 @@ struct TransactionListView: View {
                         .padding(.bottom, 10)
                         
                         // Filtered Transactions List
-                        ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedFilter), id: \.self) { transaction in
+                        ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedTab), id: \.self) { transaction in
                             transactionRow(transaction)
                         }
                         
@@ -71,7 +72,7 @@ struct TransactionListView: View {
                         // Sticky Header
                         HeaderView(
                             searchText: $viewModel.searchText,
-                            selectedTab: $viewModel.selectedFilter,
+                            selectedTab: $viewModel.selectedTab,
                             currentLanguage: currentLanguage
                         )
                     }
@@ -91,11 +92,14 @@ struct TransactionListView: View {
         NavigationLink {
             DetailsHomeView(transaction: transaction, currentLanguage: currentLanguage)
         } label: {
-            SwipeAction(action: {
-                viewModel.deleteTransaction(transaction, viewContext: viewContext)
-            }) {
+            SwipeAction(cornerRadius: 10, direction: .trailing){
                 TransactionCardView(transaction: transaction, userId: $userId, currentLanguage: currentLanguage)
+            } actions: {
+                Action(tint: .red, icon: "trash"){
+                    viewModel.deleteTransaction(transaction, viewContext: viewContext)
+                }
             }
+            
         }
     }
 }

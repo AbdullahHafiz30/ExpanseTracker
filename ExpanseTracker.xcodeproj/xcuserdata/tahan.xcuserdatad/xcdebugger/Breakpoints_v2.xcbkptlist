@@ -30,8 +30,8 @@
             filePath = "ExpanseTracker/Views/Transaction/List/TransactionViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
             landmarkName = "filteredTransactions(_:filter:)"
             landmarkType = "7">
          </BreakpointContent>

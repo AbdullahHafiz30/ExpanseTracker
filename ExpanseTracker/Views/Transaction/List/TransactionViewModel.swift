@@ -15,12 +15,11 @@ final class TransactionViewModel: ObservableObject {
     
     // MARK: - Published Variable
     @Published var searchText: String = ""
-    @Published var selectedType: TransactionType = .income
-    @Published var selectedTab: TimeFilter = .monthly
-    @Published var startDate: Date = TimeFilter.monthly.startDate(from: Date())
+    @Published var selectedType: TransactionType = .expense
+    @Published var selectedTab: TimeFilter = .weekly
+    @Published var startDate: Date = TimeFilter.weekly.startDate(from: Date())
     @Published var endDate: Date = Date()
     @Published var transactions: [TransacionsEntity] = []
-    @Published var selectedFilter: TimeFilter = .daily
 
     // MARK: - Transaction Filtering Logic
         
@@ -89,11 +88,11 @@ final class TransactionViewModel: ObservableObject {
     ///   - transaction: The TransacionsEntity to delete.
     ///   - viewContext: The managed object context used to delete the entity.
     func deleteTransaction(_ transaction: TransacionsEntity, viewContext: NSManagedObjectContext) {
-        withAnimation {
+        
             viewContext.delete(transaction)
             
             PersistanceController.shared.saveContext()
-        }
+        
     }
     
 }
