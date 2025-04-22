@@ -31,6 +31,7 @@ struct Profile: View {
     @State private var selectedLanguageIndex: Int = 0
     @Environment(\.presentationMode) var presentationMode
     @State private var isDeleting: Bool = false
+    var coreViewModel = CoreDataHelper()
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -270,7 +271,7 @@ struct Profile: View {
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
                 DispatchQueue.global(qos: .userInitiated).async {
-                    let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
                     DispatchQueue.main.async {
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""

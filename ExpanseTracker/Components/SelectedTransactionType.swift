@@ -11,15 +11,15 @@ import SwiftUI
 /// - Parameters:
 ///   - themeManager: Manages color and style preferences for light/dark mode.
 ///   - selectedType: The currently selected transaction type to display.
-func SelectedTransactionType(themeManager: ThemeManager, selectedType: TransactionType) -> some View {
+func SelectedTransactionType(themeManager: ThemeManager, selectedType: TransactionType, currentLanguage: String) -> some View {
     HStack {
         // Label for the section
-        Text("Transaction type:")
+        Text("Transactiontype".localized(using: currentLanguage))
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
         
         // Display the selected transaction type in a styled capsule
-        Text(selectedType.rawValue)
+        Text(selectedType.rawValue.localized(using: currentLanguage))
             .padding(.horizontal, 24)
             .padding(.vertical, 12)
             .background(

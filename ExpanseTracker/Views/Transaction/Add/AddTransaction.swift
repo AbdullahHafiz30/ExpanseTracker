@@ -26,6 +26,7 @@ struct AddTransaction: View {
             self.userId = userId
             _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId))
         }
+
     
     //MARK: - View
     var body: some View {
@@ -132,6 +133,7 @@ private extension AddTransaction {
                             .environmentObject(themeManager)
                         // Image picker
                         ImagePickerField(imageData: $imageData, image: "",currentLanguage: currentLanguage)
+
                             .environmentObject(themeManager)
                         // Type selector
                         transactionTypeSelector

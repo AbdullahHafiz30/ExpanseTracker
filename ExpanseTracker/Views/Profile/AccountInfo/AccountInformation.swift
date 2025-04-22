@@ -20,6 +20,7 @@ struct AccountInformation: View {
     @State private var imageURL: URL? = nil
     @State private var imageData: Data? = nil
     @State private var isPasswordSecure: Bool = true
+    var coreViewModel = CoreDataHelper()
     var currentLanguage : String
     // MARK: - UI Design
     var body: some View {
@@ -89,12 +90,13 @@ struct AccountInformation: View {
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
                 DispatchQueue.global(qos: .userInitiated).async {
-                    let user = CoreDataHelper().fetchUserFromCoreData(uid: userId)
+                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
                     DispatchQueue.main.async {
                         name = user?.name ?? "Guest"
                         email = user?.email ?? ""
                         password = user?.password ?? ""
                     }
+                    
                     if let imageFilename = user?.image {
                         print("Saved image filename: \(imageFilename)")
                         // Retrieves the URL for the app document directory using FileManager
@@ -115,6 +117,7 @@ struct AccountInformation: View {
                         }
                     }
                 }
+
             }
             .toolbar {
                 ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
