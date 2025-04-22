@@ -16,7 +16,6 @@ struct TransactionListView: View {
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    
     @Binding var userId: String
     
     // Dynamically filtered fetch request
@@ -79,10 +78,10 @@ struct TransactionListView: View {
                 }
                 .padding(15)
             }
-            .onChange(of: viewModel.selectedTab) {
-                viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
-                viewModel.endDate = Date()
-            }
+//            .onChange(of: $viewModel.selectedTab) {
+//                $viewModel.startDate = $viewModel.selectedTab.startDate(from: Date())
+//                viewModel.endDate = Date()
+//            }
         }
     }
     
@@ -90,7 +89,8 @@ struct TransactionListView: View {
     @ViewBuilder
     private func transactionRow(_ transaction: TransacionsEntity) -> some View {
         NavigationLink {
-            DetailsHomeView(transaction: transaction, currentLanguage: currentLanguage)
+            DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
+
         } label: {
             SwipeAction(cornerRadius: 10, direction: .trailing){
                 TransactionCardView(transaction: transaction, userId: $userId, currentLanguage: currentLanguage)
@@ -99,7 +99,6 @@ struct TransactionListView: View {
                     viewModel.deleteTransaction(transaction, viewContext: viewContext)
                 }
             }
-            
         }
     }
 }

@@ -8,20 +8,20 @@ struct CategoryView: View {
     @Namespace private var animation
     @Binding var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
-    
+   // @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
+
     init(userId: Binding<String>) {
         self._userId = userId
         _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
     }
-    
+
     var body: some View {
         ZStack {
             NavigationStack {
                 VStack(spacing: 16) {
                     HStack {
                         Text("Categories".localized(using: currentLanguage))
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .foregroundColor(themeManager.isDarkMode ? .white : .black)
                             .font(.custom("Poppins-Bold", size: 36))
                             .fontWeight(.bold)
                             .padding(.top , 20)
@@ -43,8 +43,11 @@ struct CategoryView: View {
                 }
                 .navigationTitle("Categories".localized(using: currentLanguage))
                 .navigationBarTitleDisplayMode(.large)
-                .onAppear {
-                    viewModel.loadCategories()
+              
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        addButton
+                    }
                 }
                 .fullScreenCover(isPresented: $showingAddCategory) {
                     CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
@@ -53,24 +56,25 @@ struct CategoryView: View {
                             viewModel.loadCategories()
                         }
                 }
-                .background(colorScheme == .dark ? Color.black : Color.white) // Dynamic background
-            }
-        }.toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                addButton
+                .background(themeManager.isDarkMode ? Color.black : Color.white) // Dynamic background
             }
         }
+        .onAppear {
+            viewModel.loadCategories()
+            print(viewModel.categories)
+        }
     }
-    
+       
+
     // MARK: - Search Bar View
     private var searchBarView: some View {
         CategorySearchBar(searchText: $viewModel.searchText)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(colorScheme == .dark ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
+                    .fill(themeManager.isDarkMode ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
             )
     }
-    
+
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
@@ -80,7 +84,7 @@ struct CategoryView: View {
             animation: animation
         )
     }
-    
+
     // MARK: - Category List
     private var categoryList: some View {
         List {
@@ -109,23 +113,23 @@ struct CategoryView: View {
                         }
                     }
                 }
-                .listRowBackground(colorScheme == .dark ? Color.black : Color.white) // Adaptive list row
+                .listRowBackground(themeManager.isDarkMode ? Color.black : Color.white) // Adaptive list row
                 .listRowSeparator(.hidden)
             }
         }
         .listStyle(.plain)
         .padding(.bottom, 20)
     }
-    
+
     // MARK: - Add Button
     private var addButton: some View {
         Button {
             showingAddCategory = true
         } label: {
             Image(systemName: "plus")
-                .foregroundColor(colorScheme == .dark ? .black : .white) // Adaptive icon color
+                .foregroundColor(themeManager.isDarkMode ? .black : .white) // Adaptive icon color
                 .padding(12)
-                .background(Circle().fill(colorScheme == .dark ? Color.white : Color.accentColor)) // Adaptive circle color
+                .background(Circle().fill(themeManager.isDarkMode ? Color.white : Color.black)) // Adaptive circle color
         }
     }
 }
@@ -137,8 +141,8 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    @Environment(\.colorScheme) var colorScheme
-    
+   // @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -160,7 +164,7 @@ private struct CategoryTypeFilterView: View {
                     )
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(colorScheme == .dark ? Color.white.opacity(0.6) : Color.black.opacity(0.05)) // Adaptive background
+                            .fill(themeManager.isDarkMode ? Color.white.opacity(0.6) : Color.black.opacity(0.05)) // Adaptive background
                     )
                 }
             }

@@ -170,6 +170,7 @@ struct EditAccountInformation: View {
     }
     var isUserModified: Bool {
         return userName != oldUserName || imageURL != oldImageURL
+
         
     }
 }

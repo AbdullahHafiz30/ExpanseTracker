@@ -13,4 +13,5 @@ enum TransactionType: String, CaseIterable, Codable, Identifiable {
     
     case expense = "Expense"
     case income = "Income"
+    
 }

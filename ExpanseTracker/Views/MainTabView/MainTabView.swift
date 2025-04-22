@@ -20,64 +20,72 @@ struct MainTabView: View {
            UIDManager.loadUID()
        }
     var body: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-                TransactionListView(userId: .constant(uid ?? ""))
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Home".localized(using: currentLanguage))
-                    }.tag(0)
-                
-                CategoryView(userId: .constant(uid ?? ""))
-                    .tabItem {
-                        Image(systemName: "doc.on.doc")
-                        Text("Categories".localized(using: currentLanguage))
-                    }.tag(1)
-                
-                Spacer()
-                
-                GraphsView(userId: .constant(uid ?? ""))
-                    .tabItem {
-                        Image(systemName: "chart.bar.xaxis.ascending")
-                        Text("Stats".localized(using: currentLanguage))
-                    }.tag(2)
-
-                Profile(userId: .constant(uid ?? "") ,auth:auth)
-                    .tabItem {
-                        Image(systemName: "person.crop.circle")
-                        Text("Profile".localized(using: currentLanguage))
-                    }.tag(3)
-            }
-            .padding(.horizontal,10)
-            .tint(.primary)
-
-            // Floating Button
-            VStack {
-                Spacer()
-                HStack {
+        NavigationStack{
+            ZStack {
+                TabView(selection: $selectedTab) {
+                    TransactionListView(userId: .constant(uid ?? ""))
+                        .tabItem {
+                            Image(systemName: "house")
+                            Text("Home".localized(using: currentLanguage))
+                        }.tag(0)
+                    
+                    CategoryView(userId: .constant(uid ?? ""))
+                        .tabItem {
+                            Image(systemName: "doc.on.doc")
+                            Text("Categories".localized(using: currentLanguage))
+                        }.tag(1)
+                    
                     Spacer()
-                    Button(action: {
-                        // Handle action
-                        selectedTab = 4
-                        showAddTransactionView.toggle()
-                    }) {
-                        ZStack {
-                            Circle()
-                                .fill(themeManager.isDarkMode ? .white : .black)
-                                .frame(width: 80, height: 80)
-                            Image(systemName: "plus")
-                                .foregroundColor(themeManager.isDarkMode ? .black : .white)
-                                .font(.system(size: 30))
-                        }
-                    }
-                    .offset(y: -5)
-                    Spacer()
+                    
+                    GraphsView(userId: .constant(uid ?? ""))
+                        .tabItem {
+                            Image(systemName: "chart.bar.xaxis.ascending")
+                            Text("Stats".localized(using: currentLanguage))
+                        }.tag(2)
+                    
+                    Profile(userId: .constant(uid ?? "") ,auth:auth)
+                        .tabItem {
+                            Image(systemName: "person.crop.circle")
+                            Text("Profile".localized(using: currentLanguage))
+                        }.tag(3)
                 }
-            }.ignoresSafeArea(.keyboard)
-        }.navigationBarBackButtonHidden(true)
-        .fullScreenCover(isPresented: $showAddTransactionView) {
-            AddTransaction(userId: .constant(uid ?? ""))
+                .padding(.horizontal,10)
+                .tint(.primary)
+                
+                // Floating Button
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            // Handle action
+                            selectedTab = 4
+                            showAddTransactionView.toggle()
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(themeManager.isDarkMode ? .white : .black)
+                                    .frame(width: 80, height: 80)
+                                Image(systemName: "plus")
+                                    .foregroundColor(themeManager.isDarkMode ? .black : .white)
+                                    .font(.system(size: 30))
+                            }
+                        }
+                        .offset(y: -5)
+                        Spacer()
+                    }
+                }.ignoresSafeArea(.keyboard)
+            }
+            NavigationLink(
+                destination:  AddOrEditTransactionView(userId: uid ?? "", currentLanguage:currentLanguage),
+                        isActive: $showAddTransactionView,
+                        label: {
+                            EmptyView()
+                        }
+            )
+
         }
+        .navigationBarBackButtonHidden(true)
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 }

@@ -47,7 +47,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
                             lineWidth: borderWidth
                         )
                     )
-                    .foregroundColor(themeManager.textColor) 
+                    .foregroundColor(themeManager.textColor)
                     .onTapGesture {
                         // Update selected type on tap
                         selectedType.wrappedValue = type
