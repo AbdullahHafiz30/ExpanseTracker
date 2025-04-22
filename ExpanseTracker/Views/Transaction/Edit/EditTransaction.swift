@@ -39,12 +39,13 @@ struct EditTransactionView: View {
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Input Section
-                PriceSection(
-                    amount: $viewModel.editedAmount,
-                    readOnlyAmount: nil,
-                    themeManager: themeManager,
-                    currentLanguage: currentLanguage
-                )
+//                PriceSection(
+//                    amount: $viewModel.editedAmount,
+//                    readOnlyAmount: nil,
+//                    themeManager: themeManager,
+//                    currentLanguage: currentLanguage
+//                )
+
                 
                 VStack(alignment: .center, spacing: 25) {
                     

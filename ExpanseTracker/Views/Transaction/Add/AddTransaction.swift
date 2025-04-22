@@ -20,12 +20,13 @@ struct AddTransaction: View {
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
     @State private var selectedType: TransactionType = .income
-    @Binding var userId: String
+    var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    init(userId: Binding<String>) {
-            self._userId = userId
-            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
-    }
+    init(userId: String) {
+            self.userId = userId
+            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId))
+        }
+
     
     //MARK: - View
     var body: some View {
@@ -88,7 +89,7 @@ private extension AddTransaction {
                     if let error = amountError {
                         Text(error)
                             .foregroundColor(.red)
-                            .font(.caption)
+                            .font(.callout)
                     }
                 }
                 
@@ -131,7 +132,8 @@ private extension AddTransaction {
                         CustomTextField(placeholder: "Description".localized(using: currentLanguage), text: $description,isSecure: .constant(false))
                             .environmentObject(themeManager)
                         // Image picker
-                        ImagePickerField(imageData: $imageData, image: "", currentLanguage: currentLanguage)
+                        ImagePickerField(imageData: $imageData, image: "",currentLanguage: currentLanguage)
+
                             .environmentObject(themeManager)
                         // Type selector
                         transactionTypeSelector
@@ -220,5 +222,4 @@ private extension AddTransaction {
         let numberPattern = #"^[0-9.,]+$"#
         return text.range(of: numberPattern, options: .regularExpression) != nil
     }
-    
 }

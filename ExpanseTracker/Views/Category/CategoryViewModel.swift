@@ -28,6 +28,7 @@ class CategoryViewModel: ObservableObject {
     
     // MARK: - Load All Categories
     func loadCategories() {
+        categories = []
         let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         request.predicate = NSPredicate(format: "user.id == %@", userId)
         
