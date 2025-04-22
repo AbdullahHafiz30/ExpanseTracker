@@ -13,7 +13,7 @@ struct DetailsHomeView: View {
     // MARK: - Variable
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
-    
+    var currentLanguage: String
     let transaction: TransacionsEntity
     
     var body: some View {
@@ -23,7 +23,7 @@ struct DetailsHomeView: View {
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Section
-                PriceSection(amount: nil, readOnlyAmount: transaction.amount, themeManager: themeManager)
+                PriceSection(viewModel: AddOrEditTransactionViewModel(), amountText: nil, readOnlyAmount: transaction.amount, themeManager: _themeManager, currentLanguage: currentLanguage)
                 
                 VStack(alignment: .leading, spacing: 25) {
                     

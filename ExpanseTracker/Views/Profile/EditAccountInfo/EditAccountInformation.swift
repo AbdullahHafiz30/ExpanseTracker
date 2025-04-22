@@ -167,7 +167,6 @@ struct EditAccountInformation: View {
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
     var isUserModified: Bool {
-        print("=================\(userName != oldUserName)")
         return userName != oldUserName
         
     }

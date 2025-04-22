@@ -21,6 +21,7 @@ struct ImagePickerField: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showCustomPicker = false
     var image: String
+    var currentLanguage: String
     
     // MARK: - View
     var body: some View {
@@ -53,7 +54,7 @@ struct ImagePickerField: View {
                         // Case 3: Empty
                     } else {
                         HStack {
-                            Text("Receipt image")
+                            Text("ReceiptImage".localized(using: currentLanguage))
                                 .foregroundColor(themeManager.textColor.opacity(0.5))
                                 .padding(.leading)
                             Spacer()

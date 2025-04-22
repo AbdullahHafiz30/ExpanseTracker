@@ -36,11 +36,12 @@ struct EditTransactionView: View {
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Input Section
-                PriceSection(
-                    amount: $viewModel.editedAmount,
-                    readOnlyAmount: nil,
-                    themeManager: themeManager
-                )
+//                PriceSection(
+//                    amount: $viewModel.editedAmount,
+//                    readOnlyAmount: nil,
+//                    themeManager: themeManager
+//                    
+//                )
                 
                 VStack(alignment: .center, spacing: 25) {
                     
@@ -72,16 +73,17 @@ struct EditTransactionView: View {
                     )
                     
                     // MARK: - Transaction Type Selector
-                    TransactionTypeSelector(
-                        selectedType: $viewModel.editedType,
-                        themeManager: themeManager
-                    )
+//                    TransactionTypeSelector(
+//                        selectedType: $viewModel.editedType,
+//                        themeManager: themeManager
+//                    )
                     
                     // MARK: - Image Picker
-                    ImagePickerField(
-                        imageData: $viewModel.imageData,
-                        image: ""
-                    )
+//                    ImagePickerField(
+//                        imageData: $viewModel.imageData,
+//                        image: "",
+//                        currentLanguage: current
+//                    )
                     
                     // MARK: - Save Button
                     CustomButton(title: "Save", action: {

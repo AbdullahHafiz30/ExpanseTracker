@@ -15,7 +15,7 @@ struct TransactionListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     @Binding var userId: String
     
     // Dynamically filtered fetch request
@@ -86,12 +86,12 @@ struct TransactionListView: View {
     @ViewBuilder
     private func transactionRow(_ transaction: TransacionsEntity) -> some View {
         NavigationLink {
-            DetailsHomeView(transaction: transaction)
+            DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
         } label: {
             SwipeAction(action: {
                 viewModel.deleteTransaction(transaction, viewContext: viewContext)
             }) {
-                TransactionCardView(transaction: transaction)
+                TransactionCardView(transaction: transaction, currentLanguage:currentLanguage, userId: userId)
             }
         }
     }

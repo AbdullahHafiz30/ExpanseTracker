@@ -275,7 +275,6 @@ struct Profile: View {
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""
                         userPassword = user?.password ?? ""
-                        print("userpassword \(userPassword)")
                     }
                 }
                 // Fetch the Current Month Budget from Core Date using user id
