@@ -20,7 +20,7 @@ struct PieView: View {
     @State var chartData: [Test] = []
     var body: some View {
         
-        var image = Image("noData")
+        let image = Image("noData")
         
         VStack {
             if chartData.isEmpty {
@@ -59,13 +59,23 @@ struct PieView: View {
             
         }
         .onAppear{
+            updateChartData()
+        }
+        .onChange(of: allSelect) { _ in updateChartData() }
+        .onChange(of: selectedType) { _ in updateChartData() }
+        .onChange(of: selectedTab) { _ in updateChartData() }
+        .onChange(of: selectedMonth) { _ in updateChartData() }
+        .onChange(of: selectedYear) { _ in updateChartData() }
+    }
+    
+    private func updateChartData() {
             chartData = viewModel.getData(
                 allSelect: allSelect,
                 selectedTab: selectedTab,
                 selectedType: selectedType,
                 selectedMonth: selectedMonth,
                 selectedYear: selectedYear,
-                userId: userId)
+                userId: userId
+            )
         }
-    }
 }

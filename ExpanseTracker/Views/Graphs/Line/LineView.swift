@@ -19,7 +19,10 @@ struct LineView: View {
     var userId: String
     @EnvironmentObject var themeManager: ThemeManager
     
+    
+    
     var body: some View {
+<<<<<<< Updated upstream
         var lineChartData = viewModel.getLineChartData(
             allSelect: allSelect,
             selectedTab: selectedTab,
@@ -28,6 +31,9 @@ struct LineView: View {
             selectedYear: selectedYear,
             userId: userId
         )
+=======
+        
+>>>>>>> Stashed changes
         
         VStack{
             Chart{
@@ -59,7 +65,10 @@ struct LineView: View {
                     .font(.title3)
             }
             .padding()
+        }.onAppear() {
+            updateChartData()
         }
+<<<<<<< Updated upstream
         .onAppear{
              lineChartData = viewModel.getLineChartData(
                 allSelect: allSelect,
@@ -70,6 +79,24 @@ struct LineView: View {
                 userId: userId
             )
         }
+=======
+        .onChange(of: allSelect) { _ in updateChartData() }
+        .onChange(of: selectedType) { _ in updateChartData() }
+        .onChange(of: selectedTab) { _ in updateChartData() }
+        .onChange(of: selectedMonth) { _ in updateChartData() }
+        .onChange(of: selectedYear) { _ in updateChartData() }
+    }
+    
+    private func updateChartData() {
+        lineChartData = viewModel.getLineChartData(
+            allSelect: allSelect,
+            selectedTab: selectedTab,
+            selectedType: selectedType,
+            selectedMonth: selectedMonth,
+            selectedYear: selectedYear,
+            userId: userId
+        )
+>>>>>>> Stashed changes
     }
 }
 
