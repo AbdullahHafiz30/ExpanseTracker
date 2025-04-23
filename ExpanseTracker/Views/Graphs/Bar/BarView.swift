@@ -17,7 +17,7 @@ struct BarView: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
-    @Binding var userId: String
+    var userId: String
     
     
     var body: some View {

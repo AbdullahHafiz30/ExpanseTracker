@@ -18,28 +18,21 @@ struct CategoryRow: View {
             // Icon with colored circle
             ZStack {
                 Circle()
-                    .fill(UIColor().colorFromHexString(category.color ?? "")
-                            .opacity(themeManager.isDarkMode ? 0.3 : 0.2))
+                    .fill(themeManager.isDarkMode && UIColor().colorFromHexString(category.color ?? "") == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? UIColor().colorFromHexString(category.color ?? "").opacity(0.3) : UIColor().colorFromHexString(category.color ?? "").opacity(0.2))
                     .frame(width: 50, height: 50)
 
                 Image(systemName: category.icon ?? "")
-                    .foregroundColor(UIColor().colorFromHexString(category.color ?? ""))
+                    .foregroundColor(themeManager.isDarkMode && UIColor().colorFromHexString(category.color ?? "") == .black ? .white : themeManager.isDarkMode ? UIColor().colorFromHexString(category.color ?? ""): UIColor().colorFromHexString(category.color ?? ""))
                     .font(.system(size: 20, weight: .medium))
             }
 
             // Name and Type
-            VStack(alignment: .leading, spacing: 4) {
                 Text(category.name ?? "")
                     .font(.headline)
-                    .foregroundColor(themeManager.textColor) 
-            }
+                    .foregroundColor(themeManager.textColor)
 
             Spacer()
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(themeManager.isDarkMode ? Color(.systemGray6).opacity(0.2) : Color.white)
-        )
+        .frame(height: 40)
     }
 }

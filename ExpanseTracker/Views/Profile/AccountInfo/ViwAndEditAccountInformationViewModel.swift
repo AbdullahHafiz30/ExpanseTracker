@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 import Combine
 
-class EditAccountInformationViewModel: ObservableObject {
+class ViwAndEditAccountInformationViewModel: ObservableObject {
     var coreViewModel = CoreDataHelper()
     /// Loads the user data from Core Data and retrieves the associated profile image.
     ///

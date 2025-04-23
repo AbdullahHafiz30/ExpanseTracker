@@ -9,18 +9,17 @@
 import SwiftUI
 
 struct GraphsView: View {
-    
-    
+
     @State private var allSelect : Bool = true
     @State private var selectedTab: DateTab = .monthly
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
+    var userId: String
     
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
-    @Binding var userId: String
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -43,9 +42,9 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(0).padding()
-                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(1).padding()
-                    LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(2)
+                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(0).padding()
+                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(1).padding()
+                    LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(2)
                 })
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color.gray.opacity(0.1))

@@ -13,8 +13,8 @@ struct SetBudget: View {
     @Binding var isPresented: Bool
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject var budgetViewModel = BudgetViewModel()
-    @Binding var userId: String
-    @Binding var budgetAmount: Double
+    var userId: String
+    var budgetAmount: Double
     @State private var showRepeatAlert = false
     @State private var budgetError: String?
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
