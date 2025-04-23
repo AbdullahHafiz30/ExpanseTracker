@@ -31,7 +31,7 @@ class LineViewModel: ObservableObject {
 
     //MARK: - get Data for Line Chart
     func getLineChartData(allSelect: Bool, selectedTab: DateTab, selectedType: CategoryType?, selectedMonth: Int, selectedYear: Int, userId: String) -> [DailyBalance] {
-        
+    
         let cal = Calendar.current
         
         let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)
@@ -62,6 +62,7 @@ class LineViewModel: ObservableObject {
             if let transactionsOnDay = groupedTransactions[day] {
                 var dailyAmount: Double = 0
                 for transaction in transactionsOnDay {
+                    print(transaction)
                     if transaction.transactionType == .expense {
                         dailyAmount -= (transaction.amount ?? 0.0)
                     } else {

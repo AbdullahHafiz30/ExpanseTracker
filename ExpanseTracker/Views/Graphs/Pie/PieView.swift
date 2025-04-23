@@ -16,19 +16,11 @@ struct PieView: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
-    @Binding var userId: String
-    
+    var userId: String
+    @State var chartData: [Test] = []
     var body: some View {
         
         var image = Image("noData")
-        
-        let chartData = viewModel.getData(
-            allSelect: allSelect,
-            selectedTab: selectedTab,
-            selectedType: selectedType,
-            selectedMonth: selectedMonth,
-            selectedYear: selectedYear,
-            userId: userId)
         
         VStack {
             if chartData.isEmpty {
@@ -65,6 +57,15 @@ struct PieView: View {
                 }
             }
             
+        }
+        .onAppear{
+            chartData = viewModel.getData(
+                allSelect: allSelect,
+                selectedTab: selectedTab,
+                selectedType: selectedType,
+                selectedMonth: selectedMonth,
+                selectedYear: selectedYear,
+                userId: userId)
         }
     }
 }
