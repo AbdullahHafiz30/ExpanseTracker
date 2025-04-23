@@ -13,13 +13,13 @@ class LanguageManager: ObservableObject {
     // Shared instance of LanguageManager.
     static let shared = LanguageManager()
     
-    // The currently selected language code (e.g., "en", "ar").
+    // The currently selected language code.
     @Published var language: String = "en"
     
     // MARK: - Language Setter
 
     /// Sets the application's language and updates the system preference.
-    /// - Parameter languageCode: The ISO language code to switch to (e.g., "en", "ar").
+    /// - Parameter languageCode: The ISO language code to switch to.
     func setLanguage(_ languageCode: String) {
         if Bundle.main.localizations.contains(languageCode) {
             // Update system preference for language

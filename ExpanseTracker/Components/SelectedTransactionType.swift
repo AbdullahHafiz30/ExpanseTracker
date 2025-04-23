@@ -11,6 +11,7 @@ import SwiftUI
 /// - Parameters:
 ///   - themeManager: Manages color and style preferences for light/dark mode.
 ///   - selectedType: The currently selected transaction type to display.
+///   - currentLanguage: The current language code used for localization.
 func SelectedTransactionType(themeManager: ThemeManager, selectedType: TransactionType, currentLanguage: String) -> some View {
     HStack {
         // Label for the section

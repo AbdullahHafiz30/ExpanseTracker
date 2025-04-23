@@ -25,7 +25,6 @@ extension Date {
     var endOfMonth: Date {
         
         let calendar = Calendar.current
-        
         //This is computed by adding one month to the start of the current month, then subtracting one minute, resulting in the last minute of the current month.
         return calendar.date(byAdding: .init(month: 1, minute: -1), to: self.startOfMonth) ?? self
     }

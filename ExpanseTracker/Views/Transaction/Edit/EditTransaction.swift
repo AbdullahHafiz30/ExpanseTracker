@@ -26,7 +26,8 @@ struct EditTransactionView: View {
     @State private var isSecure: Bool = false
     
     // ViewModel managing state and logic
-    @StateObject private var viewModel = EditTransactionViewModel()
+    @StateObject private var viewModel2 = EditTransactionViewModel()
+    @StateObject private var viewModel = AddOrEditTransactionViewModel()
     
     // The Core Data transaction to be edited
     let transaction: TransacionsEntity
@@ -42,9 +43,10 @@ struct EditTransactionView: View {
                 // MARK: - Amount Input Section
                 VStack {
                     PriceSection(
-                        amount: $viewModel.editedAmount,
+                        viewModel: viewModel,
+                        amountText: $viewModel.amount,
                         readOnlyAmount: nil,
-                        themeManager: themeManager,
+                        themeManager: _themeManager,
                         currentLanguage: currentLanguage
                     )
                 }
@@ -53,7 +55,7 @@ struct EditTransactionView: View {
                     // MARK: - Title Input
                     CustomTextField(
                         placeholder: "Title".localized(using: currentLanguage),
-                        text: $viewModel.editedTitle,
+                        text: $viewModel2.editedTitle,
                         isSecure: $isSecure
                     )
                     
@@ -61,32 +63,32 @@ struct EditTransactionView: View {
                     DropDownMenu(
                         title: "Category".localized(using: currentLanguage),
                         options: viewModel.categories.compactMap { $0.name },
-                        selectedOption: $viewModel.editedCategoryName
+                        selectedOption: $viewModel2.editedCategoryName
                     )
                     
                     // MARK: - Date Picker
                     DatePickerField(
-                        date: $viewModel.editedDate,
+                        date: $viewModel2.editedDate,
                         showDatePicker: $showDatePicker
                     )
                     
                     // MARK: - Description Input
                     CustomTextField(
                         placeholder: "Description".localized(using: currentLanguage),
-                        text: $viewModel.editedDescription,
+                        text: $viewModel2.editedDescription,
                         isSecure: $isSecure
                     )
                     
                     // MARK: - Transaction Type Selector
                     TransactionTypeSelector(
-                        selectedType: $viewModel.editedType,
+                        selectedType: $viewModel2.editedType,
                         themeManager: themeManager,
                         currentLanguage: currentLanguage
                     )
                     
                     // MARK: - Image Picker
                     ImagePickerField(
-                        imageData: $viewModel.imageData,
+                        imageData: $viewModel2.imageData,
                         image: "",
                         currentLanguage: currentLanguage
                     )
@@ -94,13 +96,13 @@ struct EditTransactionView: View {
                     // MARK: - Save Button
                     CustomButton(title: "Save".localized(using: currentLanguage), action: {
                         // Validate title
-                        guard !viewModel.editedTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                        guard !viewModel2.editedTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                             AlertManager.shared.showAlert(title: "Error", message: "Title is required!")
                             return
                         }
 
                         // Find the selected category entity
-                        let selectedCategory = viewModel.categories.first { $0.name == viewModel.editedCategoryName }
+                        let selectedCategory = viewModel2.categories.first { $0.name == viewModel2.editedCategoryName }
                         
                         guard let categoryEntity = selectedCategory else {
                             AlertManager.shared.showAlert(title: "Error", message: "Category is required!")
@@ -110,11 +112,11 @@ struct EditTransactionView: View {
                         // Create updated model from user input
                         let updatedTransaction = Transaction(
                             id: transaction.id,
-                            title: viewModel.editedTitle,
-                            description: viewModel.editedDescription,
-                            amount: viewModel.editedAmount,
-                            date: viewModel.editedDate,
-                            transactionType: viewModel.editedType,
+                            title: viewModel2.editedTitle,
+                            description: viewModel2.editedDescription,
+                            amount: viewModel2.editedAmount,
+                            date: viewModel2.editedDate,
+                            transactionType: viewModel2.editedType,
                             category: Category(
                                 id: categoryEntity.id,
                                 name: categoryEntity.name,
@@ -123,11 +125,11 @@ struct EditTransactionView: View {
                                 categoryType: CategoryType(rawValue: categoryEntity.categoryType ?? ""),
                                 budgetLimit: categoryEntity.budgetLimit
                             ),
-                            receiptImage: viewModel.imageData?.base64EncodedString()
+                            receiptImage: viewModel2.imageData?.base64EncodedString()
                         )
 
                         // Save the changes through the view model
-                        viewModel.editTransaction(transaction, updated: updatedTransaction)
+                        viewModel2.editTransaction(transaction, updated: updatedTransaction)
                         dismiss()
                     })
                     .padding(.top, 10)
@@ -153,9 +155,9 @@ struct EditTransactionView: View {
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         // MARK: - Load Data on Appear
         .onAppear {
-            viewModel.initialize(transaction: transaction)
-            viewModel.fetchCategories(userId: userId)
-            print(viewModel.categories)
+            viewModel2.initialize(transaction: transaction)
+            viewModel2.fetchCategories(userId: userId)
+            print(viewModel2.categories)
         }
     }
 }
