@@ -22,18 +22,6 @@ struct LineView: View {
     
     
     var body: some View {
-<<<<<<< Updated upstream
-        var lineChartData = viewModel.getLineChartData(
-            allSelect: allSelect,
-            selectedTab: selectedTab,
-            selectedType: selectedType,
-            selectedMonth: selectedMonth,
-            selectedYear: selectedYear,
-            userId: userId
-        )
-=======
-        
->>>>>>> Stashed changes
         
         VStack{
             Chart{
@@ -68,18 +56,6 @@ struct LineView: View {
         }.onAppear() {
             updateChartData()
         }
-<<<<<<< Updated upstream
-        .onAppear{
-             lineChartData = viewModel.getLineChartData(
-                allSelect: allSelect,
-                selectedTab: selectedTab,
-                selectedType: selectedType,
-                selectedMonth: selectedMonth,
-                selectedYear: selectedYear,
-                userId: userId
-            )
-        }
-=======
         .onChange(of: allSelect) { _ in updateChartData() }
         .onChange(of: selectedType) { _ in updateChartData() }
         .onChange(of: selectedTab) { _ in updateChartData() }
@@ -96,7 +72,6 @@ struct LineView: View {
             selectedYear: selectedYear,
             userId: userId
         )
->>>>>>> Stashed changes
     }
 }
 
