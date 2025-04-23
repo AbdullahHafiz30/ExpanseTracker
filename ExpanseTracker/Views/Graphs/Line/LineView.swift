@@ -19,40 +19,48 @@ struct LineView: View {
     var userId: String
     @EnvironmentObject var themeManager: ThemeManager
     
-    
-    
     var body: some View {
         
+        let image = Image("noData")
+        
         VStack{
-            Chart{
-                ForEach(lineChartData) { dataPoint in
-                    LineMark(
-                        x: .value("Date", dataPoint.date, unit: .day),
-                        y: .value("Balance", dataPoint.balance)
-                    )
-                    .foregroundStyle(themeManager.isDarkMode ? .cyan : .blue)
-                }
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading)
-            }
-            .padding(.vertical)
             
-            HStack{
-                Image(systemName: "chart.line.uptrend.xyaxis")
-                    .font(.title2)
+            if lineChartData.isEmpty {
+                image
+                    .resizable()
+                    .scaledToFit()
+                Text("No Data Found")
+            } else {
+                Chart{
+                    ForEach(lineChartData) { dataPoint in
+                        LineMark(
+                            x: .value("Date", dataPoint.date, unit: .day),
+                            y: .value("Balance", dataPoint.balance)
+                        )
+                        .foregroundStyle(themeManager.isDarkMode ? .cyan : .blue)
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading)
+                }
+                .padding(.vertical)
                 
-                Text("Income")
-                    .font(.title3)
-                
-                Spacer()
-                
-                Image(systemName: "chart.line.downtrend.xyaxis")
-                    .font(.title2)
-                Text("Expense")
-                    .font(.title3)
+                HStack{
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .font(.title2)
+                    
+                    Text("Income")
+                        .font(.title3)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chart.line.downtrend.xyaxis")
+                        .font(.title2)
+                    Text("Expense")
+                        .font(.title3)
+                    
+                }.padding()
             }
-            .padding()
         }.onAppear() {
             updateChartData()
         }
@@ -73,5 +81,5 @@ struct LineView: View {
             userId: userId
         )
     }
+    
 }
-
