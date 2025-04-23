@@ -339,7 +339,6 @@ struct Profile: View {
                 if let index = languageManager.supportedLanguages.firstIndex(of: languageCode) {
                     selectedLanguageIndex = index
                 }
-                presentationMode.wrappedValue.dismiss()
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
