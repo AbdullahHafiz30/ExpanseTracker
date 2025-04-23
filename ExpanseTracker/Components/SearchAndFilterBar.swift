@@ -7,33 +7,36 @@
 
 import SwiftUI
 
-/// A reusable SwiftUI view that displays a search bar with a magnifying glass icon and placeholder text.
+/// A reusable SwiftUI view that displays a localized search bar with a magnifying glass icon and rounded design.
 /// - Parameters:
-///   - searchText: A binding to the text the user enters in the search field.
+///   - searchText: A binding to the user-entered search string.
 struct SearchBar: View {
     
     @Binding var searchText: String
-    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
+    // The current app language for localization.
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     var body: some View {
         HStack {
-            // MARK: - Search Icon
+            
+            // MARK: - Search Icon (magnifying glass)
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
             
             // MARK: - Search Input Field
-            // TextField for user input
             TextField("SearchFor".localized(using: currentLanguage), text: $searchText)
                 .font(.footnote)
                 .foregroundColor(.primary)
+                .disableAutocorrection(true) // Prevent iOS from correcting user input
+                .textInputAutocapitalization(.none) // Prevent capitalization for better search accuracy
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(.gray.opacity(0.15))
         .cornerRadius(50)
-
-        // Capsule border and shadow
+        
+        // MARK: - Border & Shadow Styling
         .overlay {
             Capsule()
                 .stroke(Color(.systemGray4), lineWidth: 0.5)

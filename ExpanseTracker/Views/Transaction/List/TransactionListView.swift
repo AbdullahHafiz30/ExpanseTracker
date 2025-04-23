@@ -8,10 +8,10 @@
 import SwiftUI
 import CoreData
 
-/// The main home screen view that displays transaction data, filters, and navigation.
+/// The main home screen view that displays the user's transaction history, filter controls, summary, and navigation.
 struct TransactionListView: View {
     
-    // MARK: - Variable
+    // MARK: - Environment and State
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
@@ -19,7 +19,7 @@ struct TransactionListView: View {
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
 
     
-    // Dynamically filtered fetch request
+    // MARK: - Core Data FetchRequest
     @FetchRequest private var transacions: FetchedResults<TransacionsEntity>
     
     // MARK: - Initializer with userId binding
@@ -33,27 +33,26 @@ struct TransactionListView: View {
         _transacions = FetchRequest(fetchRequest: request)
     }
     
-    // MARK: - View
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
                     
                     Section {
-                        // Date Range Header
+                        // Display selected date range
                         Text("\(viewModel.startDate.formatted(as: "dd - MMM yy")) **To** \(viewModel.endDate.formatted(as: "dd - MMM yy"))")
                             .font(.caption)
                             .foregroundStyle(.gray)
                             .hSpacing(.leading)
                         
-                        // Summary Card
+                        // Summary card showing total income and expenses
                         CardView(
-                            income: viewModel.total(.income, transactions: transacions),
-                            expense: viewModel.total(.expense, transactions: transacions),
+                            income: viewModel.total(.income, transactions: transacions, filter: viewModel.selectedTab),
+                            expense: viewModel.total(.expense, transactions: transacions, filter: viewModel.selectedTab),
                             currentLanguage: currentLanguage
                         )
                         
-                        // Transaction Type Picker
+                        // Segmented control to filter by transaction type
                         Picker("Type", selection: $viewModel.selectedType) {
                             ForEach(TransactionType.allCases, id: \.self) { type in
                                 Text(type.rawValue.localized(using: currentLanguage)).tag(type)
@@ -62,16 +61,16 @@ struct TransactionListView: View {
                         .pickerStyle(SegmentedPickerStyle())
                         .padding(.bottom, 10)
                         
-                        // Filtered Transactions List
-                        ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedFilter), id: \.self) { transaction in
+                        // List of filtered transactions
+                        ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedTab), id: \.self) { transaction in
                             transactionRow(transaction)
                         }
                         
                     } header: {
-                        // Sticky Header
+                        // Sticky header containing the search bar and filter options
                         HeaderView(
                             searchText: $viewModel.searchText,
-                            selectedTab: $viewModel.selectedFilter,
+                            selectedTab: $viewModel.selectedTab,
                             currentLanguage: currentLanguage
                         )
                     }
@@ -79,6 +78,7 @@ struct TransactionListView: View {
                 .padding(5)
             }
             .onChange(of: viewModel.selectedTab) {
+                // Update the date range when the selected tab changes
                 viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
                 viewModel.endDate = Date()
             }
@@ -86,17 +86,19 @@ struct TransactionListView: View {
     }
     
     // MARK: - Transaction Row Builder
+    /// A view builder function that returns a navigation-enabled swipeable row for each transaction.
     @ViewBuilder
     private func transactionRow(_ transaction: TransacionsEntity) -> some View {
         NavigationLink {
             DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
-
         } label: {
-            SwipeAction(action: {
-                viewModel.deleteTransaction(transaction, viewContext: viewContext)
-            }) {
-                TransactionCardView(transaction: transaction, currentLanguage:currentLanguage, userId: userId)
-
+            SwipeAction(cornerRadius: 10, direction: .trailing, language: currentLanguage) {
+                TransactionCardView(transaction: transaction, currentLanguage: currentLanguage, userId: userId)
+            } actions: {
+                // Swipe-to-delete action
+                Action(tint: .red, icon: "trash") {
+                    viewModel.deleteTransaction(transaction, viewContext: viewContext)
+                }
             }
         }
     }

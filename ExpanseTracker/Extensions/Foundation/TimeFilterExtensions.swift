@@ -17,7 +17,6 @@ extension TimeFilter {
         let calendar = Calendar.current
         
         switch self {
-            
         // Start of the current day
         case .daily:
             return calendar.startOfDay(for: current)

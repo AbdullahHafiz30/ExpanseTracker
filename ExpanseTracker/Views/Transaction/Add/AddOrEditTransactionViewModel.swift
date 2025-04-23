@@ -4,55 +4,68 @@
 //
 //  Created by Rawan on 24/10/1446 AH.
 //
+
 import SwiftUI
 import CoreData
 
+/// A view model responsible for managing the state and logic for adding or editing a transaction.
 class AddOrEditTransactionViewModel: ObservableObject {
+    
+    // MARK: - Published Properties
     @Published var title = ""
     @Published var description = ""
     @Published var amount: String = ""
     @Published var date = Date()
     @Published var type: TransactionType = .expense
     @Published var categoryName = ""
-    @Published var imageData: Data?
-    @Published var amountError: String?
+    @Published var imageData: Data? = nil
     @Published var categories: [CategoryEntity] = []
-    let context = PersistanceController.shared.context
     
+    let context = PersistanceController.shared.context
+
+    // MARK: - Initialize ViewModel from Existing Transaction
+    /// Loads the data of an existing transaction into the form.
+    /// - Parameter transaction: The existing transaction to edit.
     func initialize(with transaction: TransacionsEntity?) {
         if let transaction = transaction {
             title = transaction.title ?? ""
             description = transaction.desc ?? ""
             amount = String(transaction.amount)
+
+            // Parse the stored date string back to Date
             let formatter = DateFormatter()
             formatter.dateFormat = "dd MMM yyyy"
-            if let dateString = transaction.date, let parsedDate = formatter.date(from: dateString) {
+            if let dateString = transaction.date,
+               let parsedDate = formatter.date(from: dateString) {
                 date = parsedDate
             }
+
             type = TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
             categoryName = transaction.category?.name ?? ""
+
+            // Decode image data from Base64 string
             if let base64String = transaction.image,
                let data = Data(base64Encoded: base64String) {
                 imageData = data
             }
-
         }
     }
 
+    // MARK: - Fetch Categories for Logged-In User
+    /// Loads categories associated with the current user.
+    /// - Parameter userId: The ID of the logged-in user.
     func fetchCategories(userId: String) {
-            let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)]
-            
-            // Filter categories where the related user.id matches the provided userId
-            request.predicate = NSPredicate(format: "user.id == %@", userId)
-            
-            do {
-                categories = try context.fetch(request)
-            } catch {
-                print("❌ Failed to fetch categories for user \(userId): \(error.localizedDescription)")
-            }
+        let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \CategoryEntity.name, ascending: true)]
+        request.predicate = NSPredicate(format: "user.id == %@", userId)
+        
+        do {
+            categories = try context.fetch(request)
+        } catch {
+            print("Failed to fetch categories for user \(userId): \(error.localizedDescription)")
         }
-    
+    }
+
     func addTransaction(
         title: String,
         description: String,
@@ -63,28 +76,25 @@ class AddOrEditTransactionViewModel: ObservableObject {
         imageData: Data?,
         userId: String
     ) {
-
         let newTransaction = TransacionsEntity(context: context)
         newTransaction.id = UUID().uuidString
         newTransaction.title = title
         newTransaction.desc = description
         newTransaction.amount = amount
-
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         newTransaction.date = formatter.string(from: date)
-
         newTransaction.transactionType = type.rawValue
 
         if let imageData = imageData {
             newTransaction.image = imageData.base64EncodedString()
         }
 
-        // Create a fetch request to find the user by id
+        // Fetch user and associate transaction with the correct user and category
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
-        // Filter the results
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
-        
+
         let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
 
@@ -94,31 +104,43 @@ class AddOrEditTransactionViewModel: ObservableObject {
                 if let matchedCategory = results.first {
                     newTransaction.category = matchedCategory
                 }
-                
                 existingUserEntity.addToTransaction(newTransaction)
                 PersistanceController.shared.saveContext()
             }
         } catch {
-            print("Error fetching category: \(error.localizedDescription)")
+            print("Error fetching category or user: \(error.localizedDescription)")
         }
 
         do {
             try context.save()
-            print("Transaction saved")
+            print("✅ Transaction saved.")
         } catch {
-            print("Error saving transaction: \(error.localizedDescription)")
+            print("❌ Error saving transaction: \(error.localizedDescription)")
         }
     }
-    
-    func updateTransaction(_ existing: TransacionsEntity, in context: NSManagedObjectContext, selectedCategory: CategoryEntity) {
+
+    // MARK: - Update Existing Transaction
+    /// Updates the specified existing transaction in the database.
+    /// - Parameters:
+    ///   - existing: The TransacionsEntity to update.
+    ///   - context: The NSManagedObjectContext to use for saving.
+    ///   - selectedCategory: The newly selected category to associate.
+    func updateTransaction(
+        _ existing: TransacionsEntity,
+        in context: NSManagedObjectContext,
+        selectedCategory: CategoryEntity
+    ) {
         existing.title = title
         existing.desc = description
         existing.amount = Double(amount) ?? 0.0
+
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         existing.date = formatter.string(from: date)
+
         existing.transactionType = type.rawValue
         existing.category = selectedCategory
+
         if let updatedImageData = imageData {
             existing.image = updatedImageData.base64EncodedString()
         }
@@ -126,45 +148,4 @@ class AddOrEditTransactionViewModel: ObservableObject {
         PersistanceController.shared.saveContext()
         print("Transaction updated.")
     }
-    
-//    func validateAmount(_ input: String) -> String? {
-//        let sanitized = input.replacingOccurrences(of: ",", with: ".")
-//        if let value = Double(sanitized), value >= 0 {
-//            return nil  // Valid input
-//        } else {
-//            return "Please enter a valid number"
-//        }
-//    }
-//    func validateAmount(_ text: String) {
-//        if isValidNumber(text) {
-//            amountError = nil
-//        } else {
-//            amountError = "Price must be a number only."
-//        }
-//    }
-    func isValidNumber(_ text: String) -> Bool {
-        let numberPattern = #"^[0-9.,]+$"#
-        return text.range(of: numberPattern, options: .regularExpression) != nil
-    }
-    func validateAmount(_ text: String) {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !trimmed.isEmpty else {
-            amountError = "Price can not be empty."
-            return
-        }
-
-        guard isValidNumber(trimmed) else {
-            amountError = "Price must be a number only."
-            return
-        }
-
-        let sanitized = trimmed.replacingOccurrences(of: ",", with: ".")
-        if let value = Double(sanitized), value >= 0 {
-            amountError = nil
-        } else {
-            amountError = "Price must be a valid positive number."
-        }
-    }
-
 }

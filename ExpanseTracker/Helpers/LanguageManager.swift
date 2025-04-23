@@ -27,7 +27,7 @@ class LanguageManager: ObservableObject {
     // MARK: - Language Setter
 
     /// Sets the application's language and updates the system preference.
-    /// - Parameter languageCode: The ISO language code to switch to (e.g., "en", "ar").
+    /// - Parameter languageCode: The ISO language code to switch to.
     func setLanguage(_ languageCode: String) {
         if Bundle.main.localizations.contains(languageCode) {
             // Update system preference for language

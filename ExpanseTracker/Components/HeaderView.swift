@@ -7,23 +7,27 @@
 
 import SwiftUI
 
-/// A header view showing a welcome message, user name, and a search/filter bar.
+/// A reusable header view that displays a localized welcome message, the time filter menu, and a custom search bar.
+/// - Parameters:
+///   - searchText: A binding to the current search text input.
+///   - selectedTab: A binding to the selected time filter.
+///   - currentLanguage: The current app language code.
 @ViewBuilder
 func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, currentLanguage: String) -> some View {
     HStack(spacing: 10) {
         
         VStack(alignment: .leading, spacing: 5) {
             
-            HStack{
-                // MARK: - Welcome title
+            HStack {
+                // MARK: - Localized Welcome Title
                 Text("Welcome".localized(using: currentLanguage))
                     .font(.title.bold())
                 
                 Spacer()
                 
-                // MARK: - Time Filter Picker
-                Menu{
-                    Picker("Select Tab", selection: selectedTab) {
+                // MARK: - Time Filter Picker as Menu
+                Menu {
+                    Picker("Select Time Filter", selection: selectedTab) {
                         ForEach(TimeFilter.allCases, id: \.self) { tab in
                             Text(tab.rawValue.localized(using: currentLanguage)).tag(tab)
                         }
@@ -35,21 +39,18 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, c
                 }
             }
             
-            // MARK: - Custom search
-            SearchBar(
-                searchText: searchText
-            )
-            
+            // MARK: - Search Bar
+            SearchBar(searchText: searchText)
         }
     }
     .padding(.bottom, 5)
     .background {
         VStack(spacing: 0) {
-            // Translucent background material
+            // Background layer using system material
             Rectangle()
                 .fill(.background)
         }
-        // Extend the background to cover the horizontal and top safe areas
+        // Expand background to cover the full width and top safe area
         .padding(.horizontal, -15)
         .padding(.top, -(safeArea.top + 15))
     }
