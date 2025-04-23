@@ -41,9 +41,9 @@ struct ListOfSpecificCategoryView: View {
             } else {
                 List {
                     ForEach(transactions, id: \.id) { transaction in
-                        TransactionCardView(transaction: transaction)
-                            .environmentObject(ThemeManager()) 
-                            .padding(.vertical, 8)
+//                        TransactionCardView(transaction: transaction)
+//                            .environmentObject(ThemeManager())
+//                            .padding(.vertical, 8)
                     }
                     
                 }

@@ -11,6 +11,7 @@ enum TransactionType: String, CaseIterable, Codable, Identifiable {
     // A unique identifier for the transaction type, based on its raw string value.
     var id: String { rawValue }
     
-    case income = "Income"
     case expense = "Expense"
+    case income = "Income"
+    
 }

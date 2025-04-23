@@ -13,6 +13,7 @@ struct CardView: View {
     // MARK: - Variable
     var income: Double
     var expense: Double
+    var currentLanguage: String
     
     @EnvironmentObject var themeManager: ThemeManager
     
@@ -64,7 +65,7 @@ struct CardView: View {
                             
                             // Labels: "Income" or "Expense" and the corresponding amount
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(type.rawValue)
+                                Text(type.rawValue.localized(using: currentLanguage))
                                     .font(.caption2)
                                     .foregroundStyle(.gray)
                                 

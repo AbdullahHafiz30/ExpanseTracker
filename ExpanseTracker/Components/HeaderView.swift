@@ -9,14 +9,14 @@ import SwiftUI
 
 /// A header view showing a welcome message, user name, and a search/filter bar.
 @ViewBuilder
-func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -> some View {
+func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, currentLanguage: String) -> some View {
     HStack(spacing: 10) {
         
         VStack(alignment: .leading, spacing: 5) {
             
             HStack{
                 // MARK: - Welcome title
-                Text("Welcome!")
+                Text("Welcome".localized(using: currentLanguage))
                     .font(.title.bold())
                 
                 Spacer()
@@ -25,7 +25,7 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>) -
                 Menu{
                     Picker("Select Tab", selection: selectedTab) {
                         ForEach(TimeFilter.allCases, id: \.self) { tab in
-                            Text(tab.rawValue).tag(tab)
+                            Text(tab.rawValue.localized(using: currentLanguage)).tag(tab)
                         }
                     }
                 } label: {

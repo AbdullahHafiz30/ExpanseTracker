@@ -15,12 +15,12 @@ final class TransactionViewModel: ObservableObject {
     
     // MARK: - Published Variable
     @Published var searchText: String = ""
-    @Published var selectedType: TransactionType = .income
+    @Published var selectedType: TransactionType = .expense
     @Published var selectedTab: TimeFilter = .monthly
     @Published var startDate: Date = TimeFilter.monthly.startDate(from: Date())
     @Published var endDate: Date = Date()
     @Published var transactions: [TransacionsEntity] = []
-    @Published var selectedFilter: TimeFilter = .daily
+    @Published var selectedFilter: TimeFilter = .weekly
 
     // MARK: - Transaction Filtering Logic
         

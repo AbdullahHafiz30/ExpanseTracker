@@ -11,11 +11,11 @@ import SwiftUI
 /// - Parameters:
 ///   - selectedType: A Binding to the currently selected TransactionType.
 ///   - themeManager: A ThemeManager instance used to  style the selector based on light/dark mode.
-func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManager: ThemeManager) -> some View {
+func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManager: ThemeManager, currentLanguage: String) -> some View {
     VStack(alignment: .leading) {
         
         // MARK: - Section title
-        Text("Transaction type:")
+        Text("Transactiontype".localized(using: currentLanguage))
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
             .padding(.leading, 5)
@@ -37,7 +37,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
                 let borderWidth: CGFloat = isSelected ? 0 : 1
                 
                 // Display each type as a capsule-shaped button
-                Text(type.rawValue.capitalized)
+                Text(type.rawValue.localized(using: currentLanguage))
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(Capsule().fill(fillColor))
@@ -47,7 +47,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
                             lineWidth: borderWidth
                         )
                     )
-                    .foregroundColor(themeManager.textColor) 
+                    .foregroundColor(themeManager.textColor)
                     .onTapGesture {
                         // Update selected type on tap
                         selectedType.wrappedValue = type

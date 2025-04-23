@@ -66,7 +66,7 @@ struct DropDownMenu: View {
                         }
                     }
                 }
-                .background(RoundedRectangle(cornerRadius: 7).stroke(themeManager.backgroundColor, lineWidth: 1))
+                .background(RoundedRectangle(cornerRadius: 7).stroke(themeManager.textColor, lineWidth: 1))
             }
         }
     }
