@@ -43,7 +43,7 @@
 "Transactiontype" = "Transaction type:";
 "Income" = "Income";
 "Expense" = "Expense";
-"SetYourBudget" = "You need to set your budget first!";
+"SetYourBudget" = "You need to set your budget first from budget field in profile page!";
 "CategoryNameRequired" = "Category name is required!";
 "Error" = "Error";
 "OK" = "OK";
@@ -72,3 +72,5 @@
 "Profile" = "Profile";
 "NoTransaction" = "No transactions available for this category.";
 "SearchFor" = "Search for ...";
+"SaveChange" = "There are no changes to save.";
+"All" = "All";

@@ -23,11 +23,11 @@ struct CategoryFunctionallity: View {
     @Namespace var animation
     var id: String
     @State private var showNameAlert: Bool = false
-    @Binding var userId: String
+    var userId: String
     @Environment(\.dismiss) var dismiss
     @StateObject var budgetViewModel = BudgetViewModel()
     @StateObject private var alertManager = AlertManager.shared
-    @Binding var type: String
+    var type: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     // MARK: - UI Design
     var body: some View {

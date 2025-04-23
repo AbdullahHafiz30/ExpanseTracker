@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - Category Type Button
 struct CategoryTypeButton: View {
-    let title: LocalizedStringKey
+    let title: String
     let isSelected: Bool
     var animation: Namespace.ID
     let action: () -> Void

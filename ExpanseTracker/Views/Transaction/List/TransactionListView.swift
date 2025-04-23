@@ -16,18 +16,18 @@ struct TransactionListView: View {
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
     
-    @Binding var userId: String
+    var userId: String
     
     // Dynamically filtered fetch request
     @FetchRequest private var transacions: FetchedResults<TransacionsEntity>
     
     // MARK: - Initializer with userId binding
-    init(userId: Binding<String>) {
-        self._userId = userId
-        
+    init(userId: String) {
+        self.userId = userId
+    
         let request: NSFetchRequest<TransacionsEntity> = TransacionsEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)]
-        request.predicate = NSPredicate(format: "user.id == %@", userId.wrappedValue)
+        request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         _transacions = FetchRequest(fetchRequest: request)
     }
@@ -73,7 +73,7 @@ struct TransactionListView: View {
                         )
                     }
                 }
-                .padding(15)
+                .padding(5)
             }
             .onChange(of: viewModel.selectedTab) {
                 viewModel.startDate = viewModel.selectedTab.startDate(from: Date())

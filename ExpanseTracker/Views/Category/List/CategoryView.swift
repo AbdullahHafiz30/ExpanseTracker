@@ -6,80 +6,78 @@ struct CategoryView: View {
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
     @Namespace private var animation
-    @Binding var userId: String
+    var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
-
-    init(userId: Binding<String>) {
-        self._userId = userId
-        _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+    init(userId: String) {
+        self.userId = userId
+        _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId))
     }
-
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                HStack {
-                    Text("Categories".localized(using: currentLanguage))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-                        .font(.custom("Poppins-Bold", size: 36))
-                        .fontWeight(.bold)
-                        .padding(.top , 20)
-                        .padding(.leading , 20)
-
-                    Spacer()
-                    addButton
-                        .padding(.top, 20)
-                        .padding(.trailing, 20)
-                }
-
-                searchBarView
-                categoryTypeFilter
-                categoryList
-                
-            }.onChange(of: userId) { _ , newUserId in
-                viewModel.userId = newUserId
-                viewModel.loadCategories()
-            }
-            .navigationTitle("Categories".localized(using: currentLanguage))
-            .navigationBarTitleDisplayMode(.large)
-            .onAppear {
-                viewModel.loadCategories()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    addButton
-                }
-            }
-            .fullScreenCover(isPresented: $showingAddCategory) {
-                CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
-                    .environmentObject(viewModel)
-                    .onDisappear {
-                        viewModel.loadCategories()
+        ZStack {
+            NavigationStack {
+                VStack(spacing: 16) {
+                    HStack {
+                        Text("Categories".localized(using: currentLanguage))
+                            .foregroundColor(themeManager.isDarkMode ? .white : .black)
+                            .font(.custom("Poppins-Bold", size: 36))
+                            .fontWeight(.bold)
+                            .padding(.top , 20)
+                            .padding(.leading , 20)
+                        
+                        Spacer()
+                        addButton
+                            .padding(.top, 20)
+                            .padding(.trailing, 20)
                     }
+                    
+                    searchBarView
+                    categoryTypeFilter
+                    categoryList
+                    
+                }.onChange(of: userId) { _ , newUserId in
+                    viewModel.userId = newUserId
+                    viewModel.loadCategories()
+                }
+                .navigationTitle("Categories".localized(using: currentLanguage))
+                .navigationBarTitleDisplayMode(.large)
+                
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        addButton
+                    }
+                }
+                .fullScreenCover(isPresented: $showingAddCategory) {
+                    CategoryFunctionallity(id: "", userId: userId, type: "Add")
+                        .environmentObject(viewModel)
+                        .onDisappear {
+                            viewModel.loadCategories()
+                        }
+                }
+                .background(themeManager.isDarkMode ? Color.black : Color.white) // Dynamic background
             }
-            .background(colorScheme == .dark ? Color.black : Color.white) // Dynamic background
         }
+        .onAppear {
+            viewModel.loadCategories()
+        }
+        
     }
-
+    
     // MARK: - Search Bar View
     private var searchBarView: some View {
-        CategorySearchBar(searchText: $viewModel.searchText)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(colorScheme == .dark ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
-            )
+        SearchBar(searchText: $viewModel.searchText)
     }
-
+    
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
-            types: ["All"] + CategoryType.allCases.map { $0.rawValue.localized(using: currentLanguage) },
+            types: ["All"] + CategoryType.allCases.map { $0.rawValue},
             selectedType: $selectedType,
             selectedCategoryType: $viewModel.selectedType,
             animation: animation
         )
     }
-
+    
     // MARK: - Category List
     private var categoryList: some View {
         List {
@@ -102,29 +100,34 @@ struct CategoryView: View {
                 .swipeActions(edge: .leading) {
                     if let id = category.id {
                         NavigationLink {
-                            CategoryFunctionallity(id: id, userId: $userId, type: .constant("Edit"))
+                            CategoryFunctionallity(id: id, userId: userId, type: "Edit")
                         } label: {
                             Label("Edit".localized(using: currentLanguage), systemImage: "pencil")
                         }
                     }
+                    
                 }
-                .listRowBackground(colorScheme == .dark ? Color.black : Color.white) // Adaptive list row
-                .listRowSeparator(.hidden)
+                .listRowBackground(themeManager.isDarkMode ? Color.black : Color.white) // Adaptive list row
+                Divider()
+                    .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
             }
+            .listRowSeparator(.hidden)
         }
+        .id(currentLanguage)
+        .scrollIndicators(.hidden)
         .listStyle(.plain)
         .padding(.bottom, 20)
     }
-
+    
     // MARK: - Add Button
     private var addButton: some View {
         Button {
             showingAddCategory = true
         } label: {
             Image(systemName: "plus")
-                .foregroundColor(colorScheme == .dark ? .black : .white) // Adaptive icon color
+                .foregroundColor(themeManager.isDarkMode ? .black : .white) // Adaptive icon color
                 .padding(12)
-                .background(Circle().fill(colorScheme == .dark ? Color.white : Color.accentColor)) // Adaptive circle color
+                .background(Circle().fill(themeManager.isDarkMode ? Color.white : Color.black)) // Adaptive circle color
         }
     }
 }
@@ -136,14 +139,14 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    @Environment(\.colorScheme) var colorScheme
-
+    @EnvironmentObject var themeManager: ThemeManager
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(types, id: \.self) { type in
                     CategoryTypeButton(
-                        title: LocalizedStringKey(type),
+                        title: type.localized(using: currentLanguage) ,
                         isSelected: selectedType == type,
                         animation: animation,
                         action: {
@@ -159,7 +162,7 @@ private struct CategoryTypeFilterView: View {
                     )
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(colorScheme == .dark ? Color.white.opacity(0.6) : Color.black.opacity(0.05)) // Adaptive background
+                            .fill(themeManager.isDarkMode ? Color.white.opacity(0.6) : Color.black.opacity(0.05)) // Adaptive background
                     )
                 }
             }

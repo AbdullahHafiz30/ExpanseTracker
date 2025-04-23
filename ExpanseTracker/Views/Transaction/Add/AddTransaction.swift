@@ -20,11 +20,11 @@ struct AddTransaction: View {
     @State private var amountError: String?
     @StateObject private var transVM = AddTransactionViewModel()
     @State private var selectedType: TransactionType = .income
-    @Binding var userId: String
+    var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    init(userId: Binding<String>) {
-            self._userId = userId
-            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+    init(userId: String) {
+            self.userId = userId
+            _categoryVM = StateObject(wrappedValue: CategoryViewModel(userId: userId))
         }
     
     //MARK: - View

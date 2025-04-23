@@ -12,7 +12,7 @@ struct ListOfSpecificCategoryView: View {
     // The name of the category to filter transactions
     var categoryName: String
     @Environment(\.dismiss) var dismiss
-
+    @State var selectedTransaction: TransacionsEntity? = nil
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
     @FetchRequest private var transactions: FetchedResults<TransacionsEntity>
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
@@ -26,12 +26,12 @@ struct ListOfSpecificCategoryView: View {
             predicate: NSPredicate(format: "category.name == %@", categoryName)
         )
     }
-
+    
     var body: some View {
         VStack(alignment: .leading)  {
             CustomBackward(title:"\(categoryName)", tapEvent: { dismiss() })
                 .frame(maxWidth: .infinity, alignment: .leading)
-
+            
             if transactions.isEmpty {
                 Spacer()
                 Text("NoTransaction".localized(using: currentLanguage))
@@ -39,16 +39,38 @@ struct ListOfSpecificCategoryView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 Spacer()
             } else {
-                List {
-                    ForEach(transactions, id: \.id) { transaction in
-                        TransactionCardView(transaction: transaction)
-                            .environmentObject(ThemeManager()) 
-                            .padding(.vertical, 8)
+                //              //  List {
+                //                    List(transactions, id: \.id) { transaction in
+                //                        TransactionCardView(transaction: transaction)
+                //                            .environmentObject(ThemeManager())
+                //                            .padding(.vertical, 8)
+                //                   // }
+                //
+                //                }
+                //                .scrollContentBackground(.hidden)
+                //                .listStyle(.plain)
+                
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(transactions, id: \.id) { transaction in
+                            Button {
+                                selectedTransaction =  transaction
+                            } label: {
+                                HStack {
+                                    TransactionCardView(transaction: transaction)
+                                        .environmentObject(ThemeManager())
+                                        .padding(.vertical, 8)
+                                }
+
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    
                 }
-                .scrollContentBackground(.hidden)
-                .listStyle(.insetGrouped)
+                .navigationDestination(item: $selectedTransaction) { transaction in
+                    DetailsHomeView(transaction: transaction)
+                }
+                
             }
         }
         .padding()

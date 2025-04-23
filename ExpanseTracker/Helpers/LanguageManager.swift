@@ -14,7 +14,15 @@ class LanguageManager: ObservableObject {
     static let shared = LanguageManager()
     
     // The currently selected language code (e.g., "en", "ar").
-    @Published var language: String = "en"
+    @Published var language: String {
+        didSet{
+            UserDefaults.standard.set([language], forKey: "AppleLanguages")
+        }
+    }
+    
+    init(){
+        self.language = UserDefaults.standard.string(forKey: "AppleLanguages") ?? "en"
+    }
     
     // MARK: - Language Setter
 

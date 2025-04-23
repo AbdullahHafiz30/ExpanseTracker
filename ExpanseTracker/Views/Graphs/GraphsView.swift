@@ -9,15 +9,14 @@
 import SwiftUI
 
 struct GraphsView: View {
-    
-    
+
     @State private var allSelect : Bool = true
     @State private var selectedTab: DateTab = .monthly
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
-    @Binding var userId: String
+    var userId: String
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -39,9 +38,9 @@ struct GraphsView: View {
                 
                 TabView(selection: $tabSelectedValue,
                         content:  {
-                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(0).padding()
-                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(1).padding()
-                    LineView().tag(2)
+                    PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(0).padding()
+                    BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(1).padding()
+                    LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(2)
                 })
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
