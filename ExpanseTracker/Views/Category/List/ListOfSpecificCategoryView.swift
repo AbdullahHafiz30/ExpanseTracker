@@ -16,6 +16,7 @@ struct ListOfSpecificCategoryView: View {
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
     @FetchRequest private var transactions: FetchedResults<TransacionsEntity>
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    var userId: String
     
     // Custom initializer to apply the predicate based on the selected category name
     init(categoryName: String) {
@@ -25,6 +26,7 @@ struct ListOfSpecificCategoryView: View {
             sortDescriptors: [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)],
             predicate: NSPredicate(format: "category.name == %@", categoryName)
         )
+        self.userId = ""
     }
     
     var body: some View {
@@ -39,17 +41,7 @@ struct ListOfSpecificCategoryView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 Spacer()
             } else {
-                //              //  List {
-                //                    List(transactions, id: \.id) { transaction in
-                //                        TransactionCardView(transaction: transaction)
-                //                            .environmentObject(ThemeManager())
-                //                            .padding(.vertical, 8)
-                //                   // }
-                //
-                //                }
-                //                .scrollContentBackground(.hidden)
-                //                .listStyle(.plain)
-                
+
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(transactions, id: \.id) { transaction in
@@ -57,7 +49,7 @@ struct ListOfSpecificCategoryView: View {
                                 selectedTransaction =  transaction
                             } label: {
                                 HStack {
-                                    TransactionCardView(transaction: transaction)
+                                    TransactionCardView(transaction: transaction, currentLanguage: currentLanguage, userId: userId)
                                         .environmentObject(ThemeManager())
                                         .padding(.vertical, 8)
                                 }
@@ -68,7 +60,7 @@ struct ListOfSpecificCategoryView: View {
                     }
                 }
                 .navigationDestination(item: $selectedTransaction) { transaction in
-                    DetailsHomeView(transaction: transaction)
+                    DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
                 }
                 
             }

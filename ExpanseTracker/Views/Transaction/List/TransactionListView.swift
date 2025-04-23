@@ -15,8 +15,9 @@ struct TransactionListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = TransactionViewModel()
     @EnvironmentObject var themeManager: ThemeManager
-    
     var userId: String
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+
     
     // Dynamically filtered fetch request
     @FetchRequest private var transacions: FetchedResults<TransacionsEntity>
@@ -48,13 +49,14 @@ struct TransactionListView: View {
                         // Summary Card
                         CardView(
                             income: viewModel.total(.income, transactions: transacions),
-                            expense: viewModel.total(.expense, transactions: transacions)
+                            expense: viewModel.total(.expense, transactions: transacions),
+                            currentLanguage: currentLanguage
                         )
                         
                         // Transaction Type Picker
                         Picker("Type", selection: $viewModel.selectedType) {
                             ForEach(TransactionType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
+                                Text(type.rawValue.localized(using: currentLanguage)).tag(type)
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())
@@ -69,7 +71,8 @@ struct TransactionListView: View {
                         // Sticky Header
                         HeaderView(
                             searchText: $viewModel.searchText,
-                            selectedTab: $viewModel.selectedFilter
+                            selectedTab: $viewModel.selectedFilter,
+                            currentLanguage: currentLanguage
                         )
                     }
                 }
@@ -86,12 +89,14 @@ struct TransactionListView: View {
     @ViewBuilder
     private func transactionRow(_ transaction: TransacionsEntity) -> some View {
         NavigationLink {
-            DetailsHomeView(transaction: transaction)
+            DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
+
         } label: {
             SwipeAction(action: {
                 viewModel.deleteTransaction(transaction, viewContext: viewContext)
             }) {
-                TransactionCardView(transaction: transaction)
+                TransactionCardView(transaction: transaction, currentLanguage:currentLanguage, userId: userId)
+
             }
         }
     }

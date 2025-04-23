@@ -8,6 +8,7 @@ struct CategoryView: View {
     @Namespace private var animation
     var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+
     init(userId: String) {
         self.userId = userId
         _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId))
@@ -41,7 +42,6 @@ struct CategoryView: View {
                 }
                 .navigationTitle("Categories".localized(using: currentLanguage))
                 .navigationBarTitleDisplayMode(.large)
-                
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         addButton
@@ -49,6 +49,7 @@ struct CategoryView: View {
                 }
                 .fullScreenCover(isPresented: $showingAddCategory) {
                     CategoryFunctionallity(id: "", userId: userId, type: "Add")
+
                         .environmentObject(viewModel)
                         .onDisappear {
                             viewModel.loadCategories()
@@ -66,6 +67,7 @@ struct CategoryView: View {
     // MARK: - Search Bar View
     private var searchBarView: some View {
         SearchBar(searchText: $viewModel.searchText)
+        
     }
     
     // MARK: - Category Type Filter Buttons
@@ -108,8 +110,10 @@ struct CategoryView: View {
                     
                 }
                 .listRowBackground(themeManager.isDarkMode ? Color.black : Color.white) // Adaptive list row
+                
                 Divider()
                     .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
+
             }
             .listRowSeparator(.hidden)
         }
@@ -139,6 +143,7 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {

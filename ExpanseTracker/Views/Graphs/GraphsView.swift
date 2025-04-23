@@ -17,6 +17,9 @@ struct GraphsView: View {
     @State private var selectedCategoryType: CategoryType? = nil
     @State var tabSelectedValue = 0
     var userId: String
+    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         VStack(spacing: 16) {
             GraphsViewHeader(
@@ -24,7 +27,8 @@ struct GraphsView: View {
                 selectedTab: $selectedTab,
                 selectedMonth: $selectedMonth,
                 selectedYear: $selectedYear,
-                selectedType: $selectedCategoryType
+                selectedType: $selectedCategoryType,
+                currentLanguage: currentLanguage
             )
             
             VStack {
@@ -42,21 +46,17 @@ struct GraphsView: View {
                     BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(1).padding()
                     LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(2)
                 })
+                .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
                 .padding()
                 
             }
-            
-            Text("Selected: \(selectedTab == .monthly ? "\(Calendar.current.monthSymbols[selectedMonth]) \(selectedYear)" : "\(selectedYear)")")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-
-            Spacer()
             Spacer()
             // Chart view can go here
         }
         .padding(.top)
     }
 }
+
 
