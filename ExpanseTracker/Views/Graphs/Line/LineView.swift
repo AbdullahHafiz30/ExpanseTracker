@@ -20,7 +20,7 @@ struct LineView: View {
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
-        let lineChartData = viewModel.getLineChartData(
+        var lineChartData = viewModel.getLineChartData(
             allSelect: allSelect,
             selectedTab: selectedTab,
             selectedType: selectedType,
@@ -60,7 +60,16 @@ struct LineView: View {
             }
             .padding()
         }
-        
+        .onAppear{
+             lineChartData = viewModel.getLineChartData(
+                allSelect: allSelect,
+                selectedTab: selectedTab,
+                selectedType: selectedType,
+                selectedMonth: selectedMonth,
+                selectedYear: selectedYear,
+                userId: userId
+            )
+        }
     }
 }
 
