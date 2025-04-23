@@ -6,15 +6,14 @@ struct CategoryView: View {
     @State private var showingAddCategory = false
     @State private var selectedType: String = "All"
     @Namespace private var animation
-    @Binding var userId: String
+    var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-   // @Environment(\.colorScheme) var colorScheme  // Detect current color scheme (light/dark)
 
-    init(userId: Binding<String>) {
-        self._userId = userId
-        _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId.wrappedValue))
+    init(userId: String) {
+        self.userId = userId
+        _viewModel = StateObject(wrappedValue: CategoryViewModel(userId: userId))
     }
-
+    
     var body: some View {
         ZStack {
             NavigationStack {
@@ -43,14 +42,14 @@ struct CategoryView: View {
                 }
                 .navigationTitle("Categories".localized(using: currentLanguage))
                 .navigationBarTitleDisplayMode(.large)
-              
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         addButton
                     }
                 }
                 .fullScreenCover(isPresented: $showingAddCategory) {
-                    CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
+                    CategoryFunctionallity(id: "", userId: userId, type: "Add")
+
                         .environmentObject(viewModel)
                         .onDisappear {
                             viewModel.loadCategories()
@@ -61,30 +60,26 @@ struct CategoryView: View {
         }
         .onAppear {
             viewModel.loadCategories()
-            print(viewModel.categories)
         }
+        
     }
-       
-
+    
     // MARK: - Search Bar View
     private var searchBarView: some View {
-        CategorySearchBar(searchText: $viewModel.searchText)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(themeManager.isDarkMode ? Color.white.opacity(0.1) : Color.gray.opacity(0.1)) // Adaptive background
-            )
+        SearchBar(searchText: $viewModel.searchText)
+        
     }
-
+    
     // MARK: - Category Type Filter Buttons
     private var categoryTypeFilter: some View {
         CategoryTypeFilterView(
-            types: ["All"] + CategoryType.allCases.map { $0.rawValue.localized(using: currentLanguage) },
+            types: ["All"] + CategoryType.allCases.map { $0.rawValue},
             selectedType: $selectedType,
             selectedCategoryType: $viewModel.selectedType,
             animation: animation
         )
     }
-
+    
     // MARK: - Category List
     private var categoryList: some View {
         List {
@@ -107,20 +102,27 @@ struct CategoryView: View {
                 .swipeActions(edge: .leading) {
                     if let id = category.id {
                         NavigationLink {
-                            CategoryFunctionallity(id: id, userId: $userId, type: .constant("Edit"))
+                            CategoryFunctionallity(id: id, userId: userId, type: "Edit")
                         } label: {
                             Label("Edit".localized(using: currentLanguage), systemImage: "pencil")
                         }
                     }
+                    
                 }
                 .listRowBackground(themeManager.isDarkMode ? Color.black : Color.white) // Adaptive list row
-                .listRowSeparator(.hidden)
+                
+                Divider()
+                    .background(themeManager.isDarkMode ? .white : .gray.opacity(0.3))
+
             }
+            .listRowSeparator(.hidden)
         }
+        .id(currentLanguage)
+        .scrollIndicators(.hidden)
         .listStyle(.plain)
         .padding(.bottom, 20)
     }
-
+    
     // MARK: - Add Button
     private var addButton: some View {
         Button {
@@ -141,14 +143,15 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-   // @Environment(\.colorScheme) var colorScheme
+
     @EnvironmentObject var themeManager: ThemeManager
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(types, id: \.self) { type in
                     CategoryTypeButton(
-                        title: LocalizedStringKey(type),
+                        title: type.localized(using: currentLanguage) ,
                         isSelected: selectedType == type,
                         animation: animation,
                         action: {

@@ -17,7 +17,7 @@ struct Profile: View {
     @State var userName = ""
     @State var userEmail: String = ""
     @State var userPassword: String = ""
-    @Binding var userId: String
+    var userId: String
     @State var userBudget: Double = 100
     @State var userSpend: Double = 500
     @StateObject var budgetViewModel = BudgetViewModel()
@@ -32,6 +32,7 @@ struct Profile: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var isDeleting: Bool = false
     var coreViewModel = CoreDataHelper()
+    @State var user: User? = nil
     // MARK: - UI Design
     var body: some View {
         ZStack{
@@ -111,7 +112,7 @@ struct Profile: View {
                     ScrollView{
                         Section {
                             HStack {
-                                NavigationLink(destination: AccountInformation(userId: $userId, currentLanguage: currentLanguage)) {
+                                NavigationLink(destination: ViwAndEditAccountInformation(userId: userId, currentLanguage: currentLanguage, user: $user, isEdit: false)) {
                                     Image(systemName: "gearshape")
                                     Text("AccountInformation".localized(using: currentLanguage))
                                     
@@ -185,6 +186,19 @@ struct Profile: View {
                         }
                         .padding(.horizontal,5)
                         .padding(.top, 10)
+                        .alert(isPresented: $showSettingsAlert) {
+                            Alert(
+                                title: Text("NotificationsDisabled".localized(using: currentLanguage)),
+                                message: Text("NotificationSettings".localized(using: currentLanguage)),
+                                primaryButton: .default(Text("OpenSettings".localized(using: currentLanguage))) {
+                                    if let appSettings = URL(string: UIApplication.openSettingsURLString),
+                                       UIApplication.shared.canOpenURL(appSettings) {
+                                        UIApplication.shared.open(appSettings)
+                                    }
+                                },
+                                secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage)))
+                            )
+                        }
                         
                         Section{
                             HStack {
@@ -221,6 +235,7 @@ struct Profile: View {
                                 }
                                 .onTapGesture {
                                     isArabic.toggle()
+                                    
                                 }
                                 
                             }
@@ -262,6 +277,29 @@ struct Profile: View {
                         .padding(.horizontal,5)
                         .padding(.top, 10)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
+                                isDeleting = true
+                                //delete from firebase
+                                    auth.deleteUserAccount(email: userEmail, password: userPassword) { result in
+                                        DispatchQueue.main.async {
+                                            switch result {
+                                            case .success:
+                                                // Delete from CoreData
+                                                CoreDataHelper().deleteUser(userId: userId,password: userPassword)
+                                                // Reset app state
+                                                isDeleting = false
+                                                backHome = true
+                                                
+                                            case .failure(_):
+                                                isDeleting = false
+                                                AlertManager.shared.showAlert(title: "Error", message: "Account deletion failed!")
+                                            }
+                                        }
+                                    }
+                                
+                            } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
+                        }
                     }
                     .scrollIndicators(.hidden)
                     .padding()
@@ -271,19 +309,19 @@ struct Profile: View {
                 // MARK: - Get user information from core
                 // Fetch the user from Core Date using user id
                 DispatchQueue.global(qos: .userInitiated).async {
-                    let user = coreViewModel.fetchUserFromCoreData(uid: userId)
+                    user = coreViewModel.fetchUserFromCoreData(uid: userId)
+                    // Fetch the Current Month Budget from Core Date using user id
+                    let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
+                    let spend = budgetViewModel.getUserSpending(userId: userId)
                     DispatchQueue.main.async {
+                        // Assign its properties to local state variables
                         userName = user?.name ?? "Guest"
                         userEmail = user?.email ?? ""
                         userPassword = user?.password ?? ""
+                        userBudget = budget?.amount ?? 0.0
+                        userSpend = spend
                     }
                 }
-                // Fetch the Current Month Budget from Core Date using user id
-                let budget = budgetViewModel.fetchCurrentMonthBudget(userId: userId)
-                let spend = budgetViewModel.getUserSpending(userId: userId)
-                // Assign its properties to local state variables
-                userBudget = budget?.amount ?? 0.0
-                userSpend = spend
                 
                 // Set the badge count of the app icon to 0
                 UNUserNotificationCenter.current().setBadgeCount(0) { error in
@@ -310,20 +348,7 @@ struct Profile: View {
                 }
             }
             .sheet(isPresented: $isPresented) {
-                SetBudget(isPresented: $isPresented, userId: $userId, budgetAmount: $userBudget)
-            }
-            .alert(isPresented: $showSettingsAlert) {
-                Alert(
-                    title: Text("NotificationsDisabled".localized(using: currentLanguage)),
-                    message: Text("NotificationSettings".localized(using: currentLanguage)),
-                    primaryButton: .default(Text("OpenSettings".localized(using: currentLanguage))) {
-                        if let appSettings = URL(string: UIApplication.openSettingsURLString),
-                           UIApplication.shared.canOpenURL(appSettings) {
-                            UIApplication.shared.open(appSettings)
-                        }
-                    },
-                    secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage)))
-                )
+                SetBudget(isPresented: $isPresented, userId: userId, budgetAmount: userBudget)
             }
             .onChange(of: isPresented) { oldValue, newValue in
                 if !newValue {
@@ -339,7 +364,6 @@ struct Profile: View {
                 if let index = languageManager.supportedLanguages.firstIndex(of: languageCode) {
                     selectedLanguageIndex = index
                 }
-                presentationMode.wrappedValue.dismiss()
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
@@ -364,6 +388,7 @@ struct Profile: View {
                     
                 } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
             }
+
             if isDeleting {
                 ProgressView("Deleting".localized(using: currentLanguage))
                     .padding()
@@ -371,7 +396,8 @@ struct Profile: View {
                     .cornerRadius(10)
                     .shadow(radius: 10)
             }
-        } //cover the whole page with the welcome page
+        }
+        //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
         }

@@ -5,6 +5,13 @@
 //  Created by Rayaheen Mseri on 15/10/1446 AH.
 //
 
+//
+//  MainTabView.swift
+//  ExpanseTracker
+//
+//  Created by Rayaheen Mseri on 15/10/1446 AH.
+//
+
 
 import SwiftUI
 
@@ -23,13 +30,13 @@ struct MainTabView: View {
         NavigationStack{
             ZStack {
                 TabView(selection: $selectedTab) {
-                    TransactionListView(userId: .constant(uid ?? ""))
+                    TransactionListView(userId: uid ?? "")
                         .tabItem {
                             Image(systemName: "house")
                             Text("Home".localized(using: currentLanguage))
                         }.tag(0)
                     
-                    CategoryView(userId: .constant(uid ?? ""))
+                    CategoryView(userId: uid ?? "")
                         .tabItem {
                             Image(systemName: "doc.on.doc")
                             Text("Categories".localized(using: currentLanguage))
@@ -37,13 +44,13 @@ struct MainTabView: View {
                     
                     Spacer()
                     
-                    GraphsView(userId: .constant(uid ?? ""))
+                    GraphsView(userId: uid ?? "")
                         .tabItem {
                             Image(systemName: "chart.bar.xaxis.ascending")
                             Text("Stats".localized(using: currentLanguage))
                         }.tag(2)
                     
-                    Profile(userId: .constant(uid ?? "") ,auth:auth)
+                    Profile(userId: uid ?? "" ,auth:auth)
                         .tabItem {
                             Image(systemName: "person.crop.circle")
                             Text("Profile".localized(using: currentLanguage))
