@@ -17,28 +17,15 @@ struct BarView: View {
     @Binding var selectedTab: DateTab
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
+    @State var chartData: [Bar] = []
+    @State var pieData: [Test] = []
+    
     var userId: String
     
     
     var body: some View {
         
         let image = Image("noData")
-        
-        let chartData = viewModel.getData(
-            allSelect: allSelect,
-            selectedTab: selectedTab,
-            selectedType: selectedType,
-            selectedMonth: selectedMonth,
-            selectedYear: selectedYear,
-            userId: userId)
-        
-        let pieData = viewModel1.getData(
-            allSelect: allSelect,
-            selectedTab: selectedTab,
-            selectedType: selectedType,
-            selectedMonth: selectedMonth,
-            selectedYear: selectedYear,
-            userId: userId)
         
         VStack {
             if chartData.isEmpty {
@@ -80,6 +67,31 @@ struct BarView: View {
                     }
                 }
             }
+        }.onAppear{
+            updateChartData()
         }
+        .onChange(of: allSelect) { _ in updateChartData() }
+        .onChange(of: selectedType) { _ in updateChartData() }
+        .onChange(of: selectedTab) { _ in updateChartData() }
+        .onChange(of: selectedMonth) { _ in updateChartData() }
+        .onChange(of: selectedYear) { _ in updateChartData() }
+    }
+    
+    private func updateChartData() {
+        chartData = viewModel.getData(
+            allSelect: allSelect,
+            selectedTab: selectedTab,
+            selectedType: selectedType,
+            selectedMonth: selectedMonth,
+            selectedYear: selectedYear,
+            userId: userId)
+        
+        pieData = viewModel1.getData(
+            allSelect: allSelect,
+            selectedTab: selectedTab,
+            selectedType: selectedType,
+            selectedMonth: selectedMonth,
+            selectedYear: selectedYear,
+            userId: userId)
     }
 }
