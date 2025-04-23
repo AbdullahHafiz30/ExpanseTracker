@@ -45,7 +45,7 @@ struct GraphsView: View {
                         content:  {
                     PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(0).padding()
                     BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(1).padding()
-                    LineView().tag(2)
+                    LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: $userId).tag(2)
                 })
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .background(Color.gray.opacity(0.1))
@@ -53,16 +53,11 @@ struct GraphsView: View {
                 .padding()
                 
             }
-            
-            Text("Selected: \(selectedTab == .monthly ? "\(Calendar.current.monthSymbols[selectedMonth]) \(selectedYear)" : "\(selectedYear)")")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-
-            Spacer()
             Spacer()
             // Chart view can go here
         }
         .padding(.top)
     }
 }
+
 

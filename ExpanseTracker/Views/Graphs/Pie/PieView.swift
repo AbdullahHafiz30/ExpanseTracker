@@ -17,9 +17,10 @@ struct PieView: View {
     @Binding var selectedMonth: Int
     @Binding var selectedYear: Int
     @Binding var userId: String
-    let image = Image("noData")
     
     var body: some View {
+        
+        var image = Image("noData")
         
         let chartData = viewModel.getData(
             allSelect: allSelect,
@@ -34,6 +35,7 @@ struct PieView: View {
                 image
                     .resizable()
                     .scaledToFit()
+                Text("No Data Found")
             } else {
                 Chart(chartData) { data in
                     SectorMark(

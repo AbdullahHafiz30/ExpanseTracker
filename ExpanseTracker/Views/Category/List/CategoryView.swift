@@ -16,6 +16,7 @@ struct CategoryView: View {
     }
 
     var body: some View {
+<<<<<<< Updated upstream
         ZStack {
             NavigationStack {
                 VStack(spacing: 16) {
@@ -31,6 +32,47 @@ struct CategoryView: View {
                         addButton
                             .padding(.top, 20)
                             .padding(.trailing, 20)
+=======
+        NavigationStack {
+            VStack(spacing: 16) {
+                HStack {
+                    Text("Categories".localized(using: currentLanguage))
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .font(.custom("Poppins-Bold", size: 36))
+                        .fontWeight(.bold)
+                        .padding(.top , 20)
+                        .padding(.leading , 20)
+
+                    Spacer()
+                    addButton
+                        .padding(.top, 20)
+                        .padding(.trailing, 20)
+                }
+
+                searchBarView
+                categoryTypeFilter
+                categoryList
+                
+            }.onChange(of: userId) { _ , newUserId in
+                viewModel.userId = newUserId
+                viewModel.loadCategories()
+            }
+            .navigationTitle("Categories".localized(using: currentLanguage))
+            .navigationBarTitleDisplayMode(.large)
+//            .onAppear {
+//                viewModel.loadCategories()
+//            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    addButton
+                }
+            }
+            .fullScreenCover(isPresented: $showingAddCategory) {
+                CategoryFunctionallity(id: "", userId: $userId, type: .constant("Add"))
+                    .environmentObject(viewModel)
+                    .onDisappear {
+                        viewModel.loadCategories()
+>>>>>>> Stashed changes
                     }
                     
                     searchBarView
