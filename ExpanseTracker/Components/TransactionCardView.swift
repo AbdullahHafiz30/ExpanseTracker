@@ -11,7 +11,7 @@ import SwiftUI
 /// including its title, category icon, description, amount, and a button to edit the transaction.
 struct TransactionCardView: View {
     
-    @StateObject var transaction: TransacionsEntity
+    @ObservedObject var transaction: TransacionsEntity
     @EnvironmentObject var themeManager: ThemeManager
     var currentLanguage: String
     var userId: String
