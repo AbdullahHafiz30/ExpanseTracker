@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+// MARK: - DateTab Enum
+/// Toggles between monthly and yearly views for date filtering
 enum DateTab: String, CaseIterable, Identifiable {
     case monthly = "Monthly"
     case yearly = "Yearly"
@@ -16,14 +18,22 @@ enum DateTab: String, CaseIterable, Identifiable {
 }
 
 struct GraphsViewHeader: View {
-    
+    // MARK: - Bindings from Parent View
+    /// Whether “All Categories” is selected
     @Binding var allSelect: Bool
+    /// Granularity mode: monthly or yearly
     @Binding var selectedTab: DateTab
+    /// Currently selected month index (1 = January)
     @Binding var selectedMonth: Int
+    /// Currently selected year value
     @Binding var selectedYear: Int
+    /// Currently selected category type (nil for all)
     @Binding var selectedType: CategoryType?
     
+    // MARK: - Static Data Sources
+    /// Valid range of years for the year picker
     private let yearRange = 2020...2060
+    /// Month names used in month picker (English locale)
     private let monthSymbols: [String] = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
@@ -31,11 +41,14 @@ struct GraphsViewHeader: View {
         return formatter.monthSymbols
     }()
     
+    /// Language code for localized strings
     var currentLanguage: String
-    
+        
+    // MARK: - View Body
+
     var body: some View {
         HStack(spacing: 12) {
-            // Month Picker
+            // MARK: Month Selector
             if selectedTab == .monthly {
                 Menu {
                     Picker("Month", selection: $selectedMonth) {
@@ -44,11 +57,12 @@ struct GraphsViewHeader: View {
                         }
                     }
                 } label: {
+                    // Custom label showing the selected month
                     DateLabelView(text: monthSymbols[selectedMonth])
                 }
             }
             
-            // Year Picker
+            // MARK: Year Selector
             Menu {
                 Picker("Year", selection: $selectedYear) {
                     ForEach(yearRange, id: \.self) { year in
@@ -56,12 +70,13 @@ struct GraphsViewHeader: View {
                     }
                 }
             } label: {
+                // Custom label showing the selected year
                 DateLabelView(text: "\(selectedYear)")
             }
             
             Spacer()
             
-            // Tab switcher (monthly/yearly)
+            // MARK: View Mode Toggle (Monthly/Yearly)
             Menu {
                 Picker("Select Mode", selection: $selectedTab) {
                     ForEach(DateTab.allCases) { tab in
@@ -69,13 +84,15 @@ struct GraphsViewHeader: View {
                     }
                 }
             } label: {
+                // Icon button to open mode picker
                 Image(systemName: "line.3.horizontal.decrease.circle")
                     .foregroundStyle(.primary)
                     .font(.title2)
             }
             
-            // Category select
+            // MARK: Category Type Selector
             Menu {
+                // Binding converts between CategoryType? and String tags
                 Picker("Category Type", selection: Binding(
                     get: { selectedType?.rawValue ?? "All" },
                     set: { newValue in
@@ -88,12 +105,15 @@ struct GraphsViewHeader: View {
                         }
                     })
                 ) {
+                    // "All" option tag
                     Text("All".localized(using: currentLanguage)).tag("All")
+                    // Individual category type tags
                     ForEach(CategoryType.allCases, id: \.self) { type in
                         Text(type.rawValue.localized(using: currentLanguage)).tag(type.rawValue)
                     }
                 }
             } label: {
+                // Icon button to open category picker
                 Image(systemName: "slider.horizontal.3")
                     .foregroundStyle(.primary)
                     .font(.title2)

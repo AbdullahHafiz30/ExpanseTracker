@@ -5,15 +5,23 @@
 //  Created by Rayaheen Mseri on 24/10/1446 AH.
 //
 
-import Foundation
 import CoreData
 import SwiftUI
 
+/// ViewModel responsible for fetching, filtering, and computing daily balances
+/// for rendering in a line chart.
 class LineViewModel: ObservableObject {
+    
+    // Core Data context for fetch operations
     private let context = PersistanceController.shared.context
 
-    //MARK: - Get The Four Main Types or All
-    // this will give all the expenses elements in the array based on the category type
+    // MARK: - Category Filtering
+        
+    /// Filters transactions by main category type if one is selected.
+    /// - Parameters:
+    ///   - array: All transactions to filter
+    ///   - selectedType: Optional `CategoryType` filter (.essential, .entertainment, etc.)
+    /// - Returns: Filtered transactions matching the category (or all if `nil`)
     func getType(array: [Transaction], selectedType: CategoryType?) -> [Transaction] {
         switch selectedType {
         case .essential?:
@@ -29,22 +37,34 @@ class LineViewModel: ObservableObject {
         }
     }
 
-    //MARK: - get Data for Line Chart
+    // MARK: - Line Chart Data Computation
+        
+    /// Computes a running daily balance for the given user and filters.
+    /// - Parameters:
+    ///   - allSelect: Whether “All Categories” is selected (not used here but kept for consistency)
+    ///   - selectedTab: `.monthly` or `.yearly` view
+    ///   - selectedType: Optional main category filter
+    ///   - selectedMonth: Month index (1 = January)
+    ///   - selectedYear: Year value (e.g. 2025)
+    ///   - userId: Current user identifier
+    /// - Returns: Array of `DailyBalance` points sorted by date
     func getLineChartData(allSelect: Bool, selectedTab: DateTab, selectedType: CategoryType?, selectedMonth: Int, selectedYear: Int, userId: String) -> [DailyBalance] {
     
         let cal = Calendar.current
         
+        // Step 1: Fetch and apply category filter
         let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)
         
         var filteredData: [Transaction] = []
 
+        // Step 2: Filter by date (yearly vs. monthly)
         if DateTab.yearly == selectedTab {
             
             filteredData = catData.filter { cal.component(.year, from: $0.date ?? Date()) == selectedYear }
             
         } else {
             
-            filteredData = catData.filter { cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear }
+            filteredData = catData.filter { cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear }
             
         }
 
@@ -52,10 +72,10 @@ class LineViewModel: ObservableObject {
         var dailyBalances: [DailyBalance] = []
         var currentBalance: Double = 0
 
-        // Group transactions by day in a dictionary
+        // Step 3: Group transactions by day
         let groupedTransactions = Dictionary(grouping: filteredData, by:  { cal.startOfDay(for: $0.date ?? Date()) })
         
-        // Sort the date --- from old to new date
+        // Step 4: Sort days and compute running balance
         let sortedDays = groupedTransactions.keys.sorted(by: <)
         
         for day in sortedDays {
@@ -77,11 +97,18 @@ class LineViewModel: ObservableObject {
         return dailyBalances
     }
 
+    // MARK: - Core Data Fetch
+        
+        /// Fetches all transactions for a user from Core Data and maps them into `Transaction`.
+        /// - Parameter userId: The user’s unique identifier
+        /// - Returns: Array of `Transaction` models (empty if fetch fails)
     func getUserTransactions(userId: String) -> [Transaction] {
         let transaction = [] as [Transaction]
         // Fetch user
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
+        
+        // Date formatter to parse stored date strings
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
 
@@ -107,9 +134,11 @@ class LineViewModel: ObservableObject {
     }
 }
 
-//MARK: - Line Chart Return Architecture
+
+// MARK: - Line Chart Data Model
+/// Represents a single day’s end balance for plotting in a line chart.
 struct DailyBalance: Identifiable {
-    let date: Date
-    let balance: Double
+    let date: Date      // The day (start of day)
+    let balance: Double // Running balance at end of this day
     let id = UUID()
 }

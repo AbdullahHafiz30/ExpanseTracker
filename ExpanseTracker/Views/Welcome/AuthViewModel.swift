@@ -200,7 +200,7 @@ class AuthViewModel:ObservableObject {
     /// Saves user data to Firestore after signup.
     private func saveUserData(uid: String, name: String, email: String, password:String) {
         let db = Firestore.firestore()
-        db.collection("users").document(uid).setData([
+        db.collection("usersIOS").document(uid).setData([
             "uid": uid,
             "name": name,
             "email": email
