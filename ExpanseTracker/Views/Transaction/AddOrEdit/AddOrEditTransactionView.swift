@@ -12,28 +12,24 @@ import CoreData
 /// A form-based view used to add a new transaction or edit an existing one.
 struct AddOrEditTransactionView: View {
     
-    // MARK: - Environment
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.managedObjectContext) var viewContext
     
-    // MARK: - State & ViewModels
     @State private var showDatePicker = false
     @State private var isSecure = false
     @StateObject private var viewModel = AddOrEditTransactionViewModel()
     @StateObject private var alertManager = AlertManager.shared
     
-    // MARK: - Input
     let userId: String
     var transaction: TransacionsEntity?
     var currentLanguage: String
 
-    // MARK: - Initializer
     init(userId: String, transaction: TransacionsEntity? = nil, currentLanguage: String) {
         self.userId = userId
         self.transaction = transaction
         self.currentLanguage = currentLanguage
-    }
+    } // Its job is to allow the creation of an instance with specific values.
 
     var body: some View {
         ScrollView {
@@ -41,10 +37,10 @@ struct AddOrEditTransactionView: View {
                 
                 // MARK: - Amount Input Section
                 PriceSection(
-                    viewModel: viewModel,
-                    amountText: $viewModel.amount,
-                    readOnlyAmount: nil,
                     themeManager: _themeManager,
+                    viewModel: viewModel,
+                    readOnlyAmount: nil,
+                    amountText: $viewModel.amount,
                     currentLanguage: currentLanguage
                 )
                 
@@ -78,7 +74,6 @@ struct AddOrEditTransactionView: View {
                     // Image Picker for receipt
                     ImagePickerField(
                         imageData: $viewModel.imageData,
-                        image: "",
                         currentLanguage: currentLanguage
                     )
                     

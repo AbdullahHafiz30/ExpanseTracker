@@ -23,11 +23,10 @@ struct TransactionCardView: View {
             Image(systemName: transaction.category?.icon ?? "")
                 .font(.title)
                 .fontWeight(.semibold)
-                .foregroundColor(UIColor().colorFromHexString(transaction.category?.color ?? ""))
+                .foregroundColor(themeManager.isDarkMode && UIColor().colorFromHexString(transaction.category?.color ?? "") == .black ? .white : themeManager.isDarkMode ? UIColor().colorFromHexString(transaction.category?.color ?? ""): UIColor().colorFromHexString(transaction.category?.color ?? ""))
                 .frame(width: 45, height: 45)
                 .background(
-                    Color(UIColor().colorFromHexString(transaction.category?.color ?? "")
-                        .opacity(themeManager.isDarkMode ? 0.3 : 0.2)),
+                    Color(themeManager.isDarkMode && UIColor().colorFromHexString(transaction.category?.color ?? "") == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? UIColor().colorFromHexString(transaction.category?.color ?? "").opacity(0.3) : UIColor().colorFromHexString(transaction.category?.color ?? "").opacity(0.2)),
                     in: .circle
                 )
             

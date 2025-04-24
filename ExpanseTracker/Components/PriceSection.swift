@@ -16,10 +16,10 @@ import SwiftUI
 ///   - currentLanguage: The current language code for localization.
 struct PriceSection: View {
     
-    @ObservedObject var viewModel: AddOrEditTransactionViewModel
-    var amountText: Binding<String>?
-    @State var readOnlyAmount: Double?
     @EnvironmentObject var themeManager: ThemeManager
+    @ObservedObject var viewModel: AddOrEditTransactionViewModel
+    @State var readOnlyAmount: Double?
+    var amountText: Binding<String>?
     var currentLanguage: String
     
     var body: some View {
@@ -41,12 +41,11 @@ struct PriceSection: View {
                 // MARK: - Editable or Read-only Amount Field
                 if let amountBinding = amountText {
                     // Editable mode: User inputs amount
-                    VStack(alignment: .leading, spacing: 5) {
-                        TextField("0", text: amountBinding)
-                            .foregroundColor(themeManager.textColor)
-                            .font(.system(size: 50))
-                            .keyboardType(.decimalPad)
-                    }
+                    TextField("0", text: amountBinding)
+                        .foregroundColor(themeManager.textColor)
+                        .font(.system(size: 50))
+                        .keyboardType(.decimalPad)
+                    
                 } else {
                     // Read-only mode: Display formatted amount
                     Text(NumberFormatterManager.shared.decimalString(from: readOnlyAmount ?? 0.0))
