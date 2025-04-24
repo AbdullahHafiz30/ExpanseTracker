@@ -17,7 +17,7 @@ struct TransactionListView: View {
     @EnvironmentObject var themeManager: ThemeManager
     var userId: String
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-
+    
     
     // MARK: - Core Data FetchRequest
     @FetchRequest private var transacions: FetchedResults<TransacionsEntity>
@@ -25,63 +25,72 @@ struct TransactionListView: View {
     // MARK: - Initializer with userId binding
     init(userId: String) {
         self.userId = userId
-    
+        
         let request: NSFetchRequest<TransacionsEntity> = TransacionsEntity.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)]
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: true)]
         request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         _transacions = FetchRequest(fetchRequest: request)
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView(.vertical) {
-                LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
-                    
-                    Section {
-                        // Display selected date range
-                        Text("\(viewModel.startDate.formatted(as: "dd - MMM yy")) **To** \(viewModel.endDate.formatted(as: "dd - MMM yy"))")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                            .hSpacing(.leading)
+        ZStack {
+            NavigationStack {
+                ScrollView(.vertical) {
+                    LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
                         
-                        // Summary card showing total income and expenses
-                        CardView(
-                            income: viewModel.total(.income, transactions: transacions, filter: viewModel.selectedTab),
-                            expense: viewModel.total(.expense, transactions: transacions, filter: viewModel.selectedTab),
-                            currentLanguage: currentLanguage
-                        )
-                        
-                        // Segmented control to filter by transaction type
-                        Picker("Type", selection: $viewModel.selectedType) {
-                            ForEach(TransactionType.allCases, id: \.self) { type in
-                                Text(type.rawValue.localized(using: currentLanguage)).tag(type)
+                        Section {
+                            // Display selected date range
+                            Text("\(viewModel.startDate.formatted(as: "dd - MMM yy")) **To** \(viewModel.endDate.formatted(as: "dd - MMM yy"))")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                                .hSpacing(.leading)
+                            
+                            // Summary card showing total income and expenses
+                            CardView(
+                                income: viewModel.total(.income, transactions: transacions, filter: viewModel.selectedTab),
+                                expense: viewModel.total(.expense, transactions: transacions, filter: viewModel.selectedTab),
+                                currentLanguage: currentLanguage
+                            )
+                            
+                            // Segmented control to filter by transaction type
+                            Picker("Type", selection: $viewModel.selectedType) {
+                                ForEach(TransactionType.allCases, id: \.self) { type in
+                                    Text(type.rawValue.localized(using: currentLanguage)).tag(type)
+                                }
                             }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .padding(.bottom, 10)
+                            
+                            // List of filtered transactions
+                            ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedTab), id: \.self) { transaction in
+                                transactionRow(transaction)
+                            }
+                            
+                        } header: {
+                            // Sticky header containing the search bar and filter options
+                            HeaderView(
+                                searchText: $viewModel.searchText,
+                                selectedTab: $viewModel.selectedTab,
+                                currentLanguage: currentLanguage,
+                                themeManager: themeManager
+                            )
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding(.bottom, 10)
-                        
-                        // List of filtered transactions
-                        ForEach(viewModel.filteredTransactions(transacions, filter: viewModel.selectedTab), id: \.self) { transaction in
-                            transactionRow(transaction)
-                        }
-                        
-                    } header: {
-                        // Sticky header containing the search bar and filter options
-                        HeaderView(
-                            searchText: $viewModel.searchText,
-                            selectedTab: $viewModel.selectedTab,
-                            currentLanguage: currentLanguage
-                        )
                     }
+                    .padding(5)
+                    
                 }
-                .padding(5)
+                .scrollIndicators(.hidden)
+                .onChange(of: viewModel.selectedTab) {
+                        // Update the date range when the selected tab changes
+                        viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
+                        viewModel.endDate = Date()
+                    }
             }
-            .onChange(of: viewModel.selectedTab) {
-                // Update the date range when the selected tab changes
+            .onAppear{
                 viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
-                viewModel.endDate = Date()
             }
+            
         }
     }
     

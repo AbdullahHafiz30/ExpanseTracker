@@ -25,10 +25,10 @@ struct DetailsHomeView: View {
                 
                 // MARK: - Read-Only Amount Display
                 PriceSection(
-                    viewModel: AddOrEditTransactionViewModel(),
-                    amountText: nil,
-                    readOnlyAmount: transaction.amount,
                     themeManager: _themeManager,
+                    viewModel: AddOrEditTransactionViewModel(),
+                    readOnlyAmount: transaction.amount,
+                    amountText: nil,
                     currentLanguage: currentLanguage
                 )
                 
@@ -98,7 +98,7 @@ struct DetailsHomeView: View {
                 .background(.gray.opacity(0.15))
                 .ignoresSafeArea(edges: .bottom)
                 .cornerRadius(32)
-                .padding(.bottom, -50)
+                .padding(.bottom, -35)
             }
         }
         // MARK: - Toolbar with Custom Back Button

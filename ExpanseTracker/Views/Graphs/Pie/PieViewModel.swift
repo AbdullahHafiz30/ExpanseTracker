@@ -8,12 +8,21 @@
 import SwiftUI
 import CoreData
 
+
+/// ViewModel responsible for loading, filtering, combining, and transforming
+/// transaction data into slice-ready `Test` models for the pie chart.
 class PieViewModel: ObservableObject {
     
+    // Core Data context for performing fetches and updates
     private let context = PersistanceController.shared.context
     
-    //MARK: - Check Same ID
-    //function to pass that filtered array and compare id number
+    // MARK: - ID & Category Matching Helpers
+    
+    /// Finds the index of a transaction in `theArray` matching by category ID.
+    /// - Parameters:
+    ///   - theArray: Array of aggregated `Transaction` objects
+    ///   - theItem: A single `Transaction` to search for
+    /// - Returns: Index if found, otherwise `nil`
     func itemIdInArray(theArray: [Transaction], theItem: Transaction) -> Int? {
         
         for (i, item) in theArray.enumerated() {
@@ -26,8 +35,11 @@ class PieViewModel: ObservableObject {
         return nil
     }
     
-    //MARK: - Check Same Category
-    // function to check is the same four main category are repeated in the array
+    /// Finds the index of a transaction in `theArray` matching by main category type.
+    /// - Parameters:
+    ///   - theArray: Array of aggregated `Transaction` objects
+    ///   - theItem: A single `Transaction` to search for
+    /// - Returns: Index if found, otherwise `nil`
     func itemCatNameInArray(theArray: [Transaction], theItem: Transaction) -> Int? {
         
         for (i, item) in theArray.enumerated() {
@@ -41,8 +53,13 @@ class PieViewModel: ObservableObject {
     }
     
     
-    //MARK: - Get The Four Main Types or All
-    // this will give all the expenses elements in the array based on the category type
+    // MARK: - Transaction Filtering
+    
+    /// Filters transactions down to expenses in a specific main category (if provided).
+    /// - Parameters:
+    ///   - array: Original transactions
+    ///   - selectedType: Optional main category filter (`nil` = all expenses)
+    /// - Returns: Filtered expense-only transactions matching the category
     func getType(array: [Transaction], selectedType: CategoryType?) -> [Transaction] {
         switch selectedType {
         case .essential?:
@@ -59,8 +76,11 @@ class PieViewModel: ObservableObject {
     }
     
     
-    //MARK: - Combine Items In The Array
-    // this function will combine similer array elements based on category id
+    // MARK: - Combining Similar Transactions
+    
+    /// Aggregates transactions by exact category (ID), summing their amounts.
+    /// - Parameter data: Transactions to combine
+    /// - Returns: New array of transactions with unique category IDs
     func combineSameCategory(_ data: [Transaction]) -> [Transaction] {
         var myFilteredArray = [Transaction] ()
         for transaction in data {
@@ -78,7 +98,9 @@ class PieViewModel: ObservableObject {
         return myFilteredArray
     }
     
-    // this function will combine similer array element based on the main categories
+    /// Aggregates transactions by main category type, summing their amounts.
+    /// - Parameter data: Transactions to combine
+    /// - Returns: New array of transactions with unique main categories
     func combineSameType(_ data: [Transaction]) -> [Transaction] {
         var myFilArray = [Transaction] ()
         for transaction in data {
@@ -96,6 +118,9 @@ class PieViewModel: ObservableObject {
         return myFilArray
     }
     
+    
+    // MARK: - Color Mapping
+    /// Maps a transaction’s main category type to a hex color string.
     func getColor(transactionType: Transaction) -> String {
         switch  transactionType.category?.categoryType{
         case .essential:
@@ -112,10 +137,19 @@ class PieViewModel: ObservableObject {
     }
     
     
-    //MARK: - get category name (Main or sub categories)
+    // MARK: - Final Test Model Construction
+    
+    /// Builds the final array of `Test` slices for the chart, choosing between
+    /// main-category breakdown or subcategory breakdown based on `allSelect`.
+    /// - Parameters:
+    ///   - allSelect: If true, group by main category; otherwise by subcategory
+    ///   - filtData: Data aggregated by main category
+    ///   - filteredData: Data aggregated by subcategory
+    /// - Returns: Array of `Test` models containing slice text, color, value, and percentage
     func getFinalArray(_ allSelect: Bool, filtData: [Transaction], filteredData: [Transaction]) -> [Test] {
         var test : [Test] = []
         if allSelect == true {
+            // Total expense across all main categories
             let totalAmount = filtData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filtData {
                 let catColor = getColor(transactionType: transaction)
@@ -123,6 +157,7 @@ class PieViewModel: ObservableObject {
             }
             return test
         } else {
+            // Total expense across subcategories
             let totalAmount = filteredData.reduce(0) { $0 + ($1.amount ?? 0.0)}
             for transaction in filteredData {
                 test.append(Test(text: transaction.category?.name ?? "", color: transaction.category?.color ?? "", number: transaction.amount ?? 0.0, percentage: (transaction.amount ?? 0.0) / totalAmount * 100))
@@ -131,7 +166,18 @@ class PieViewModel: ObservableObject {
         }
     }
     
-    //MARK: - get Data for All Filters
+
+    // MARK: - Public Data Fetch & Filter
+        
+    /// Retrieves and processes transactions according to all UI filters.
+    /// - Parameters:
+    ///   - allSelect: Group by main categories if true
+    ///   - selectedTab: Monthly vs. yearly aggregation
+    ///   - selectedType: Specific main category filter
+    ///   - selectedMonth: Month index (1–12)
+    ///   - selectedYear: Year value
+    ///   - userId: Current user identifier
+    /// - Returns: Array of `Test` items ready for chart rendering
     func getData(
         allSelect: Bool,
         selectedTab: DateTab,
@@ -140,24 +186,28 @@ class PieViewModel: ObservableObject {
         selectedYear: Int,
         userId: String) -> [Test] {
             let cal = Calendar.current
-
+            
+            // Fetch all user transactions and apply main-category filter
             let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)
-
+            
+            // Filter by date range
             if DateTab.yearly == selectedTab {
                 let data = catData.filter {
                     $0.transactionType == .expense && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
+                // First combine by exact category, then by main type
                 let filteredData = combineSameCategory(data)
                 let filtData = combineSameType(filteredData)
                 
+                // Build final Test slices
                 let test = getFinalArray(allSelect, filtData: filtData, filteredData: filteredData)
                 
                 return test
                 
             } else {
                 let data = catData.filter {
-                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear
+                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
                 let filteredData = combineSameCategory(data)
@@ -168,20 +218,25 @@ class PieViewModel: ObservableObject {
             }
         }
     
+    // MARK: - Core Data Fetch
+        
+    /// Fetches all transactions belonging to the given user from Core Data.
+    /// - Parameter userId: The user’s unique identifier
+    /// - Returns: Array of `Transaction` models or empty if fetch fails
     func getUserTransactions(userId: String) -> [Transaction] {
- 
+        
         let transaction = [] as [Transaction]
-        // Fetch user
+        // Prepare fetch request for UserEntity matching userId
         let userRequest: NSFetchRequest<UserEntity> = UserEntity.fetchRequest()
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
-
+        // Date formatter to parse stored date strings
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         
         do {
             if let user = try context.fetch(userRequest).first,
                let transactions = user.transaction?.allObjects as? [TransacionsEntity] {
-
+                // Map Core Data entities to plain `Transaction` structs
                 return transactions.map {
                     Transaction(
                         id: $0.id ?? UUID().uuidString,
@@ -203,12 +258,14 @@ class PieViewModel: ObservableObject {
 }
 
 
-//MARK: - Charts Return Arcitechture
+    // MARK: - Pie Chart Slice Model
+
+    /// Data model representing a single pie chart slice
 struct Test: Identifiable, ShapeStyle {
-    let text: String
-    let color: String
-    let number: Double
-    let percentage: Double
+    let text: String        // Display label (category or subcategory name)
+    let color: String       // Hex string for slice color
+    let number: Double      // Raw numeric value for this slice
+    let percentage: Double  // Computed percentage of total
     
     let id = UUID()
     

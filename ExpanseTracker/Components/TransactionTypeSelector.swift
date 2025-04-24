@@ -17,7 +17,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
     VStack(alignment: .leading) {
         
         // MARK: - Section Title
-        Text("Transactiontype".localized(using: currentLanguage))
+        Text("TransactionType".localized(using: currentLanguage))
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
             .padding(.leading, 5)
@@ -26,7 +26,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
         HStack(spacing: 12) {
             ForEach(TransactionType.allCases) { type in
                 
-                let isSelected = selectedType.wrappedValue == type
+                let isSelected = selectedType.wrappedValue == type // to access the actual value inside the binding
                 
                 // Determine background color based on theme and selection state
                 let fillColor = isSelected

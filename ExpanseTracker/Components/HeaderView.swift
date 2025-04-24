@@ -12,8 +12,9 @@ import SwiftUI
 ///   - searchText: A binding to the current search text input.
 ///   - selectedTab: A binding to the selected time filter.
 ///   - currentLanguage: The current app language code.
+///   - themeManager: Manages color and style preferences for light/dark mode.
 @ViewBuilder
-func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, currentLanguage: String) -> some View {
+func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, currentLanguage: String, themeManager: ThemeManager) -> some View {
     HStack(spacing: 10) {
         
         VStack(alignment: .leading, spacing: 5) {
@@ -30,11 +31,15 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, c
                     Picker("Select Time Filter", selection: selectedTab) {
                         ForEach(TimeFilter.allCases, id: \.self) { tab in
                             Text(tab.rawValue.localized(using: currentLanguage)).tag(tab)
+                            /*
+                             Without .tag(...):
+                             The Picker wouldn’t know which case corresponds to which label, so it wouldn’t update selectedTab correctly.
+                             */
                         }
                     }
                 } label: {
                     Image(systemName: "line.3.horizontal.decrease.circle")
-                        .foregroundStyle(.black)
+                        .foregroundStyle(themeManager.isDarkMode ? .white : .black)
                         .font(.title)
                 }
             }
@@ -48,11 +53,11 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, c
         VStack(spacing: 0) {
             // Background layer using system material
             Rectangle()
-                .fill(.background)
+                .fill(.background) // a system-adaptive background color
         }
         // Expand background to cover the full width and top safe area
         .padding(.horizontal, -15)
-        .padding(.top, -(safeArea.top + 15))
+        .padding(.top, -(safeArea.top))
     }
 }
 

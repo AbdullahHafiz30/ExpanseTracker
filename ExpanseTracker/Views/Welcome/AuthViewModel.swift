@@ -16,6 +16,7 @@ class AuthViewModel:ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var isLoading: Bool = false
     private let coreDataService = CoreDataHelper()
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     // MARK: - Initialization
     /// Checks user authentication status when the view model is initialized
@@ -41,13 +42,13 @@ class AuthViewModel:ObservableObject {
     ///   - completion: Closure returning success status and optional error message
     func logIn(email: String, password: String, completion: @escaping (Bool,String?) -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
-            AlertManager.shared.showAlert(title: "Error", message: "Please fill in all fields")
+            AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: "FillAll".localized(using: currentLanguage))
             completion(false, "Empty fields")
             return
         }
         
         guard isValidEmail(email) else {
-            AlertManager.shared.showAlert(title: "Invalid Email", message: "Please enter a valid email address")
+            AlertManager.shared.showAlert(title: "InvalidEmail".localized(using: currentLanguage), message: "ValidEmail".localized(using: currentLanguage))
             completion(false, "Invalid email")
             return
         }
@@ -66,8 +67,8 @@ class AuthViewModel:ObservableObject {
                 
                 if let error = error {
                     if let rootVC = UIApplication.shared.windows.first?.rootViewController { //  This will get the root view controller of the app
-                        let alert = UIAlertController(title: "Login Failed", message:self.mapFirebaseError(error), preferredStyle: .alert) // This will make an alert controller that has the title i chose with the message i chose
-                        alert.addAction(UIAlertAction(title: "OK", style: .default)) // Adding the ok button to dismiss the alert
+                        let alert = UIAlertController(title: "LoginFailed".localized(using: self.currentLanguage), message:self.mapFirebaseError(error), preferredStyle: .alert) // This will make an alert controller that has the title i chose with the message i chose
+                        alert.addAction(UIAlertAction(title: "OK".localized(using: self.currentLanguage), style: .default)) // Adding the ok button to dismiss the alert
                         rootVC.present(alert, animated: true) // Present it the screen
                     }
                     
@@ -112,25 +113,25 @@ class AuthViewModel:ObservableObject {
     func signUp(name: String, email: String, password: String, confirmPassword: String, completion: @escaping (Bool,String?) -> Void) {
         // Check password match first
         guard !name.isEmpty, !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
-            AlertManager.shared.showAlert(title: "Error", message: "Please fill in all fields")
+            AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: "FillAll".localized(using: currentLanguage))
             completion(false, "Empty fields")
             return
         }
         
         guard isValidEmail(email) else {
-            AlertManager.shared.showAlert(title: "Invalid Email", message: "Please enter a valid email address")
+            AlertManager.shared.showAlert(title: "InvalidEmail".localized(using: currentLanguage), message: "ValidEmail".localized(using: currentLanguage))
             completion(false, "Invalid email")
             return
         }
         
         guard password == confirmPassword else {
-            AlertManager.shared.showAlert(title: "Password Mismatch", message: "Passwords don't match")
+            AlertManager.shared.showAlert(title: "PasswordMismatch".localized(using: currentLanguage), message: "PasswordMismatchMsg".localized(using: currentLanguage))
             completion(false, "Password mismatch")
             return
         }
         
         guard isValidPassword(password) else {
-            AlertManager.shared.showAlert(title: "Weak Password", message: "Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number")
+            AlertManager.shared.showAlert(title: "WeakPassword".localized(using: currentLanguage), message: "WeakPasswordMsg".localized(using: currentLanguage))
             completion(false, "Weak password")
             return
         }
@@ -151,7 +152,7 @@ class AuthViewModel:ObservableObject {
                 
                 if let error = error {
                     if let rootVC = UIApplication.shared.windows.first?.rootViewController { //  This will get the root view controller of the app
-                        let alert = UIAlertController(title: "Signup Failed", message:self.mapFirebaseError(error), preferredStyle: .alert)// This will make an alert controller that has the title i chose with the message i chose
+                        let alert = UIAlertController(title: "SignupFailed".localized(using: self.currentLanguage), message:self.mapFirebaseError(error), preferredStyle: .alert)// This will make an alert controller that has the title i chose with the message i chose
                         alert.addAction(UIAlertAction(title: "OK", style: .default))// Adding the ok button to dismiss the alert
                         rootVC.present(alert, animated: true) // Present it on the screen
                     }
@@ -187,7 +188,7 @@ class AuthViewModel:ObservableObject {
                     completion(true, nil)
                 } else {
                     let message = "Failed to fetch user data"
-                    AlertManager.shared.showAlert(title: "Error", message: message)
+                    AlertManager.shared.showAlert(title: "Error".localized(using: self.currentLanguage), message: message)
                     completion(false, message)
                 }
             }
@@ -199,7 +200,7 @@ class AuthViewModel:ObservableObject {
     /// Saves user data to Firestore after signup.
     private func saveUserData(uid: String, name: String, email: String, password:String) {
         let db = Firestore.firestore()
-        db.collection("users").document(uid).setData([
+        db.collection("usersIOS").document(uid).setData([
             "uid": uid,
             "name": name,
             "email": email
@@ -327,33 +328,33 @@ class AuthViewModel:ObservableObject {
         }
         
         guard let authErrorCode = AuthErrorCode(rawValue: nsError.code) else {
-            return "An unknown error occurred. Please try again."
+            return "UnknownError".localized(using: self.currentLanguage)
         }
         
         switch authErrorCode {
         case .invalidCredential:
-            return "The login credentials are incorrect or the account does not exist. Please check your email and password, then try again."
+            return "CredentialsError".localized(using: self.currentLanguage)
             
         case .emailAlreadyInUse:
-            return "This email address is already associated with another account."
+            return "AssociatedEmail".localized(using: self.currentLanguage)
             
         case .invalidEmail:
-            return "The email address entered is invalid."
+            return "EmailInvalid".localized(using: self.currentLanguage)
             
         case .weakPassword:
-            return "The password is too weak. Please choose a stronger one."
+            return "WeakPasswordMsg2".localized(using: self.currentLanguage)
             
         case .networkError:
-            return "A network error occurred. Please check your connection and try again."
+            return "NetworkError".localized(using: self.currentLanguage)
             
         case .tooManyRequests:
-            return "Too many attempts. Please wait and try again later."
+            return "2Many".localized(using: self.currentLanguage)
             
         case .internalError:
-            return "An internal error occurred. Please try again later."
+            return "InternalError".localized(using: self.currentLanguage)
             
         default:
-            return "An unexpected error occurred. Please try again."
+            return "UnknownError".localized(using: self.currentLanguage)
         }
     }
     

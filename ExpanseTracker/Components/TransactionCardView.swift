@@ -11,7 +11,7 @@ import SwiftUI
 /// including its title, category icon, description, amount, and a button to edit the transaction.
 struct TransactionCardView: View {
     
-    @StateObject var transaction: TransacionsEntity
+    @ObservedObject var transaction: TransacionsEntity
     @EnvironmentObject var themeManager: ThemeManager
     var currentLanguage: String
     var userId: String
@@ -21,13 +21,11 @@ struct TransactionCardView: View {
             
             // MARK: - Category Icon Circle (colored by category)
             Image(systemName: transaction.category?.icon ?? "")
-                .font(.title)
-                .fontWeight(.semibold)
-                .foregroundColor(UIColor().colorFromHexString(transaction.category?.color ?? ""))
+                .font(.system(size: 20, weight: .medium))
+                .foregroundColor(themeManager.isDarkMode && UIColor().colorFromHexString(transaction.category?.color ?? "") == .black ? .white : themeManager.isDarkMode ? UIColor().colorFromHexString(transaction.category?.color ?? ""): UIColor().colorFromHexString(transaction.category?.color ?? ""))
                 .frame(width: 45, height: 45)
                 .background(
-                    Color(UIColor().colorFromHexString(transaction.category?.color ?? "")
-                        .opacity(themeManager.isDarkMode ? 0.3 : 0.2)),
+                    Color(themeManager.isDarkMode && UIColor().colorFromHexString(transaction.category?.color ?? "") == .black ? .white.opacity(0.3) : themeManager.isDarkMode ? UIColor().colorFromHexString(transaction.category?.color ?? "").opacity(0.3) : UIColor().colorFromHexString(transaction.category?.color ?? "").opacity(0.2)),
                     in: .circle
                 )
             

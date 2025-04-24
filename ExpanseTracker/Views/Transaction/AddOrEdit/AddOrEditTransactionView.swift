@@ -12,36 +12,35 @@ import CoreData
 /// A form-based view used to add a new transaction or edit an existing one.
 struct AddOrEditTransactionView: View {
     
-    // MARK: - Variables
-
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.managedObjectContext) var viewContext
+    
     @State private var showDatePicker = false
     @State private var isSecure = false
     @StateObject private var viewModel = AddOrEditTransactionViewModel()
     @StateObject private var alertManager = AlertManager.shared
+    
     let userId: String
     var transaction: TransacionsEntity?
     var currentLanguage: String
+
     init(userId: String, transaction: TransacionsEntity? = nil, currentLanguage: String) {
         self.userId = userId
         self.transaction = transaction
         self.currentLanguage = currentLanguage
-    }
-    
-    // MARK: - View
-    
+    } // Its job is to allow the creation of an instance with specific values.
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 
                 // MARK: - Amount Input Section
                 PriceSection(
-                    viewModel: viewModel,
-                    amountText: $viewModel.amount,
-                    readOnlyAmount: nil,
                     themeManager: _themeManager,
+                    viewModel: viewModel,
+                    readOnlyAmount: nil,
+                    amountText: $viewModel.amount,
                     currentLanguage: currentLanguage
                 )
                 
@@ -69,26 +68,14 @@ struct AddOrEditTransactionView: View {
                     CustomTextField(
                         placeholder: "Description".localized(using: currentLanguage),
                         text: $viewModel.description,
-                        isSecure: $isSecure)
+                        isSecure: $isSecure
+                    )
+                    
                     // Image Picker for receipt
-                    ZStack(alignment: .bottomLeading){
-                        ImagePickerField(
-                            imageData: $viewModel.imageData,
-                            image: "",
-                            currentLanguage: currentLanguage)
-                        if viewModel.imageData != nil{
-                            Button(action: {
-                                viewModel.imageData = nil
-                                transaction?.image = nil
-                            }) {
-                                Image(systemName: "trash.circle")
-                                    .font(.title2)
-                                    .foregroundColor(.black)
-                                    .padding(8)
-                                    .frame(alignment: .leading)
-                            }
-                        }
-                    }
+                    ImagePickerField(
+                        imageData: $viewModel.imageData,
+                        currentLanguage: currentLanguage
+                    )
                     
                     // Transaction Type Selector
                     TransactionTypeSelector(
@@ -97,17 +84,13 @@ struct AddOrEditTransactionView: View {
                         currentLanguage: currentLanguage
                     )
                     
-                        // MARK: - Submit Button (Add or Save)
-                    CustomButton(title: transaction == nil ? "Add".localized(using: currentLanguage) : "Save".localized(using: currentLanguage), action: {
-                        
-                        // Validations
-                        viewModel.validateAmount(viewModel.amount)
-                        
-                        if let amountError = viewModel.amountError {
-                            AlertManager.shared.showAlert(title: "Error", message: amountError)
-                            return
-                        }
-                        
+                    // MARK: - Submit Button (Add or Save)
+                    CustomButton(
+                        title: transaction == nil
+                            ? "Add".localized(using: currentLanguage)
+                            : "Save".localized(using: currentLanguage)
+                    ) {
+                        // Validation: Title is required
                         guard !viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                             alertManager.showAlert(title: "Error", message: "Title is required!")
                             return
@@ -136,19 +119,21 @@ struct AddOrEditTransactionView: View {
                         }
                         
                         dismiss()
-                    })
+                    }
                     .padding(.top)
                     
                     Spacer()
                 }
                 .padding()
                 .padding(.top, 10)
+                .padding(.bottom, 12)
                 .background(.gray.opacity(0.15))
-                .edgesIgnoringSafeArea(.bottom)
                 .cornerRadius(32)
-                .padding(.bottom, -50)
+                .frame(maxHeight: .infinity, alignment: .top)
             }
-        }
+                
+        }.ignoresSafeArea(edges: .bottom)
+        
         // MARK: - Toolbar with custom back button
         .toolbar {
             ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {

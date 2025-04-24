@@ -8,12 +8,24 @@
 import SwiftUI
 import CoreData
 
+
+/// ViewModel for preparing bar chart data by combining and filtering
+/// transactions according to the selected date range and category.
 class BarViewModel: ObservableObject {
     
+    // Core Data context for fetching user and transactions
     private let context = PersistanceController.shared.context
     
-    //MARK: - Check Same Month & Category
-    //function to pass that filtered array and compare id number
+    
+    // MARK: - Matching Helpers
+        
+    /// Finds the index of a transaction in `theArray` that shares the same
+    /// month & category (or category type) as `theItem`.
+    /// - Parameters:
+    ///   - theArray: Already combined transactions to search within
+    ///   - theItem: New transaction to match against
+    ///   - allSelected: If true, match by main category type; otherwise by unique category ID
+    /// - Returns: Index of a matching transaction if found; otherwise `nil`
     func itemMonthAndCategoryInArray(theArray: [Transaction], theItem: Transaction, allSelected: Bool) -> Int? {
         
         let cal = Calendar.current
@@ -21,11 +33,13 @@ class BarViewModel: ObservableObject {
             
             
             if allSelected {
+                // Match by main category type
                 if cal.component(.month, from: item.date ?? Date()) == cal.component(.month, from: theItem.date ?? Date()) && item.category?.categoryType == theItem.category?.categoryType {
                     
                     return i
                 }
             } else {
+                // Match by unique category ID
                 if cal.component(.month, from: item.date ?? Date()) == cal.component(.month, from: theItem.date ?? Date()) && item.category?.id == theItem.category?.id {
                     
                     return i
@@ -35,8 +49,10 @@ class BarViewModel: ObservableObject {
         return nil
     }
     
-    //MARK: - Check Same Day & Category
-    // function to check is the same four main category are repeated in the array
+    
+    /// Finds the index of a transaction in `theArray` that shares the same
+    /// day & category (or category type) as `theItem`.
+    /// - See `itemMonthAndCategoryInArray` for parameter behavior.
     func itemDayAndCategoryInArray(theArray: [Transaction], theItem: Transaction, allSelected: Bool) -> Int? {
         
         let cal = Calendar.current
@@ -58,8 +74,10 @@ class BarViewModel: ObservableObject {
     }
     
     
-    //MARK: - Get The Four Main Types or All
-    // this will give all the expenses elements in the array based on the category type
+    // MARK: - Category Filtering
+
+    /// Filters an array of transactions down to expenses of a specific
+    /// main category type (or all expenses if `nil`).
     func getType(array: [Transaction], selectedType: CategoryType?) -> [Transaction] {
         switch selectedType {
         case .essential?:
@@ -71,18 +89,22 @@ class BarViewModel: ObservableObject {
         case .other?:
             return array.filter { $0.category?.categoryType == .other && $0.transactionType == .expense}
         default:
+            // All expenses
             return array.filter { $0.transactionType == .expense}
         }
     }
     
     
-    //MARK: - Combine Items In The Array
-    // this function will combine similer array elements based on the same month & category
+    // MARK: - Combining Transactions
+        
+    /// Combines transactions that fall in the same month & category (or type),
+    /// summing their amounts.
     func combineSameMonthsAndCategory(_ data: [Transaction], allSelected: Bool) -> [Transaction] {
         var myFilteredArray = [Transaction] ()
         for transaction in data {
-            if let index = itemMonthAndCategoryInArray(theArray: myFilteredArray, theItem: transaction, allSelected: allSelected) {    // Already exist
-                
+            if let index = itemMonthAndCategoryInArray(theArray: myFilteredArray, theItem: transaction, allSelected: allSelected) {
+            
+                // Aggregate amount if match found
                 var newItem = myFilteredArray[index]
                 
                 newItem.amount! += transaction.amount ?? 0.0
@@ -95,7 +117,7 @@ class BarViewModel: ObservableObject {
         return myFilteredArray
     }
     
-    // this function will combine similer array element based on the same day & category
+    /// Combines transactions that fall on the same day & category (or type).
     func combineSameDayAndCategory(_ data: [Transaction], allSelected: Bool) -> [Transaction] {
         var myFilArray = [Transaction] ()
         for transaction in data {
@@ -113,7 +135,9 @@ class BarViewModel: ObservableObject {
         return myFilArray
     }
     
-    // get the color for the four main categories
+    // MARK: - Color Mapping
+        
+    /// Returns a hex color string for each main category type.
     func getColor(transactionType: Transaction) -> String {
         switch  transactionType.category?.categoryType{
         case .essential:
@@ -130,12 +154,16 @@ class BarViewModel: ObservableObject {
     }
     
     
-    //MARK: - get category name (Main or sub categories)
+    // MARK: - Final Bar Model Creation
+        
+    /// Builds the array of `Bar` models for chart rendering, formatting
+    /// the x-axis labels based on `selectedTab`.
     func getFinalArray(_ allSelect: Bool, data: [Transaction], selectedTab: DateTab) -> [Bar] {
         var test : [Bar] = []
         
         let formatter = DateFormatter()
         
+        // Use month abbreviation for yearly or day+month for monthly
         formatter.dateFormat = (selectedTab == .yearly) ? "MMM" : "d MMM"
         
         if allSelect == true {
@@ -154,7 +182,10 @@ class BarViewModel: ObservableObject {
         }
     }
     
-    //MARK: - get Data for All Filters
+    
+    // MARK: - Public Data Fetch
+        
+    /// Fetches, filters, combines, and formats transaction data for the bar chart.
     func getData(
         allSelect: Bool,
         selectedTab: DateTab,
@@ -165,32 +196,41 @@ class BarViewModel: ObservableObject {
             
             let cal = Calendar.current
             
+            // 1. Fetch & filter by category type
             let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)
             
+            // 2. Filter by date range
             if DateTab.yearly == selectedTab {
                 let data = catData.filter {
                     cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
+                // 3. Combine by month & category
                 let sameMonthAndCategoryData = combineSameMonthsAndCategory(data, allSelected: allSelect)
                 
+                // 4. Format into Bar models
                 let test = getFinalArray(allSelect, data: sameMonthAndCategoryData, selectedTab: selectedTab)
                 
                 return test
                 
             } else {
                 let data = catData.filter {
-                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear
+                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
+                // 3. Combine by day & category
                 let sameDayAndCategoryData = combineSameDayAndCategory(data, allSelected: allSelect)
                 
+                // 4. Format into Bar models
                 let test = getFinalArray(allSelect, data: sameDayAndCategoryData, selectedTab: selectedTab)
                 
                 return test
             }
         }
     
+    // MARK: - Core Data Fetch
+        
+    /// Retrieves all transactions for the specified user from Core Data.
     func getUserTransactions(userId: String) -> [Transaction] {
  
         let transaction = [] as [Transaction]
@@ -227,12 +267,13 @@ class BarViewModel: ObservableObject {
 }
 
 
+/// Model representing a single bar in the chart.
 struct Bar: Identifiable {
     let id = UUID()
-    let text: String
-    let color: String
-    let number: Double
-    let categoryID: String?
+    let text: String        // X-axis label (date or month)
+    let color: String       // Hex color for the bar
+    let number: Double      // Y-axis value (amount)
+    let categoryID: String? // Optional subcategory ID for filtering/highlighting
     
     init(text: String, color: String, number: Double, categoryID: String? = nil) {
         self.text = text
