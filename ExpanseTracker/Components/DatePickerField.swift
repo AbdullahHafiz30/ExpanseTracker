@@ -32,7 +32,7 @@ struct DatePickerField: View {
                             .foregroundColor(themeManager.textColor)
                             .padding(.leading)
                         Spacer()
-                        Image(systemName: "calendar")
+                        Image(systemName: showDatePicker ? "checkmark" : "calendar" )
                             .foregroundColor(themeManager.textColor)
                             .padding(.trailing)
                     }
@@ -51,11 +51,6 @@ struct DatePickerField: View {
                 )
                 .datePickerStyle(.graphical)
                 .transition(.opacity)
-                .onChange(of: date) {
-                    withAnimation {
-                        showDatePicker = false
-                    }
-                }
             }
         }
     }

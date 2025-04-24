@@ -66,9 +66,9 @@ struct ListOfSpecificCategoryView: View {
                         }
                     }
                 }
+                .padding()
             }
         }
-        .padding()
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
