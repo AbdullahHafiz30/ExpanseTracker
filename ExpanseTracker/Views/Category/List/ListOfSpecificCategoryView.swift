@@ -10,8 +10,10 @@ import CoreData
 
 struct ListOfSpecificCategoryView: View {
     // The name of the category to filter transactions
-    var categoryName: String
+    var category: Category
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel = TransactionViewModel()
     @State var selectedTransaction: TransacionsEntity? = nil
     var userId : String
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
@@ -19,22 +21,22 @@ struct ListOfSpecificCategoryView: View {
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     // Custom initializer to apply the predicate based on the selected category name
-    init(categoryName: String,userId: String) {
-        self.categoryName = categoryName
+    init(category: Category, userId: String) {
+        self.category = category
         _transactions = FetchRequest<TransacionsEntity>(
             entity: TransacionsEntity.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)],
-            predicate: NSPredicate(format: "category.name == %@", categoryName)
+            predicate: NSPredicate(format: "category.id == %@ AND user.id == %@", category.id ?? "", userId)
         )
         self.userId = userId
     }
     
     var body: some View {
         VStack(alignment: .leading)  {
-            CustomBackward(title:"\(categoryName)", tapEvent: { dismiss() })
+            CustomBackward(title:"\(category.name ?? "")", tapEvent: { dismiss() })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-
+            
             if transactions.isEmpty {
                 Spacer()
                 Text("NoTransaction".localized(using: currentLanguage))
@@ -45,27 +47,31 @@ struct ListOfSpecificCategoryView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(transactions, id: \.id) { transaction in
-                            Button {
-                                selectedTransaction =  transaction
-                            } label: {
+                            NavigationLink(destination: DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)){
                                 HStack {
-                                    TransactionCardView(transaction: transaction, currentLanguage: currentLanguage, userId: userId)
-                                        .environmentObject(ThemeManager())
-                                        .padding(.vertical, 8)
+                                    SwipeAction(cornerRadius: 10, direction: .trailing, language: currentLanguage) {
+                                        TransactionCardView(transaction: transaction, currentLanguage: currentLanguage, userId: userId)
+                                    } actions: {
+                                        // Swipe-to-delete action
+                                        Action(tint: .red, icon: "trash") {
+                                            viewModel.deleteTransaction(transaction, viewContext: viewContext)
+                                        }
+                                    }
+                                    
                                 }
-                                
+                                .padding(.vertical,5)
+                                .foregroundColor(.primary)
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
-                            
                         }
                     }
-                }.padding()
-                    .navigationDestination(item: $selectedTransaction) { transaction in
-                        DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
-                    }
+                }
             }
         }
-            .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
-            .navigationBarBackButtonHidden(true)
+        .padding()
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        
     }
 }

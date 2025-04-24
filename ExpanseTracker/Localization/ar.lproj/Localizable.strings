@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   ExpanseTracker
 
@@ -132,4 +132,3 @@
 "NoTransaction" = "لا توجد معاملات متاحة لهذه الفئة.";
 "SearchFor" = "ابحث عن ...";
 "SaveChange" = "لا توجد تغييرات لحفظها.";
-
