@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   ExpanseTracker
 
@@ -130,4 +130,3 @@
 "SearchFor" = "Search for ...";
 "SaveChange" = "There are no changes to save.";
 "All" = "All";
-
