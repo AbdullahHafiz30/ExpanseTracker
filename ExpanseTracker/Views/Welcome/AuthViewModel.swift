@@ -218,7 +218,7 @@ class AuthViewModel:ObservableObject {
     func fetchUserFromFirestore(uid: String, password:String, completion: @escaping (Bool) -> Void) {
         var hashPass = ""
         let db = Firestore.firestore()
-        db.collection("users").document(uid).getDocument { document, error in
+        db.collection("usersIOS").document(uid).getDocument { document, error in
             if let error = error {
                 print("Error fetching user: \(error.localizedDescription)")
                 completion(false)
