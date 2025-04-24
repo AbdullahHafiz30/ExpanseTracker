@@ -66,27 +66,7 @@ class CategoryViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Fetch Single Category by ID
-    func getCategory(byId id: String) -> Category? {
-        let request: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id)
-        
-        do {
-            if let result = try context.fetch(request).first {
-                return Category(
-                    id: result.id ?? UUID().uuidString,
-                    name: result.name ?? "",
-                    color: result.color ?? "",
-                    icon: result.icon ?? "",
-                    categoryType: CategoryType(rawValue: result.categoryType ?? "") ?? .other,
-                    budgetLimit: result.budgetLimit
-                )
-            }
-        } catch {
-            print("⚠️ Failed to fetch category by ID: \(error.localizedDescription)")
-        }
-        return nil
-    }
+
 
     // MARK: - Filtered Categories (for UI)
     var filteredCategories: [Category] {
