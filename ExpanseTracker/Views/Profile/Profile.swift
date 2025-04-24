@@ -365,29 +365,6 @@ struct Profile: View {
                     selectedLanguageIndex = index
                 }
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Sure".localized(using: currentLanguage)), message: Text("DeleteAccountMessage".localized(using: currentLanguage)), primaryButton: .destructive(Text("Delete".localized(using: currentLanguage))){
-                    isDeleting = true
-                    //delete from firebase
-                        auth.deleteUserAccount(email: userEmail, password: userPassword) { result in
-                            DispatchQueue.main.async {
-                                switch result {
-                                case .success:
-                                    // Delete from CoreData
-                                    CoreDataHelper().deleteUser(userId: userId,password: userPassword)
-                                    // Reset app state
-                                    isDeleting = false
-                                    backHome = true
-                                    
-                                case .failure(_):
-                                    isDeleting = false
-                                    AlertManager.shared.showAlert(title: "Error", message: "Account deletion failed!")
-                                }
-                            }
-                        }
-                    
-                } , secondaryButton: .cancel(Text("Cancel".localized(using: currentLanguage))))
-            }
 
             if isDeleting {
                 ProgressView("Deleting".localized(using: currentLanguage))
