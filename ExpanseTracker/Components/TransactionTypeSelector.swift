@@ -17,7 +17,7 @@ func TransactionTypeSelector(selectedType: Binding<TransactionType>, themeManage
     VStack(alignment: .leading) {
         
         // MARK: - Section Title
-        Text("Transactiontype".localized(using: currentLanguage))
+        Text("TransactionType".localized(using: currentLanguage))
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
             .padding(.leading, 5)

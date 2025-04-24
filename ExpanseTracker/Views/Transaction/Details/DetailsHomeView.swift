@@ -98,7 +98,7 @@ struct DetailsHomeView: View {
                 .background(.gray.opacity(0.15))
                 .ignoresSafeArea(edges: .bottom)
                 .cornerRadius(32)
-                .padding(.bottom, -50)
+                .padding(.bottom, -35)
             }
         }
         // MARK: - Toolbar with Custom Back Button
