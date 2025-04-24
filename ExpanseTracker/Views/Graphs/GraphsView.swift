@@ -27,8 +27,9 @@ struct GraphsView: View {
                 HStack {
                     Text("Statistics".localized(using: currentLanguage))
                         .foregroundColor(themeManager.isDarkMode ? .white : .black)
-                        .font(.custom("Poppins-Bold", size: 36))
-                        .fontWeight(.bold)
+                        .font(.title.bold())
+                        .padding(.leading, 15)
+                    Spacer()
                 }
                 
                 GraphsViewHeader(
