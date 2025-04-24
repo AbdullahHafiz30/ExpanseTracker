@@ -126,11 +126,13 @@ struct AddOrEditTransactionView: View {
                 }
                 .padding()
                 .padding(.top, 10)
-                .frame(maxHeight: .infinity, alignment: .top)
                 .background(.gray.opacity(0.15))
                 .cornerRadius(32)
+                .frame(maxHeight: .infinity, alignment: .top)
             }
+                
         }
+        
         // MARK: - Toolbar with custom back button
         .toolbar {
             ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
