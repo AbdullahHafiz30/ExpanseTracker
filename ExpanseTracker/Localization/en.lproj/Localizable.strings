@@ -10,7 +10,11 @@
 "AccountInformation" = "Account Information";
 "Add" = "Add";
 "AddCategory" = "Add Category";
+<<<<<<< Updated upstream
 "AddTransaction" = "Add transaction";
+=======
+"AddTransaction" = "Add Transaction";
+>>>>>>> Stashed changes
 "All" = "All";
 "AssociatedEmail" = "This email address is already associated with another account.";
 "Bar" = "Bar";
@@ -29,7 +33,11 @@
 "CategoryNameRequired" = "Category name is required!";
 "CategoryType" = "Category Type";
 "ColorExist" = "Color already exist";
+<<<<<<< Updated upstream
 "ConfirmPassword" = "Confirm password";
+=======
+"ConfirmPassword" = "Confirm Password";
+>>>>>>> Stashed changes
 "CredentialsError" = "The login credentials are incorrect or the account does not exist. Please check your email and password, then try again.";
 "DHaveAccount" = "Don't have an account?";
 "Daily" = "Daily";
@@ -68,7 +76,11 @@
 "LogIn" = "Log in";
 "LogIn2" = "Log in";
 "LoginFailed" = "Login Failed";
+<<<<<<< Updated upstream
 "Logout" = "Logout";
+=======
+"Logout" = "Log out";
+>>>>>>> Stashed changes
 "Monthly" = "Monthly";
 "MonthPaln" = "What is your plan for this month? Has your budget changed 💸😉?";
 "Name" = "Name";
@@ -84,7 +96,11 @@
 "OpenSettings" = "Open Settings";
 "Other" = "Other";
 "Password" = "Password";
+<<<<<<< Updated upstream
 "PasswordMismatch" = "Password mismatch";
+=======
+"PasswordMismatch" = "Password Mismatch";
+>>>>>>> Stashed changes
 "PasswordMismatchMsg" = "Please enter matched passwords";
 "Pie" = "Pie";
 "Profile" = "Profile";
@@ -103,10 +119,17 @@
 "Title" = "Title";
 "TitleD" = "Title:";
 "TransactionDetails" = "Transaction Details";
+<<<<<<< Updated upstream
 "Transactiontype" = "Transaction type:";
 "UnknownError" = "An unknown error occurred. Please try again.";
 "ValidEmail" = "Please enter a valid email address";
 "WeakPassword" = "Weak password";
+=======
+"TransactionType" = "Transaction Type:";
+"UnknownError" = "An unknown error occurred. Please try again.";
+"ValidEmail" = "Please enter a valid email address";
+"WeakPassword" = "Weak Password";
+>>>>>>> Stashed changes
 "WeakPasswordMsg" = "Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number";
 "WeakPasswordMsg2" = "The password is too weak. Please choose a stronger one.";
 "Weekly" = "Weekly";
