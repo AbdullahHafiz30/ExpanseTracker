@@ -101,7 +101,7 @@
 "Title" = "Title";
 "TitleD" = "Title:";
 "TransactionDetails" = "Transaction Details";
-"Transactiontype" = "Transaction type:";
+"TransactionType" = "Transaction Type:";
 "Weekly" = "Weekly";
 "Welcome" = "Welcome!";
 "WelcomeSMesg" = "Make your expense tracking experience more better today.";

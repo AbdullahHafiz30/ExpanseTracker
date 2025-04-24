@@ -15,7 +15,7 @@ import SwiftUI
 func SelectedTransactionType(themeManager: ThemeManager, selectedType: TransactionType, currentLanguage: String) -> some View {
     HStack {
         // Label for the section
-        Text("Transactiontype".localized(using: currentLanguage))
+        Text("TransactionType".localized(using: currentLanguage))
             .font(.title2)
             .foregroundColor(themeManager.textColor.opacity(0.5))
         

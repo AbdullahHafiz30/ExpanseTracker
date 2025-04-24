@@ -105,7 +105,7 @@
 "Title" = "العنوان";
 "TitleD" = "العنوان:";
 "TransactionDetails" = "تفاصيل المعاملة";
-"Transactiontype" = "نوع المعاملة:";
+"TransactionType" = "نوع المعاملة:";
 "Welcome" = "مرحبا!";
 "WelcomeSMesg" = "اجعل تجربة تتبع نفقاتك أفضل اليوم.";
 "WelcomeMesg" = "مرحبا في  SpendSmartly";
