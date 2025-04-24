@@ -27,8 +27,9 @@ struct GraphsView: View {
                 HStack {
                     Text("Statistics".localized(using: currentLanguage))
                         .foregroundColor(themeManager.isDarkMode ? .white : .black)
-                        .font(.custom("Poppins-Bold", size: 36))
-                        .fontWeight(.bold)
+                        .font(.title.bold())
+                        .padding(.leading, 15)
+                    Spacer()
                 }
                 
                 GraphsViewHeader(
@@ -42,9 +43,9 @@ struct GraphsView: View {
                 
                 VStack {
                     Picker(selection: $tabSelectedValue, label: Text("")) {
-                        Text("Pie").tag(0)
-                        Text("Bar").tag(1)
-                        Text("Line").tag(2)
+                        Text("Pie".localized(using: currentLanguage)).tag(0)
+                        Text("Bar".localized(using: currentLanguage)).tag(1)
+                        Text("Line".localized(using: currentLanguage)).tag(2)
                         
                     }.pickerStyle(SegmentedPickerStyle())
                         .padding()
@@ -53,7 +54,7 @@ struct GraphsView: View {
                             content:  {
                         PieView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(0).padding()
                         BarView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(1).padding()
-                        LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(2)
+                        LineView(allSelect: $allSelect, selectedType: $selectedCategoryType, selectedTab: $selectedTab, selectedMonth: $selectedMonth, selectedYear: $selectedYear, userId: userId).tag(2).padding()
                     })
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .background(Color.gray.opacity(0.1))
