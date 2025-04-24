@@ -18,10 +18,10 @@ class AddOrEditTransactionViewModel: ObservableObject {
     @Published var amount: String = ""
     @Published var date = Date()
     @Published var type: TransactionType = .expense
-    @Published var categoryName = ""
+    @Published var category: Category? = nil
     @Published var imageData: Data? = nil
     @Published var amountError: String?
-    @Published var categories: [CategoryEntity] = []
+    @Published var categories: [Category] = []
     let context = PersistanceController.shared.context
 
     // MARK: - Initialize ViewModel from Existing Transaction
@@ -42,7 +42,9 @@ class AddOrEditTransactionViewModel: ObservableObject {
             }
 
             type = TransactionType(rawValue: transaction.transactionType ?? "") ?? .expense
-            categoryName = transaction.category?.name ?? ""
+            category = transaction.category.map{
+                Category(id: $0.id, name: $0.name, color: $0.color, icon: $0.icon, categoryType: CategoryType(rawValue: $0.categoryType ?? ""), budgetLimit: $0.budgetLimit)
+            }
 
             // Decode image data from Base64 string
             if let base64String = transaction.image,
@@ -61,7 +63,9 @@ class AddOrEditTransactionViewModel: ObservableObject {
         request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         do {
-            categories = try context.fetch(request)
+            categories = try context.fetch(request).map{
+                Category(id: $0.id, name: $0.name, color: $0.color, icon: $0.icon, categoryType: CategoryType(rawValue: $0.categoryType ?? ""), budgetLimit: $0.budgetLimit)
+            }
         } catch {
             print("Failed to fetch categories for user \(userId): \(error.localizedDescription)")
         }
@@ -84,7 +88,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
         amount: Double,
         date: Date,
         type: TransactionType,
-        selectedCategoryName: String,
+        selectedCategoryId: String,
         imageData: Data?,
         userId: String
     ) {
@@ -108,7 +112,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
         userRequest.predicate = NSPredicate(format: "id == %@", userId)
 
         let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
+        fetchRequest.predicate = NSPredicate(format: "id == %@", selectedCategoryId)
         
         do {
             if let existingUserEntity = try context.fetch(userRequest).first {
@@ -140,7 +144,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
     func updateTransaction(
         _ existing: TransacionsEntity,
         in context: NSManagedObjectContext,
-        selectedCategory: CategoryEntity
+        selectedCategory: Category
     ) {
         existing.title = title
         existing.desc = description
@@ -151,7 +155,11 @@ class AddOrEditTransactionViewModel: ObservableObject {
         existing.date = formatter.string(from: date)
 
         existing.transactionType = type.rawValue
-        existing.category = selectedCategory
+        var exitCategory = existing.category.map{
+            Category(id: $0.id, name: $0.name, color: $0.color, icon: $0.icon, categoryType: CategoryType(rawValue: $0.categoryType ?? ""), budgetLimit: $0.budgetLimit)
+        }
+      
+        exitCategory = selectedCategory
 
         if let updatedImageData = imageData {
             existing.image = updatedImageData.base64EncodedString()
