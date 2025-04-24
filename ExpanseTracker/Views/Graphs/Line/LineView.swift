@@ -19,8 +19,62 @@ struct LineView: View {
     var userId: String
     @EnvironmentObject var themeManager: ThemeManager
     
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
-        var lineChartData = viewModel.getLineChartData(
+        
+        let image = Image("noData")
+        
+        VStack{
+            
+            if lineChartData.isEmpty {
+                image
+                    .resizable()
+                    .scaledToFit()
+                Text("NoDataFound".localized(using: currentLanguage))
+            } else {
+                Chart{
+                    ForEach(lineChartData) { dataPoint in
+                        LineMark(
+                            x: .value("Date", dataPoint.date, unit: .day),
+                            y: .value("Balance", dataPoint.balance)
+                        )
+                        .foregroundStyle(themeManager.isDarkMode ? .cyan : .blue)
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading)
+                }
+                .padding(.vertical)
+                
+                HStack{
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .font(.title2)
+                    
+                    Text("Income".localized(using: currentLanguage))
+                        .font(.title3)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chart.line.downtrend.xyaxis")
+                        .font(.title2)
+                    Text("Expense".localized(using: currentLanguage))
+                        .font(.title3)
+                    
+                }.padding()
+            }
+        }.onAppear() {
+            updateChartData()
+        }
+        .onChange(of: allSelect) { _ in updateChartData() }
+        .onChange(of: selectedType) { _ in updateChartData() }
+        .onChange(of: selectedTab) { _ in updateChartData() }
+        .onChange(of: selectedMonth) { _ in updateChartData() }
+        .onChange(of: selectedYear) { _ in updateChartData() }
+    }
+    
+    private func updateChartData() {
+        lineChartData = viewModel.getLineChartData(
             allSelect: allSelect,
             selectedTab: selectedTab,
             selectedType: selectedType,
@@ -28,48 +82,6 @@ struct LineView: View {
             selectedYear: selectedYear,
             userId: userId
         )
-        
-        VStack{
-            Chart{
-                ForEach(lineChartData) { dataPoint in
-                    LineMark(
-                        x: .value("Date", dataPoint.date, unit: .day),
-                        y: .value("Balance", dataPoint.balance)
-                    )
-                    .foregroundStyle(themeManager.isDarkMode ? .cyan : .blue)
-                }
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading)
-            }
-            .padding(.vertical)
-            
-            HStack{
-                Image(systemName: "chart.line.uptrend.xyaxis")
-                    .font(.title2)
-                
-                Text("Income")
-                    .font(.title3)
-                
-                Spacer()
-                
-                Image(systemName: "chart.line.downtrend.xyaxis")
-                    .font(.title2)
-                Text("Expense")
-                    .font(.title3)
-            }
-            .padding()
-        }
-        .onAppear{
-             lineChartData = viewModel.getLineChartData(
-                allSelect: allSelect,
-                selectedTab: selectedTab,
-                selectedType: selectedType,
-                selectedMonth: selectedMonth,
-                selectedYear: selectedYear,
-                userId: userId
-            )
-        }
     }
+    
 }
-

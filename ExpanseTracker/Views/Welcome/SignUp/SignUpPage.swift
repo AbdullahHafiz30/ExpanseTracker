@@ -23,137 +23,131 @@ struct SignUpPage: View {
     @State private var isLoading = false
     @ObservedObject var auth: AuthViewModel
     @StateObject private var alertManager = AlertManager.shared
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     //MARK: - View
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
-                LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
-            ZStack{
-                themeManager.backgroundColor
-                    .ignoresSafeArea()
-                ScrollView(showsIndicators: false) {
-                    VStack{
-                        // Logo
-                        HStack() {
-                            Button(action: {
-                                backHome.toggle()
-                            }) {
-                                // Go back to the welcome page
-                                Image(systemName: "chevron.left")
-                                    .foregroundColor(themeManager.textColor)
-                                    .font(.system(size: 18, weight: .medium))
-                            }.padding(.top,25)
-                                .padding(.trailing,15)
-                                .padding()
-                            Image(themeManager.isDarkMode ? "logoW":"logoB")
-                                .resizable()
-                                .frame(width: 220,height: 70)
-                                .padding()
-                        }.frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        // Image
-                        Image(themeManager.isDarkMode ?  "loginW":"loginB")
-                            .resizable()
-                            .frame(width: 280,height: 280)
-                            .padding(-40)
-                        
-                        // Custom Text feild
-                        VStack(spacing: 20) {
-                            // Text
-                            Text("Sign up")
-                                .font(.largeTitle)
-                                .bold()
-                                .foregroundColor(themeManager.textColor)
-                            CustomTextField(
-                                placeholder: "Name",
-                                text: $username,
-                                isSecure: .constant(false)
-                            )
-                            CustomTextField(
-                                placeholder: "Email",
-                                text: $email,
-                                isSecure: .constant(false)
-                            )
-                            ZStack(alignment: .trailing) {
-                                CustomTextField(
-                                    placeholder: "Password",
-                                    text: $password,
-                                    isSecure: $isPasswordSecure
-                                )
-                                
-                                Button(action: {
-                                    isPasswordSecure.toggle()
-                                }) {
-                                    Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
-                                        .foregroundColor(.gray)
-                                        .padding(.trailing, 16)
+                LazyVStack(spacing: 10) {
+                    ZStack{
+                        themeManager.backgroundColor
+                            .ignoresSafeArea()
+                        ScrollView(showsIndicators: false) {
+                            VStack{
+                                VStack(alignment: .center){
+                                    // Logo
+                                    HStack{
+                                        CustomBackward(title:"".localized(using: currentLanguage)){
+                                            backHome.toggle()
+                                        }.offset(y: 10)
+                                        Image(themeManager.isDarkMode ? "logoW":"logoB")
+                                            .resizable()
+                                            .frame(width: 220,height: 70)
+                                            .padding()
+                                    }.padding(.trailing, 40)
+                                    
+                                    // Image
+                                    Image(themeManager.isDarkMode ?  "loginW":"loginB")
+                                        .resizable()
+                                        .frame(width: 280,height: 280)
+                                        .padding(.top,-20)
                                 }
-                            }
-
-                            ZStack(alignment: .trailing) {
-                                CustomTextField(
-                                    placeholder: "Confirm password",
-                                    text: $confirmPassword,
-                                    isSecure: $isConPasswordSecure
-                                )
-                                
-                                Button(action: {
-                                    isConPasswordSecure.toggle()
-                                }) {
-                                    Image(systemName: isConPasswordSecure ? "eye.slash" : "eye")
-                                        .foregroundColor(.gray)
-                                        .padding(.trailing, 16)
-                                }
-                            }
-
-                            // Custom button
-                            CustomButton(
-                                title: "Sign up",
-                                action: {
-                                    // Check name
-                                    guard !username.trimmingCharacters(in: .whitespaces).isEmpty else {
-                                        let message = "Need to add a name"
-                                        AlertManager.shared.showAlert(title: "Name is required", message: message)
-                                        return
-                                    }
-                                    // Create User with Firebase
-                                    isLoading = true
-                                    auth.signUp(name: username, email: email, password: password,confirmPassword: confirmPassword) { success, message in
-                                        isLoading = false
-                                        if success {
-                                            goToHome = true
+                                // Custom Text feild
+                                VStack(spacing: 20) {
+                                    // Text
+                                    Text("SignUp".localized(using: currentLanguage))
+                                        .font(.largeTitle)
+                                        .bold()
+                                        .foregroundColor(themeManager.textColor)
+                                    CustomTextField(
+                                        placeholder: "Name".localized(using: currentLanguage),
+                                        text: $username,
+                                        isSecure: .constant(false)
+                                    )
+                                    CustomTextField(
+                                        placeholder: "Email".localized(using: currentLanguage),
+                                        text: $email,
+                                        isSecure: .constant(false)
+                                    )
+                                    ZStack(alignment: .trailing) {
+                                        CustomTextField(
+                                            placeholder: "Password".localized(using: currentLanguage),
+                                            text: $password,
+                                            isSecure: $isPasswordSecure
+                                        )
+                                        
+                                        Button(action: {
+                                            isPasswordSecure.toggle()
+                                        }) {
+                                            Image(systemName: isPasswordSecure ? "eye.slash" : "eye")
+                                                .foregroundColor(.gray)
+                                                .padding(.trailing, 16)
                                         }
                                     }
-                                }
-                            )
-                            .disabled(isLoading)
-                            
-                            // Navigation to log in
-                            HStack{
-                                Text("Already have an account?")
-                                    .foregroundColor(themeManager.textColor)
-                                Text("Log in")
-                                    .foregroundColor(.blue)
-                                    .onTapGesture {
-                                        isLoggedIn.toggle()
+                                    
+                                    ZStack(alignment: .trailing) {
+                                        CustomTextField(
+                                            placeholder: "ConfirmPassword".localized(using: currentLanguage),
+                                            text: $confirmPassword,
+                                            isSecure: $isConPasswordSecure
+                                        )
+                                        
+                                        Button(action: {
+                                            isConPasswordSecure.toggle()
+                                        }) {
+                                            Image(systemName: isConPasswordSecure ? "eye.slash" : "eye")
+                                                .foregroundColor(.gray)
+                                                .padding(.trailing, 16)
+                                        }
                                     }
+                                    
+                                    // Custom button
+                                    CustomButton(
+                                        title: "SignUp".localized(using: currentLanguage),
+                                        action: {
+                                            // Check name
+                                            guard !username.trimmingCharacters(in: .whitespaces).isEmpty else {
+                                                let message = "Need to add a name"
+                                                AlertManager.shared.showAlert(title: "Name is required", message: message)
+                                                return
+                                            }
+                                            // Create User with Firebase
+                                            isLoading = true
+                                            auth.signUp(name: username, email: email, password: password,confirmPassword: confirmPassword) { success, message in
+                                                isLoading = false
+                                                if success {
+                                                    goToHome = true
+                                                }
+                                            }
+                                        }
+                                    )
+                                    .disabled(isLoading)
+                                    // Navigation to log in
+                                    HStack{
+                                        Text("HaveAccount".localized(using: currentLanguage))
+                                            .foregroundColor(themeManager.textColor)
+                                        Text("LogIn2".localized(using: currentLanguage))
+                                            .foregroundColor(.blue)
+                                            .onTapGesture {
+                                                isLoggedIn.toggle()
+                                            }
+                                    }
+                                }
+                                .padding()
+                                .padding(.top,-40)
                             }
+                            .padding(.top,-20)
                         }
-                        .padding()
-                    }.padding(.bottom,20)
-                    .frame(maxWidth: .infinity)
-                    .padding(.bottom,30)
+                    }
                 }
             }
-        }
-    }
         } .alert(isPresented: $alertManager.alertState.isPresented) {
             Alert(
                 title: Text(alertManager.alertState.title),
                 message: Text(alertManager.alertState.message),
                 dismissButton: .default(Text("OK"))
-        )}
+            )}
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         //cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)
@@ -162,17 +156,17 @@ struct SignUpPage: View {
         
         NavigationLink(
             destination: MainTabView(auth:auth),
-                    isActive: $goToHome,
-                    label: {
-                        EmptyView()
-                    }
-                )
+            isActive: $goToHome,
+            label: {
+                EmptyView()
+            }
+        )
         NavigationLink(
             destination: LogInPage(auth:auth),
-                    isActive: $isLoggedIn,
-                    label: {
-                        EmptyView()
-                    }
+            isActive: $isLoggedIn,
+            label: {
+                EmptyView()
+            }
         )
     }
 }

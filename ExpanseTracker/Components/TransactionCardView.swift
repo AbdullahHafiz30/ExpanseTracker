@@ -15,7 +15,7 @@ struct TransactionCardView: View {
     @EnvironmentObject var themeManager: ThemeManager
     var currentLanguage: String
     var userId: String
-
+    
     var body: some View {
         HStack(spacing: 12) {
             
@@ -54,6 +54,7 @@ struct TransactionCardView: View {
                 
                 // MARK: - Edit Transaction Button
                 NavigationLink(destination: AddOrEditTransactionView(userId: userId, transaction: transaction, currentLanguage: currentLanguage)) {
+
                     Image(systemName: "pencil.circle")
                         .resizable()
                         .foregroundStyle(.blue)

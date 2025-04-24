@@ -139,7 +139,6 @@ class PieViewModel: ObservableObject {
         selectedMonth: Int,
         selectedYear: Int,
         userId: String) -> [Test] {
-            
             let cal = Calendar.current
 
             let catData = getType(array: getUserTransactions(userId: userId), selectedType: selectedType)

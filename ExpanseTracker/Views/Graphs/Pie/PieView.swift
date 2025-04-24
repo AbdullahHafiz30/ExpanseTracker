@@ -18,16 +18,19 @@ struct PieView: View {
     @Binding var selectedYear: Int
     var userId: String
     @State var chartData: [Test] = []
+    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         
-        var image = Image("noData")
+        let image = Image("noData")
         
         VStack {
             if chartData.isEmpty {
                 image
                     .resizable()
                     .scaledToFit()
-                Text("No Data Found")
+                Text("NoDataFound".localized(using: currentLanguage))
             } else {
                 Chart(chartData) { data in
                     SectorMark(
@@ -46,7 +49,7 @@ struct PieView: View {
                                 .fill(UIColor().colorFromHexString(item.color))
                                 .frame(width: 18, height: 18)
                             
-                            Text(item.text)
+                            Text(item.text.localized(using: currentLanguage))
                                 .font(.body)
                                 .foregroundColor(.primary)
                             
@@ -59,13 +62,23 @@ struct PieView: View {
             
         }
         .onAppear{
+            updateChartData()
+        }
+        .onChange(of: allSelect) { _ in updateChartData() }
+        .onChange(of: selectedType) { _ in updateChartData() }
+        .onChange(of: selectedTab) { _ in updateChartData() }
+        .onChange(of: selectedMonth) { _ in updateChartData() }
+        .onChange(of: selectedYear) { _ in updateChartData() }
+    }
+    
+    private func updateChartData() {
             chartData = viewModel.getData(
                 allSelect: allSelect,
                 selectedTab: selectedTab,
                 selectedType: selectedType,
                 selectedMonth: selectedMonth,
                 selectedYear: selectedYear,
-                userId: userId)
+                userId: userId
+            )
         }
-    }
 }

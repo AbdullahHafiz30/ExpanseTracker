@@ -5,14 +5,6 @@
 //  Created by Rayaheen Mseri on 15/10/1446 AH.
 //
 
-//
-//  MainTabView.swift
-//  ExpanseTracker
-//
-//  Created by Rayaheen Mseri on 15/10/1446 AH.
-//
-
-
 import SwiftUI
 
 struct MainTabView: View {

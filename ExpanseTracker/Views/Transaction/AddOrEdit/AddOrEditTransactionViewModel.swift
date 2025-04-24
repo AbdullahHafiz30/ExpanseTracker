@@ -11,7 +11,8 @@ import CoreData
 /// A view model responsible for managing the state and logic for adding or editing a transaction.
 class AddOrEditTransactionViewModel: ObservableObject {
     
-    // MARK: - Published Properties
+    // MARK: - Variables
+    
     @Published var title = ""
     @Published var description = ""
     @Published var amount: String = ""
@@ -19,8 +20,8 @@ class AddOrEditTransactionViewModel: ObservableObject {
     @Published var type: TransactionType = .expense
     @Published var categoryName = ""
     @Published var imageData: Data? = nil
+    @Published var amountError: String?
     @Published var categories: [CategoryEntity] = []
-    
     let context = PersistanceController.shared.context
 
     // MARK: - Initialize ViewModel from Existing Transaction
@@ -65,7 +66,18 @@ class AddOrEditTransactionViewModel: ObservableObject {
             print("Failed to fetch categories for user \(userId): \(error.localizedDescription)")
         }
     }
-
+    
+    // MARK: - Add Transaction
+    /// Creates a new transaction and saves it to CoreData
+    /// - Parameters:
+    ///   - title: Title of the transaction
+    ///   - description: Description of the transaction
+    ///   - amount: Amount of money involved
+    ///   - date: Date of the transaction
+    ///   - type: Type (income or expense)
+    ///   - selectedCategoryName: Name of the selected category
+    ///   - imageData: Optional image (e.g., receipt)
+    ///   - userId: The ID of the user adding the transaction
     func addTransaction(
         title: String,
         description: String,
@@ -86,7 +98,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
         formatter.dateFormat = "dd MMM yyyy"
         newTransaction.date = formatter.string(from: date)
         newTransaction.transactionType = type.rawValue
-
+        
         if let imageData = imageData {
             newTransaction.image = imageData.base64EncodedString()
         }
@@ -97,7 +109,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
 
         let fetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", selectedCategoryName)
-
+        
         do {
             if let existingUserEntity = try context.fetch(userRequest).first {
                 let results = try context.fetch(fetchRequest)
@@ -110,12 +122,12 @@ class AddOrEditTransactionViewModel: ObservableObject {
         } catch {
             print("Error fetching category or user: \(error.localizedDescription)")
         }
-
+        
         do {
             try context.save()
-            print("✅ Transaction saved.")
+            print("Transaction saved.")
         } catch {
-            print("❌ Error saving transaction: \(error.localizedDescription)")
+            print("Error saving transaction: \(error.localizedDescription)")
         }
     }
 
@@ -144,8 +156,38 @@ class AddOrEditTransactionViewModel: ObservableObject {
         if let updatedImageData = imageData {
             existing.image = updatedImageData.base64EncodedString()
         }
-
+        
         PersistanceController.shared.saveContext()
         print("Transaction updated.")
+    }
+    // MARK: - Validation
+    /// Validates if the input string is a valid number format
+    /// - Parameter text: The text to validate
+    /// - Returns: Boolean indicating if the input is numeric
+    func isValidNumber(_ text: String) -> Bool {
+        let numberPattern = #"^[0-9.,]+$"#
+        return text.range(of: numberPattern, options: .regularExpression) != nil
+    }
+    /// Validates the transaction amount and updates error message if needed
+    /// - Parameter text: The amount string to validate
+    func validateAmount(_ text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !trimmed.isEmpty else {
+            amountError = "Price is required."
+            return
+        }
+        
+        guard isValidNumber(trimmed) else {
+            amountError = "Price must be a number only."
+            return
+        }
+        
+        let sanitized = trimmed.replacingOccurrences(of: ",", with: ".")
+        if let value = Double(sanitized), value > 0 {
+            amountError = nil
+        } else {
+            amountError = "Price must be greater than 0."
+        }
     }
 }
