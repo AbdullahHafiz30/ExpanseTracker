@@ -13,27 +13,28 @@ struct ListOfSpecificCategoryView: View {
     var categoryName: String
     @Environment(\.dismiss) var dismiss
     @State var selectedTransaction: TransacionsEntity? = nil
+    var userId : String
     // FetchRequest to get transactions related to the specific category, sorted by date (newest first)
     @FetchRequest private var transactions: FetchedResults<TransacionsEntity>
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-    var userId: String
     
     // Custom initializer to apply the predicate based on the selected category name
-    init(categoryName: String) {
+    init(categoryName: String,userId: String) {
         self.categoryName = categoryName
         _transactions = FetchRequest<TransacionsEntity>(
             entity: TransacionsEntity.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)],
             predicate: NSPredicate(format: "category.name == %@", categoryName)
         )
-        self.userId = ""
+        self.userId = userId
     }
     
     var body: some View {
         VStack(alignment: .leading)  {
             CustomBackward(title:"\(categoryName)", tapEvent: { dismiss() })
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
+                .padding()
+
             if transactions.isEmpty {
                 Spacer()
                 Text("NoTransaction".localized(using: currentLanguage))
@@ -41,7 +42,6 @@ struct ListOfSpecificCategoryView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 Spacer()
             } else {
-
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(transactions, id: \.id) { transaction in
@@ -53,22 +53,19 @@ struct ListOfSpecificCategoryView: View {
                                         .environmentObject(ThemeManager())
                                         .padding(.vertical, 8)
                                 }
-
+                                
                             }
                             .buttonStyle(.plain)
+                            
                         }
                     }
-                }
-                .navigationDestination(item: $selectedTransaction) { transaction in
-                    DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
-                }
-                
+                }.padding()
+                    .navigationDestination(item: $selectedTransaction) { transaction in
+                        DetailsHomeView(currentLanguage: currentLanguage, transaction: transaction)
+                    }
             }
         }
-        .padding()
-        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
-        .navigationBarBackButtonHidden(true)
-        //.navigationTitle("\(categoryName)")
-        .navigationBarTitleDisplayMode(.inline)
+            .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
+            .navigationBarBackButtonHidden(true)
     }
 }

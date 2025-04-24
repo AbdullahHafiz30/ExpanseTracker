@@ -21,8 +21,7 @@ struct CategoryView: View {
                     HStack {
                         Text("Categories".localized(using: currentLanguage))
                             .foregroundColor(themeManager.isDarkMode ? .white : .black)
-                            .font(.custom("Poppins-Bold", size: 36))
-                            .fontWeight(.bold)
+                            .font(.title.bold())
                             .padding(.top , 20)
                             .padding(.leading , 20)
                         
@@ -35,6 +34,7 @@ struct CategoryView: View {
                     searchBarView
                     categoryTypeFilter
                     categoryList
+                        
                     
                 }.onChange(of: userId) { _ , newUserId in
                     viewModel.userId = newUserId
@@ -61,13 +61,14 @@ struct CategoryView: View {
         .onAppear {
             viewModel.loadCategories()
         }
+
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         
     }
     
     // MARK: - Search Bar View
     private var searchBarView: some View {
         SearchBar(searchText: $viewModel.searchText)
-        
     }
     
     // MARK: - Category Type Filter Buttons
@@ -85,7 +86,7 @@ struct CategoryView: View {
         List {
             ForEach(viewModel.filteredCategories) { category in
                 NavigationLink {
-                    ListOfSpecificCategoryView(categoryName: category.name ?? "")
+                    ListOfSpecificCategoryView(categoryName: category.name ?? "",userId: userId)
                 } label: {
                     CategoryRow(category: category)
                         .environmentObject(themeManager)
@@ -97,7 +98,7 @@ struct CategoryView: View {
                         }
                     } label: {
                         Label("Delete".localized(using: currentLanguage), systemImage: "trash")
-                    }
+                    }.tint(.gray.opacity(0.2))
                 }
                 .swipeActions(edge: .leading) {
                     if let id = category.id {
@@ -105,7 +106,7 @@ struct CategoryView: View {
                             CategoryFunctionallity(id: id, userId: userId, type: "Edit")
                         } label: {
                             Label("Edit".localized(using: currentLanguage), systemImage: "pencil")
-                        }
+                        }.tint(.gray.opacity(0.2))
                     }
                     
                 }
@@ -128,10 +129,9 @@ struct CategoryView: View {
         Button {
             showingAddCategory = true
         } label: {
-            Image(systemName: "plus")
-                .foregroundColor(themeManager.isDarkMode ? .black : .white) // Adaptive icon color
-                .padding(12)
-                .background(Circle().fill(themeManager.isDarkMode ? Color.white : Color.black)) // Adaptive circle color
+            Image(systemName: "plus.circle")
+                .font(.title)
+                .foregroundColor(themeManager.isDarkMode ? .white : .black) // Adaptive icon color
         }
     }
 }
@@ -143,7 +143,6 @@ private struct CategoryTypeFilterView: View {
     @Binding var selectedCategoryType: CategoryType?
     var animation: Namespace.ID
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
-
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {

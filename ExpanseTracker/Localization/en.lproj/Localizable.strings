@@ -40,6 +40,7 @@
 "CategoryNameRequired" = "Category name is required!";
 "CategoryType" = "Category Type";
 "ColorExist" = "Color already exist";
+"ConfirmPassword" = "Confirm password";
 "DarkMode" = "Dark Mode";
 "DateD" = "Date:";
 "Delete" = "Delete";
@@ -48,6 +49,7 @@
 "Deleting" = "Deleting...";
 "Description" = "Description";
 "DescriptionD" = "Description:";
+"DHaveAccount" = "Don't have an account?";
 "Edit" = "Edit";
 "EditAccountInformation" = "Edit Account Information";
 "EditCategory" = "Edit Category";
@@ -61,10 +63,13 @@
 "Hello" = "Hello, %@";
 "Home" = "Home";
 "HowMuch" = "How much";
+"HaveAccount" = "Already have an account?";
 "Income" = "Income";
 "InvalidNumberFormat" = "Invalid number format.";
 "Language" = "Language";
 "LightMode" = "Light Mode";
+"LogIn" = "Log in";
+"LogIn2" = "Log in";
 "Logout" = "Logout";
 "Monthly" = "Monthly";
 "MonthPaln" = "What is your plan for this month? Has your budget changed 💸😉?";
@@ -79,8 +84,11 @@
 "OpenSettings" = "Open Settings";
 "Other" = "Other";
 "Profile" = "Profile";
+"Password" = "Password";
 "ReceiptImage" = "Receipt Image";
 "Save" = "Save";
+"SignUp" = "Sign up";
+"SignUp2" = "Sign up";
 "SearchFor" = "Search for ...";
 "SetBudget" = "Set Budget";
 "SetYourBudget" = "You need to set your budget first!";
@@ -92,6 +100,8 @@
 "Transactiontype" = "Transaction type:";
 "Weekly" = "Weekly";
 "Welcome" = "Welcome!";
+"WelcomeSMesg" = "Make your expense tracking experience more better today.";
+"WelcomeMesg" = "Welcome to SpendSmartly";
 "Yearly" = "Yearly";
 "YourSpend" = "Your Spend";
 "yes" = "yes";

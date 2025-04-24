@@ -101,7 +101,6 @@ struct DetailsHomeView: View {
                 .padding(.bottom, -50)
             }
         }
-        
         // MARK: - Toolbar with Custom Back Button
         .toolbar {
             ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
