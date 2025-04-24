@@ -42,9 +42,9 @@ struct GraphsView: View {
                 
                 VStack {
                     Picker(selection: $tabSelectedValue, label: Text("")) {
-                        Text("Pie").tag(0)
-                        Text("Bar").tag(1)
-                        Text("Line").tag(2)
+                        Text("Pie".localized(using: currentLanguage)).tag(0)
+                        Text("Bar".localized(using: currentLanguage)).tag(1)
+                        Text("Line".localized(using: currentLanguage)).tag(2)
                         
                     }.pickerStyle(SegmentedPickerStyle())
                         .padding()

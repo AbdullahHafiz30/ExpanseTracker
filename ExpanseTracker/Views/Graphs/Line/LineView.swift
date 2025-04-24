@@ -19,6 +19,8 @@ struct LineView: View {
     var userId: String
     @EnvironmentObject var themeManager: ThemeManager
     
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         
         let image = Image("noData")
@@ -29,7 +31,7 @@ struct LineView: View {
                 image
                     .resizable()
                     .scaledToFit()
-                Text("No Data Found")
+                Text("NoDataFound".localized(using: currentLanguage))
             } else {
                 Chart{
                     ForEach(lineChartData) { dataPoint in
@@ -49,14 +51,14 @@ struct LineView: View {
                     Image(systemName: "chart.line.uptrend.xyaxis")
                         .font(.title2)
                     
-                    Text("Income")
+                    Text("Income".localized(using: currentLanguage))
                         .font(.title3)
                     
                     Spacer()
                     
                     Image(systemName: "chart.line.downtrend.xyaxis")
                         .font(.title2)
-                    Text("Expense")
+                    Text("Expense".localized(using: currentLanguage))
                         .font(.title3)
                     
                 }.padding()

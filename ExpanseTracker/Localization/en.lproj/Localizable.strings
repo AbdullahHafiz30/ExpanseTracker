@@ -23,6 +23,7 @@
 "CategoryExist" = "Category already exist";
 "ColorExist" = "Color already exist";
 "BudgetLimitZero" = "Budget limit cannot be zero";
+"Bar" = "Bar";
 "ExceededBudgetLimit" = "You have exceeded your budget limit";
 "InvalidNumberFormat" = "Invalid number format.";
 "All" = "All";
@@ -71,6 +72,7 @@
 "LogIn" = "Log in";
 "LogIn2" = "Log in";
 "Logout" = "Logout";
+"Line" = "Line";
 "Monthly" = "Monthly";
 "MonthPaln" = "What is your plan for this month? Has your budget changed 💸😉?";
 "Name" = "Name";
@@ -80,6 +82,7 @@
 "NotificationSettings" = "To receive reminders, please enable notifications in Settings.";
 "Notifications" = "Notifications";
 "NotificationsDisabled" = "Notifications Disabled";
+"NoDataFound" = "No Data Found";
 "OK" = "OK";
 "OpenSettings" = "Open Settings";
 "Other" = "Other";
@@ -122,6 +125,7 @@
 "Categories" = "Categories";
 "Stats" = "Stats";
 "Profile" = "Profile";
+"Pie" = "Pie";
 "NoTransaction" = "No transactions available for this category.";
 "SearchFor" = "Search for ...";
 "SaveChange" = "There are no changes to save.";

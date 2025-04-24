@@ -18,6 +18,9 @@ struct PieView: View {
     @Binding var selectedYear: Int
     var userId: String
     @State var chartData: [Test] = []
+    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var body: some View {
         
         let image = Image("noData")
@@ -27,7 +30,7 @@ struct PieView: View {
                 image
                     .resizable()
                     .scaledToFit()
-                Text("No Data Found")
+                Text("NoDataFound".localized(using: currentLanguage))
             } else {
                 Chart(chartData) { data in
                     SectorMark(
@@ -46,7 +49,7 @@ struct PieView: View {
                                 .fill(UIColor().colorFromHexString(item.color))
                                 .frame(width: 18, height: 18)
                             
-                            Text(item.text)
+                            Text(item.text.localized(using: currentLanguage))
                                 .font(.body)
                                 .foregroundColor(.primary)
                             
