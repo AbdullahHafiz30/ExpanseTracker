@@ -16,12 +16,15 @@ import SwiftUI
 ///   - currentLanguage: The current language code for localization.
 struct PriceSection: View {
     
+    // MARK: - Variables
     @ObservedObject var viewModel: AddOrEditTransactionViewModel
     var amountText: Binding<String>?
     @State var readOnlyAmount: Double?
     @EnvironmentObject var themeManager: ThemeManager
     var currentLanguage: String
     
+    // MARK: - View
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             

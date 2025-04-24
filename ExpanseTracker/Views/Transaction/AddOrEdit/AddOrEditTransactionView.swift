@@ -12,29 +12,26 @@ import CoreData
 /// A form-based view used to add a new transaction or edit an existing one.
 struct AddOrEditTransactionView: View {
     
-    // MARK: - Environment
+    // MARK: - Variables
+
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.managedObjectContext) var viewContext
-    
-    // MARK: - State & ViewModels
     @State private var showDatePicker = false
     @State private var isSecure = false
     @StateObject private var viewModel = AddOrEditTransactionViewModel()
     @StateObject private var alertManager = AlertManager.shared
-    
-    // MARK: - Input
     let userId: String
     var transaction: TransacionsEntity?
     var currentLanguage: String
-
-    // MARK: - Initializer
     init(userId: String, transaction: TransacionsEntity? = nil, currentLanguage: String) {
         self.userId = userId
         self.transaction = transaction
         self.currentLanguage = currentLanguage
     }
-
+    
+    // MARK: - View
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -72,15 +69,26 @@ struct AddOrEditTransactionView: View {
                     CustomTextField(
                         placeholder: "Description".localized(using: currentLanguage),
                         text: $viewModel.description,
-                        isSecure: $isSecure
-                    )
-                    
+                        isSecure: $isSecure)
                     // Image Picker for receipt
-                    ImagePickerField(
-                        imageData: $viewModel.imageData,
-                        image: "",
-                        currentLanguage: currentLanguage
-                    )
+                    ZStack(alignment: .bottomLeading){
+                        ImagePickerField(
+                            imageData: $viewModel.imageData,
+                            image: "",
+                            currentLanguage: currentLanguage)
+                        if viewModel.imageData != nil{
+                            Button(action: {
+                                viewModel.imageData = nil
+                                transaction?.image = nil
+                            }) {
+                                Image(systemName: "trash.circle")
+                                    .font(.title2)
+                                    .foregroundColor(.black)
+                                    .padding(8)
+                                    .frame(alignment: .leading)
+                            }
+                        }
+                    }
                     
                     // Transaction Type Selector
                     TransactionTypeSelector(
@@ -89,13 +97,17 @@ struct AddOrEditTransactionView: View {
                         currentLanguage: currentLanguage
                     )
                     
-                    // MARK: - Submit Button (Add or Save)
-                    CustomButton(
-                        title: transaction == nil
-                            ? "Add".localized(using: currentLanguage)
-                            : "Save".localized(using: currentLanguage)
-                    ) {
-                        // Validation: Title is required
+                        // MARK: - Submit Button (Add or Save)
+                    CustomButton(title: transaction == nil ? "Add".localized(using: currentLanguage) : "Save".localized(using: currentLanguage), action: {
+                        
+                        // Validations
+                        viewModel.validateAmount(viewModel.amount)
+                        
+                        if let amountError = viewModel.amountError {
+                            AlertManager.shared.showAlert(title: "Error", message: amountError)
+                            return
+                        }
+                        
                         guard !viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                             alertManager.showAlert(title: "Error", message: "Title is required!")
                             return
@@ -124,7 +136,7 @@ struct AddOrEditTransactionView: View {
                         }
                         
                         dismiss()
-                    }
+                    })
                     .padding(.top)
                     
                     Spacer()

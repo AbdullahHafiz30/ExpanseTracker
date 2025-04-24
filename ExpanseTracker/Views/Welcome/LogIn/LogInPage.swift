@@ -20,59 +20,54 @@ struct LogInPage: View {
     @ObservedObject var auth: AuthViewModel
     @State private var isPasswordSecure: Bool = true
     @StateObject private var alertManager = AlertManager.shared
-    
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     //MARK: - View
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
-                LazyVStack(spacing: 10, pinnedViews: [.sectionHeaders]) {
+                LazyVStack(spacing: 10) {
             ZStack{
                 themeManager.backgroundColor
                     .ignoresSafeArea()
                 VStack{
                     
-                    // Logo
-                    HStack() {
-                        Button(action: {
-                            backHome.toggle()
-                        }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(themeManager.textColor)
-                                .font(.system(size: 18, weight: .medium))
-                        }.padding(.top,25)
-                            .padding(.trailing,15)
-                            .padding()
-                        Image(themeManager.isDarkMode ? "logoW":"logoB")
+                    VStack(alignment: .center){
+                        // Logo
+                        HStack{
+                            CustomBackward(title:"".localized(using: currentLanguage)){
+                                backHome.toggle()
+                            }.offset(y: 10)
+                            Image(themeManager.isDarkMode ? "logoW":"logoB")
+                                .resizable()
+                                .frame(width: 220,height: 70)
+                                .padding()
+                        }.padding(.trailing, 40)
+                        
+                        // Image
+                        Image(themeManager.isDarkMode ?  "loginW":"loginB")
                             .resizable()
-                            .frame(width: 220,height: 70)
-                            .padding()
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top,-20)
-                    
-                    // Image
-                    Image(themeManager.isDarkMode ?  "loginW":"loginB")
-                        .resizable()
-                        .frame(width: 300,height: 300)
-                        .padding(-40)
+                            .frame(width: 300,height: 300)
+                            .padding(.top,-20)
+                    }.padding(.top,-15)
                     
                     // Text
-                    Text("Log in")
+                    Text("LogIn".localized(using: currentLanguage))
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(themeManager.textColor)
                         .padding()
+                        .padding(.top,-30)
                     
                     // Custom Text feild
                     VStack(spacing: 20) {
-                        
                         CustomTextField(
-                            placeholder: "Email",
+                            placeholder: "Email".localized(using: currentLanguage),
                             text: $email,
                             isSecure:.constant(false)
                         )
                         ZStack(alignment: .trailing) {
                             CustomTextField(
-                                placeholder: "Password",
+                                placeholder: "Password".localized(using: currentLanguage),
                                 text: $password,
                                 isSecure: $isPasswordSecure
                             )
@@ -87,7 +82,7 @@ struct LogInPage: View {
                         }
                         // Cutsom button
                         CustomButton(
-                            title: "Login",
+                            title: "LogIn".localized(using: currentLanguage),
                             action: {
                                 DispatchQueue.main.async {
                                     isLoading = true
@@ -105,13 +100,12 @@ struct LogInPage: View {
                         
                     }
                     .padding()
-                    Spacer()
-                    .padding(.bottom,100)
+                    .padding(.bottom,70)
                     // Navigation to sign up
                     HStack{
-                        Text("Don't have an account?")
+                        Text("DHaveAccount".localized(using: currentLanguage))
                             .foregroundColor(themeManager.textColor)
-                        Text("Sign Up")
+                        Text("SignUp2".localized(using: currentLanguage))
                             .foregroundColor(.blue)
                             .onTapGesture {
                                 isLoggedIn.toggle()
@@ -128,7 +122,7 @@ struct LogInPage: View {
                 message: Text(alertManager.alertState.message),
                 dismissButton: .default(Text("OK")))
         }
-      
+        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         // Cover the whole page with the welcome page
         .fullScreenCover(isPresented: $backHome) {
             WelcomePage(auth:auth)

@@ -14,6 +14,7 @@ struct WelcomePage: View {
     
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject var auth = AuthViewModel()
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     //MARK: - Auto navigation
     var body: some View {
@@ -47,14 +48,15 @@ struct WelcomePage: View {
                             .resizable()
                             .frame(width: 330, height: 330)
                         
-                        Text("   Welcome to SpendSmartly")
+                        Text("WelcomeMesg".localized(using: currentLanguage))
                             .font(.largeTitle)
                             .bold()
                             .lineLimit(2)
+                            .multilineTextAlignment(.center)
                             .padding()
                             .foregroundColor(themeManager.textColor.opacity(0.7))
                         
-                        Text("Make your expense tracking experience more better today.")
+                        Text("WelcomeSMesg".localized(using: currentLanguage))
                             .font(.headline)
                             .lineLimit(3)
                             .foregroundColor(themeManager.textColor.opacity(0.7))
@@ -63,11 +65,11 @@ struct WelcomePage: View {
                         
                         // Navigation to log in and sign up pages with the use of the custom AuthButton
                         NavigationLink(destination: LogInPage(auth:auth)) {
-                            AuthButton(label: "Log in", isFilled: true)
+                            AuthButton(label: "LogIn".localized(using: currentLanguage), isFilled: true)
                         }
                         
                         NavigationLink(destination: SignUpPage(auth:auth)) {
-                            AuthButton(label: "Sign up", isFilled: false)
+                            AuthButton(label: "SignUp".localized(using: currentLanguage), isFilled: false)
                         }
                     }
                     .padding(.bottom, 20)

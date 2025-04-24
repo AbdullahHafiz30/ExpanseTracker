@@ -42,17 +42,19 @@ struct ImagePickerField: View {
                             .scaledToFill()
                             .frame(width: 300, height: 300)
                             .clipShape(RoundedRectangle(cornerRadius: 7))
+                     
                         
-                        // Case 2: Static Image string
-                    } else if image != "" {
-                        Image(image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300)
-                            .clipShape(RoundedRectangle(cornerRadius: 7))
+//                        // Case 2: Static Image string
+//                    } else if image != "" {
+//                        Image(image)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 300, height: 300)
+//                            .clipShape(RoundedRectangle(cornerRadius: 7))
                         
                         // Case 3: Empty
-                    } else {
+                    }
+                    else {
                         HStack {
                             Text("ReceiptImage".localized(using: currentLanguage))
                                 .foregroundColor(themeManager.textColor.opacity(0.5))

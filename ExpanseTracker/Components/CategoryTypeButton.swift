@@ -13,7 +13,7 @@ struct CategoryTypeButton: View {
     let isSelected: Bool
     var animation: Namespace.ID
     let action: () -> Void
-
+    @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -22,12 +22,12 @@ struct CategoryTypeButton: View {
                 .padding(.vertical, 10)
                 .background(   ZStack {
                     if isSelected {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(themeManager.isDarkMode ? Color.black.opacity(0.6) : Color.black)
                             .matchedGeometryEffect(id: "categoryType", in: animation)
                     } else {
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.gray, lineWidth: 1)
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.2))
                     }
                 }
             )
