@@ -1,5 +1,9 @@
 # 🚀 ExpensesMonthlyProjrct: Your Comprehensive Finance Manager
 
+## 🎬 App Video
+
+See the app in action! [https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing](https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing)
+
 ## ✨ Overview
 
 ExpensesMonthlyProjrct is a meticulously crafted iOS application, built with the modern declarative power of SwiftUI, designed to empower you in taking control of your financial life. Seamlessly manage your monthly expenses by setting intelligent budgets and effortlessly tracking every penny spent. Our application goes beyond simple tracking, offering a rich suite of features including the ability to establish recurring budgets, categorize your spending for insightful analysis, and personalize your experience with customizable themes and language options. Security and data integrity are paramount, with robust user authentication handled by Firebase and efficient local data persistence managed by Core Data.
