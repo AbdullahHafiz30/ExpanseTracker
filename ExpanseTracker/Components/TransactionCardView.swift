@@ -21,8 +21,7 @@ struct TransactionCardView: View {
             
             // MARK: - Category Icon Circle (colored by category)
             Image(systemName: transaction.category?.icon ?? "")
-                .font(.title)
-                .fontWeight(.semibold)
+                .font(.system(size: 20, weight: .medium))
                 .foregroundColor(themeManager.isDarkMode && UIColor().colorFromHexString(transaction.category?.color ?? "") == .black ? .white : themeManager.isDarkMode ? UIColor().colorFromHexString(transaction.category?.color ?? ""): UIColor().colorFromHexString(transaction.category?.color ?? ""))
                 .frame(width: 45, height: 45)
                 .background(

@@ -71,7 +71,8 @@ struct TransactionListView: View {
                         HeaderView(
                             searchText: $viewModel.searchText,
                             selectedTab: $viewModel.selectedTab,
-                            currentLanguage: currentLanguage
+                            currentLanguage: currentLanguage,
+                            themeManager: themeManager
                         )
                     }
                 }
