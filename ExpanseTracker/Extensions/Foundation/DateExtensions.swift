@@ -20,15 +20,6 @@ extension Date {
         return calendar.date(from: components) ?? self
     }
     
-    // MARK: - End Of Month computed variable
-    /// Returns a Date representing the end of the current month.
-    var endOfMonth: Date {
-        
-        let calendar = Calendar.current
-        //This is computed by adding one month to the start of the current month, then subtracting one minute, resulting in the last minute of the current month.
-        return calendar.date(byAdding: .init(month: 1, minute: -1), to: self.startOfMonth) ?? self
-    }
-    
     // MARK: - Formatted function
     /// Formats the date into a string using the specified format.
     /// - Parameter format: A format string.

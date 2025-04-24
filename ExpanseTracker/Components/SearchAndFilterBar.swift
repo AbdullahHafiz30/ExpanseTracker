@@ -13,8 +13,6 @@ import SwiftUI
 struct SearchBar: View {
     
     @Binding var searchText: String
-    
-    // The current app language for localization.
     @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
     
     var body: some View {
