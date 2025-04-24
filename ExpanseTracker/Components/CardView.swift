@@ -60,7 +60,7 @@ struct CardView: View {
                                 .frame(width: 35, height: 35)
                                 .background {
                                     Circle()
-                                        .fill(tint.opacity(0.25).gradient)
+                                        .fill(tint.opacity(0.25).gradient) // Light-to-dark version of the color, giving a more dynamic feel.
                                 }
                             
                             // Labels: "Income" or "Expense" and the corresponding amount
@@ -75,7 +75,7 @@ struct CardView: View {
                                     .foregroundStyle(.primary)
                             }
                             
-                            // Push content for income to the left if needed
+                            // Push content for expense to the left if needed
                             if type == .expense {
                                 Spacer(minLength: 10)
                             }

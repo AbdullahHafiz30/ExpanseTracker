@@ -27,7 +27,7 @@ struct TransactionListView: View {
         self.userId = userId
     
         let request: NSFetchRequest<TransacionsEntity> = TransacionsEntity.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: false)]
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TransacionsEntity.date, ascending: true)]
         request.predicate = NSPredicate(format: "user.id == %@", userId)
         
         _transacions = FetchRequest(fetchRequest: request)

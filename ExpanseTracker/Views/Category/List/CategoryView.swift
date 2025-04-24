@@ -86,7 +86,7 @@ struct CategoryView: View {
         List {
             ForEach(viewModel.filteredCategories) { category in
                 NavigationLink {
-                    ListOfSpecificCategoryView(categoryName: category.name ?? "",userId: userId)
+                    ListOfSpecificCategoryView(category: category, userId: userId)
                 } label: {
                     CategoryRow(category: category)
                         .environmentObject(themeManager)

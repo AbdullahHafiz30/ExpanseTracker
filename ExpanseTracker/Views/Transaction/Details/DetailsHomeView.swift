@@ -25,10 +25,10 @@ struct DetailsHomeView: View {
                 
                 // MARK: - Read-Only Amount Display
                 PriceSection(
-                    viewModel: AddOrEditTransactionViewModel(),
-                    amountText: nil,
-                    readOnlyAmount: transaction.amount,
                     themeManager: _themeManager,
+                    viewModel: AddOrEditTransactionViewModel(),
+                    readOnlyAmount: transaction.amount,
+                    amountText: nil,
                     currentLanguage: currentLanguage
                 )
                 

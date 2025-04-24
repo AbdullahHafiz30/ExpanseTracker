@@ -20,6 +20,8 @@ struct BarView: View {
     @State var chartData: [Bar] = []
     @State var pieData: [Test] = []
     
+    @AppStorage("AppleLanguages") var currentLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     var userId: String
     
     
@@ -32,7 +34,7 @@ struct BarView: View {
                 image
                     .resizable()
                     .scaledToFit()
-                Text("No Data Found")
+                Text("NoDataFound".localized(using: currentLanguage))
             } else {
                 Chart {
                     ForEach(chartData, id: \.id) { transaction in
@@ -59,7 +61,7 @@ struct BarView: View {
                                     .fill(UIColor().colorFromHexString(item.color))
                                     .frame(width: 18, height: 18)
                                 
-                                Text(item.text)
+                                Text(item.text.localized(using: currentLanguage))
                                     .font(.body)
                                     .foregroundColor(.primary)
                             }

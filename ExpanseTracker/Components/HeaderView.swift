@@ -30,6 +30,10 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, c
                     Picker("Select Time Filter", selection: selectedTab) {
                         ForEach(TimeFilter.allCases, id: \.self) { tab in
                             Text(tab.rawValue.localized(using: currentLanguage)).tag(tab)
+                            /*
+                             Without .tag(...):
+                             The Picker wouldn’t know which case corresponds to which label, so it wouldn’t update selectedTab correctly.
+                             */
                         }
                     }
                 } label: {
@@ -48,11 +52,11 @@ func HeaderView(searchText: Binding<String>, selectedTab: Binding<TimeFilter>, c
         VStack(spacing: 0) {
             // Background layer using system material
             Rectangle()
-                .fill(.background)
+                .fill(.background) // a system-adaptive background color
         }
         // Expand background to cover the full width and top safe area
         .padding(.horizontal, -15)
-        .padding(.top, -(safeArea.top + 15))
+        .padding(.top, -(safeArea.top))
     }
 }
 

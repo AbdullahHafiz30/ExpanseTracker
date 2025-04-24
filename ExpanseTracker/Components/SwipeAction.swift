@@ -28,7 +28,6 @@ struct SwipeAction<Content: View>: View {
     
     @State private var isEnabled: Bool = true
     @State private var scrollOffset: CGFloat = .zero
-    @Environment(\.colorScheme) private var scheme
     
     var body: some View {
         ScrollViewReader { scrollProxy in
