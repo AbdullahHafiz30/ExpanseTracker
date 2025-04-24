@@ -107,8 +107,8 @@ struct SignUpPage: View {
                                         action: {
                                             // Check name
                                             guard !username.trimmingCharacters(in: .whitespaces).isEmpty else {
-                                                let message = "Need to add a name"
-                                                AlertManager.shared.showAlert(title: "Name is required", message: message)
+                                                let message = "NameRequired".localized(using: currentLanguage)
+                                                AlertManager.shared.showAlert(title: "Error".localized(using: currentLanguage), message: message)
                                                 return
                                             }
                                             // Create User with Firebase
@@ -145,7 +145,7 @@ struct SignUpPage: View {
             Alert(
                 title: Text(alertManager.alertState.title),
                 message: Text(alertManager.alertState.message),
-                dismissButton: .default(Text("OK"))
+                dismissButton: .default(Text("OK".localized(using: currentLanguage)))
             )}
         .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         //cover the whole page with the welcome page
