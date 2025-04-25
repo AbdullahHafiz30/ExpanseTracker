@@ -14,8 +14,8 @@ struct DropDownMenu: View {
     
     //MARK: - Variables
     let title: String
-    let options: [String]
-    @Binding var selectedOption: String
+    let options: [Category]
+    @Binding var selectedOption: Category?
     @State private var isExpanded = false
     @EnvironmentObject var themeManager: ThemeManager
     
@@ -29,9 +29,9 @@ struct DropDownMenu: View {
                 }
             }) {
                 HStack {
-                    Text(selectedOption.isEmpty ? title : selectedOption)
+                    Text((selectedOption == nil ? title : selectedOption?.name) ?? "")
                         .foregroundColor(
-                            selectedOption.isEmpty
+                            selectedOption == nil
                             ? themeManager.isDarkMode ? Color.white.opacity(0.6) : Color.black.opacity(0.6)
                             : themeManager.textColor
                         )
@@ -54,7 +54,7 @@ struct DropDownMenu: View {
                             }
                         }) {
                             HStack {
-                                Text(option)
+                                Text(option.name ?? "")
                                     .foregroundColor(themeManager.textColor)
                                 Spacer()
                             }

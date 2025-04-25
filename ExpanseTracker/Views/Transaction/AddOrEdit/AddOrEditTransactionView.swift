@@ -57,8 +57,8 @@ struct AddOrEditTransactionView: View {
                     // Category Dropdown
                     DropDownMenu(
                         title: "Category".localized(using: currentLanguage),
-                        options: viewModel.categories.map { $0.name ?? "" },
-                        selectedOption: $viewModel.categoryName
+                        options: viewModel.categories,
+                        selectedOption: $viewModel.category
                     )
                     
                     // Date Picker Field
@@ -97,7 +97,7 @@ struct AddOrEditTransactionView: View {
                         }
                         
                         // Validation: Must select a category
-                        guard let selectedCategory = viewModel.categories.first(where: { $0.name == viewModel.categoryName }) else {
+                        guard let selectedCategory = viewModel.categories.first(where: { $0 == viewModel.category }) else {
                             alertManager.showAlert(title: "Error", message: "Category is required!")
                             return
                         }
@@ -112,7 +112,7 @@ struct AddOrEditTransactionView: View {
                                 amount: Double(viewModel.amount) ?? 0.0,
                                 date: viewModel.date,
                                 type: viewModel.type,
-                                selectedCategoryName: viewModel.categoryName,
+                                selectedCategoryId: viewModel.category?.id ?? "",
                                 imageData: viewModel.imageData,
                                 userId: userId
                             )
