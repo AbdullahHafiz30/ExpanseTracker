@@ -99,11 +99,11 @@ struct LineView: View {
             updateChartData()
         }
         // Refresh when any filter changes
-        .onChange(of: allSelect) { _ in updateChartData() }
-        .onChange(of: selectedType) { _ in updateChartData() }
-        .onChange(of: selectedTab) { _ in updateChartData() }
-        .onChange(of: selectedMonth) { _ in updateChartData() }
-        .onChange(of: selectedYear) { _ in updateChartData() }
+        .onChange(of: allSelect) {updateChartData() }
+        .onChange(of: selectedType) {updateChartData() }
+        .onChange(of: selectedTab) {updateChartData() }
+        .onChange(of: selectedMonth) {updateChartData() }
+        .onChange(of: selectedYear) {updateChartData() }
     }
     
     // MARK: - Data Fetch
