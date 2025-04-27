@@ -215,7 +215,7 @@ class BarViewModel: ObservableObject {
                 
             } else {
                 let data = catData.filter {
-                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear
+                    $0.transactionType == .expense && cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear
                 }
                 
                 // 3. Combine by day & category

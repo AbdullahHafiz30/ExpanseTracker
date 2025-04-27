@@ -99,11 +99,11 @@ struct BarView: View {
         .onAppear{
             updateChartData()
         }
-        .onChange(of: allSelect) {  updateChartData() }
-        .onChange(of: selectedType) { updateChartData() }
-        .onChange(of: selectedTab) {  updateChartData() }
-        .onChange(of: selectedMonth) {  updateChartData() }
-        .onChange(of: selectedYear) {  updateChartData() }
+        .onChange(of: allSelect) {updateChartData() }
+        .onChange(of: selectedType) {updateChartData() }
+        .onChange(of: selectedTab) {updateChartData() }
+        .onChange(of: selectedMonth) {updateChartData() }
+        .onChange(of: selectedYear) {updateChartData() }
     }
     
     

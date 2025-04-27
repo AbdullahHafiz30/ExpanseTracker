@@ -64,7 +64,7 @@ class LineViewModel: ObservableObject {
             
         } else {
             
-            filteredData = catData.filter { cal.component(.month, from: $0.date ?? Date()) == selectedMonth && cal.component(.year, from: $0.date ?? Date()) == selectedYear }
+            filteredData = catData.filter { cal.component(.month, from: $0.date ?? Date()) == selectedMonth + 1 && cal.component(.year, from: $0.date ?? Date()) == selectedYear }
             
         }
 

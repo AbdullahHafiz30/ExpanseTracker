@@ -54,7 +54,7 @@ class AuthViewModel:ObservableObject {
         }
         // Hash password
         var hashPass = ""
-        if var passwordData = password.data(using: .utf8) {
+        if let passwordData = password.data(using: .utf8) {
             hashPass = self.coreDataService.hash(data: passwordData)
         } else {
             print("❌ Failed to hash password.")
@@ -137,7 +137,7 @@ class AuthViewModel:ObservableObject {
         }
         // Hash password
         var hashPass = ""
-        if var passwordData = password.data(using: .utf8) {
+        if let passwordData = password.data(using: .utf8) {
             hashPass = self.coreDataService.hash(data: passwordData)
         } else {
             print("❌ Failed to hash password.")
@@ -232,7 +232,7 @@ class AuthViewModel:ObservableObject {
                 return
             }
             
-            if var passwordData = password.data(using: .utf8) {
+            if let passwordData = password.data(using: .utf8) {
                 hashPass = self.coreDataService.hash(data: passwordData)
             } else {
                 print("❌ Failed to hash password.")
@@ -280,7 +280,7 @@ class AuthViewModel:ObservableObject {
             let db = Firestore.firestore()
             
             // Delete user from Firestore
-            db.collection("users").document(uid).delete { error in
+            db.collection("usersIOS").document(uid).delete { error in
                 if let error = error {
                     completion(.failure(error))
                     return
