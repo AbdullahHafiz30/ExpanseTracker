@@ -24,7 +24,7 @@ struct NumberFormatterManager {
     /// - Returns: A formatted string, or an empty string if fails.
     func decimalString(from value: Double, minDigits: Int = 2, maxDigits: Int = 2) -> String {
         let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
+        formatter.numberStyle = .decimal // Input: 1234567.89 → Output: "1,234,567.89"
         formatter.minimumFractionDigits = minDigits
         formatter.maximumFractionDigits = maxDigits
         return formatter.string(from: NSNumber(value: value)) ?? ""

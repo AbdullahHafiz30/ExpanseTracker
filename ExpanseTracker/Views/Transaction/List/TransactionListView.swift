@@ -82,15 +82,14 @@ struct TransactionListView: View {
                 }
                 .scrollIndicators(.hidden)
                 .onChange(of: viewModel.selectedTab) {
-                        // Update the date range when the selected tab changes
-                        viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
-                        viewModel.endDate = Date()
-                    }
+                    // Update the date range when the selected tab changes
+                    viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
+                    viewModel.endDate = Date()
+                }
             }
             .onAppear{
                 viewModel.startDate = viewModel.selectedTab.startDate(from: Date())
             }
-            
         }
     }
     
