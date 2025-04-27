@@ -20,5 +20,21 @@
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B0505BF5-FD12-4324-869F-B4FF1EA81C3A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ExpanseTracker/Views/Transaction/List/TransactionViewModel.swift"
+            startingColumnNumber = "29"
+            endingColumnNumber = "35"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "isDate(_:filter:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

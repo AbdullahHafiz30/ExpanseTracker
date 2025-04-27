@@ -28,7 +28,9 @@ final class TransactionViewModel: ObservableObject {
     ///   - dateString: The transaction date string.
     ///   - filter: The time filter to check against.
     /// - Returns: A Boolean indicating whether the date falls within the filter.
-    func isDate(_ dateString: String, matching filter: TimeFilter) -> Bool {
+    func isDate(_ dateString: String, filter: TimeFilter) -> Bool {
+        
+        // Convert the dateString into a Date object
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         
@@ -59,9 +61,12 @@ final class TransactionViewModel: ObservableObject {
     /// - Returns: A filtered array of TransacionsEntity matching the criteria.
     func filteredTransactions(_ transactions: FetchedResults<TransacionsEntity>, filter: TimeFilter) -> [TransacionsEntity] {
         return transactions.filter { transaction in
+            
             let matchesSearch = searchText.isEmpty || (transaction.title?.localizedCaseInsensitiveContains(searchText) ?? false)
+            
             let matchesType = transaction.transactionType == selectedType.rawValue
-            let matchesDate = transaction.date.map { isDate($0, matching: filter) } ?? false
+            
+            let matchesDate = transaction.date.map { isDate($0, filter: filter) } ?? false
             
             return matchesSearch && matchesType && matchesDate
         }
@@ -79,7 +84,7 @@ final class TransactionViewModel: ObservableObject {
         transactions
             .filter {
                 $0.transactionType == type.rawValue &&
-                (filter == nil || ($0.date.map { isDate($0, matching: filter!) } ?? false))
+                (filter == nil || ($0.date.map { isDate($0, filter: filter!) } ?? false))
             }
             .map { $0.amount }
             .reduce(0, +)

@@ -24,13 +24,13 @@ struct AddOrEditTransactionView: View {
     let userId: String
     var transaction: TransacionsEntity?
     var currentLanguage: String
-
+    
     init(userId: String, transaction: TransacionsEntity? = nil, currentLanguage: String) {
         self.userId = userId
         self.transaction = transaction
         self.currentLanguage = currentLanguage
-    } // Its job is to allow the creation of an instance with specific values.
-
+    } 
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -87,8 +87,8 @@ struct AddOrEditTransactionView: View {
                     // MARK: - Submit Button (Add or Save)
                     CustomButton(
                         title: transaction == nil
-                            ? "Add".localized(using: currentLanguage)
-                            : "Save".localized(using: currentLanguage)
+                        ? "Add".localized(using: currentLanguage)
+                        : "Save".localized(using: currentLanguage)
                     ) {
                         // Validation: Title is required
                         guard !viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
@@ -104,7 +104,7 @@ struct AddOrEditTransactionView: View {
                         
                         // Update existing transaction or add a new one
                         if let existing = transaction {
-                            viewModel.updateTransaction(existing, in: viewContext, selectedCategory: selectedCategory)
+                            viewModel.updateTransaction(existing, context: viewContext, selectedCategory: selectedCategory)
                         } else {
                             viewModel.addTransaction(
                                 title: viewModel.title,
@@ -131,39 +131,40 @@ struct AddOrEditTransactionView: View {
                 .cornerRadius(32)
                 .frame(maxHeight: .infinity, alignment: .top)
             }
-                
-        }.ignoresSafeArea(edges: .bottom)
+            
+        }
+        .ignoresSafeArea(edges: .bottom)
         
         // MARK: - Toolbar with custom back button
-        .toolbar {
-            ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
-                CustomBackward(
-                    title: transaction == nil
+            .toolbar {
+                ToolbarItem(placement: currentLanguage == "ar" ? .topBarTrailing : .topBarLeading) {
+                    CustomBackward(
+                        title: transaction == nil
                         ? "AddTransaction".localized(using: currentLanguage)
                         : "EditTransaction".localized(using: currentLanguage)
-                ) {
-                    dismiss()
+                    ) {
+                        dismiss()
+                    }
                 }
             }
-        }
-        .navigationBarBackButtonHidden(true)
+            .navigationBarBackButtonHidden(true)
         
         // Adjust layout direction based on current language
-        .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
+            .environment(\.layoutDirection, currentLanguage == "ar" ? .rightToLeft : .leftToRight)
         
         // MARK: - OnAppear: Load data
-        .onAppear {
-            viewModel.initialize(with: transaction)
-            viewModel.fetchCategories(userId: userId)
-        }
-
+            .onAppear {
+                viewModel.initialize(transaction: transaction)
+                viewModel.fetchCategories(userId: userId)
+            }
+        
         // MARK: - Global alert for validation or errors
-        .alert(isPresented: $alertManager.alertState.isPresented) {
-            Alert(
-                title: Text(alertManager.alertState.title),
-                message: Text(alertManager.alertState.message),
-                dismissButton: .default(Text("OK"))
-            )
-        }
+            .alert(isPresented: $alertManager.alertState.isPresented) {
+                Alert(
+                    title: Text(alertManager.alertState.title),
+                    message: Text(alertManager.alertState.message),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
     }
 }
