@@ -27,7 +27,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
     // MARK: - Initialize ViewModel from Existing Transaction
     /// Loads the data of an existing transaction into the form.
     /// - Parameter transaction: The existing transaction to edit.
-    func initialize(with transaction: TransacionsEntity?) {
+    func initialize(transaction: TransacionsEntity?) {
         if let transaction = transaction {
             title = transaction.title ?? ""
             description = transaction.desc ?? ""
@@ -143,7 +143,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
     ///   - selectedCategory: The newly selected category to associate.
     func updateTransaction(
         _ existing: TransacionsEntity,
-        in context: NSManagedObjectContext,
+        context: NSManagedObjectContext,
         selectedCategory: Category
     ) {
         existing.title = title
@@ -154,11 +154,13 @@ class AddOrEditTransactionViewModel: ObservableObject {
         formatter.dateFormat = "dd MMM yyyy"
         existing.date = formatter.string(from: date)
 
+        existing.transactionType = type.rawValue
+        
         let categoryFetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
-                categoryFetchRequest.predicate = NSPredicate(format: "id == %@", selectedCategory.id ?? "")
+        categoryFetchRequest.predicate = NSPredicate(format: "id == %@", selectedCategory.id ?? "")
 
-                if let matchedCategory = try? context.fetch(categoryFetchRequest).first {
-                        existing.category = matchedCategory
+        if let matchedCategory = try? context.fetch(categoryFetchRequest).first {
+                existing.category = matchedCategory
         }
         
         if let updatedImageData = imageData {
@@ -168,6 +170,7 @@ class AddOrEditTransactionViewModel: ObservableObject {
         PersistanceController.shared.saveContext()
         print("Transaction updated.")
     }
+    
     // MARK: - Validation
     /// Validates if the input string is a valid number format
     /// - Parameter text: The text to validate

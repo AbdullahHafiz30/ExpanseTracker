@@ -19,8 +19,8 @@ struct GraphsView: View {
     @State private var allSelect : Bool = true
     /// Currently selected date granularity (monthly, yearly)
     @State private var selectedTab: DateTab = .monthly
-    /// Month index for filtering (1 = January, 12 = December)
-    @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date())
+    /// Month index for filtering (0 = January, 11 = December)
+    @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date()) - 1
     /// Year for filtering data
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     /// Specific category type filter (nil means all types)
