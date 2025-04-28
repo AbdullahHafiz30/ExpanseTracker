@@ -2,7 +2,7 @@
 
 ## 🎬 App Video
 
-See the app in action! [https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing](https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing)
+See the app in action! https://drive.google.com/file/d/1D0ga8CfGSbzs-_gIAlIOllOx0TzB8iRQ/view?usp=sharing
 
 ## ✨ Overview
 
