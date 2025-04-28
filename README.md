@@ -1,5 +1,24 @@
 # 🚀 ExpensesMonthlyProjrct: Your Comprehensive Finance Manager
 
+## 📸 App Screenshots
+
+
+<img src="https://github.com/user-attachments/assets/eb3895bc-513a-4c63-b070-33f79440296a" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/4f4983a2-b253-466a-b039-30401464b021" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/4826caac-03c4-4f8e-80af-283ea5feb273" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/3f942527-9034-47ec-bd20-b2dfec19aa24" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/0b31e728-44a1-443f-a289-3e72996bd52f" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/510254cc-afac-4e87-b4c3-726182042915" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/a49c0e89-a71e-4b7b-ab68-7203c962d814" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/03f83d83-16dd-4f9d-b8b9-d7da3b83d3af" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/1294a05c-0a75-4095-8274-846a606a7ca1" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/1d7bdc8a-ff91-4ac9-9b9e-4816b7218208" width="196" height="426">
+<img src="https://github.com/user-attachments/assets/e4be2f2c-81ce-4569-8037-d2e8feac4574" width="196" height="426">
+
+
+
+
+
 ## 🎬 App Video
 
 See the app in action! [https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing](https://drive.google.com/file/d/1PVhnK_MpfuIiNwcOo_PoWg4w91tFbXqF/view?usp=sharing)
