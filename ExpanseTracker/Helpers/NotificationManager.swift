@@ -56,7 +56,7 @@ class NotificationManager {
         date.day = 1
         date.hour = 0
         date.minute = 0
-        let trigger = UNCalendarNotificationTrigger(dateMatching: date , repeats: false)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: date , repeats: true)
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         
