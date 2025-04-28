@@ -154,13 +154,13 @@ class AddOrEditTransactionViewModel: ObservableObject {
         formatter.dateFormat = "dd MMM yyyy"
         existing.date = formatter.string(from: date)
 
-        existing.transactionType = type.rawValue
-        var exitCategory = existing.category.map{
-            Category(id: $0.id, name: $0.name, color: $0.color, icon: $0.icon, categoryType: CategoryType(rawValue: $0.categoryType ?? ""), budgetLimit: $0.budgetLimit)
-        }
-      
-        exitCategory = selectedCategory
+        let categoryFetchRequest: NSFetchRequest<CategoryEntity> = CategoryEntity.fetchRequest()
+                categoryFetchRequest.predicate = NSPredicate(format: "id == %@", selectedCategory.id ?? "")
 
+                if let matchedCategory = try? context.fetch(categoryFetchRequest).first {
+                        existing.category = matchedCategory
+        }
+        
         if let updatedImageData = imageData {
             existing.image = updatedImageData.base64EncodedString()
         }
