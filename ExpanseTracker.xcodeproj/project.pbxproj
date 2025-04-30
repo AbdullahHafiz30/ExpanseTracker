@@ -296,6 +296,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ExpanseTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SpendSmartly;
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Need camera access for the receipts.\"";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Need photo library access to select receipts.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -308,7 +309,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahTeam.ExpanseTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahTeam.Expenseapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -329,6 +330,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ExpanseTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SpendSmartly;
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Need camera access for the receipts.\"";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Need photo library access to select receipts.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -341,7 +343,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahTeam.ExpanseTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahTeam.Expenseapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
