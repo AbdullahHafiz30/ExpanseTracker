@@ -21,6 +21,8 @@
 
 ## 🎬 App Video
 
+See the app Mockup Video! https://drive.google.com/file/d/1gfOmGbPaHm_OaQqIwkBDCBQn_qVLDxzr/view?usp=drive_link
+
 See the app in action! https://drive.google.com/file/d/1D0ga8CfGSbzs-_gIAlIOllOx0TzB8iRQ/view?usp=sharing
 
 ## ✨ Overview
